@@ -211,9 +211,9 @@ frontend/
 ## 11. Deploy (Opcional)
 
 **Checklist:**
-- [ ] Dockerizar backend
+- [x] Dockerizar backend
 - [ ] Deploy simples (Render/Vercel)
-- [ ] Configurar variáveis de ambiente
+- [x] Configurar variáveis de ambiente
 
 ---
 
