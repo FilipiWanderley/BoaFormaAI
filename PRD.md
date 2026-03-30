@@ -158,7 +158,7 @@ frontend/
 **Checklist:**
 - [x] Criar SQLite
 - [x] Criar models
-- [ ] Criar migrations (opcional)
+- [x] Criar migrations (opcional)
 - [x] Testar persistência
 
 ---
