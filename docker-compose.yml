@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: boaforma-backend:compose
+    container_name: boaforma-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/boaforma.db:/app/boaforma.db
+    restart: unless-stopped
