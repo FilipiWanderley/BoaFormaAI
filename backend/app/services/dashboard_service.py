@@ -68,6 +68,17 @@ def _workout_duration_from_json(exercises_json: str) -> int:
         return 60
 
 
+def _to_workout_summary(row: Workout) -> WorkoutSummary:
+    return WorkoutSummary(
+        id=row.id,
+        workout_name=_workout_name_from_json(row.exercises_json),
+        focus=_workout_focus_from_json(row.exercises_json),
+        estimated_duration_minutes=_workout_duration_from_json(row.exercises_json),
+        created_at=row.created_at,
+        feedback=row.feedback,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -80,18 +91,11 @@ def get_dashboard(db: Session, user: User) -> DashboardResponse:
         .order_by(Workout.created_at.desc())
         .first()
     )
-    last_workout: Optional[WorkoutSummary] = None
-    if last_workout_row:
-        last_workout = WorkoutSummary(
-            id=last_workout_row.id,
-            workout_name=_workout_name_from_json(last_workout_row.exercises_json),
-            focus=_workout_focus_from_json(last_workout_row.exercises_json),
-            estimated_duration_minutes=_workout_duration_from_json(
-                last_workout_row.exercises_json
-            ),
-            created_at=last_workout_row.created_at,
-            feedback=last_workout_row.feedback,
-        )
+    last_workout = _to_workout_summary(last_workout_row) if last_workout_row else None
+
+    today_workout: Optional[WorkoutSummary] = None
+    if last_workout_row and last_workout_row.created_at.date() == date.today():
+        today_workout = _to_workout_summary(last_workout_row)
 
     # ── History stats ────────────────────────────────────────────────────
     history_rows = (
@@ -115,6 +119,7 @@ def get_dashboard(db: Session, user: User) -> DashboardResponse:
 
     return DashboardResponse(
         user=UserResponse.model_validate(user),
+        today_workout=today_workout,
         last_workout=last_workout,
         stats=DashboardStats(
             total_workouts_generated=total_generated,

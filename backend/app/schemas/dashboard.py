@@ -16,5 +16,6 @@ class DashboardStats(BaseModel):
 
 class DashboardResponse(BaseModel):
     user: UserResponse
+    today_workout: Optional[WorkoutSummary]
     last_workout: Optional[WorkoutSummary]
     stats: DashboardStats

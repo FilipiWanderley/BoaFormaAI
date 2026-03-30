@@ -45,7 +45,7 @@ class ApiWorkoutHistoryFlowTests(unittest.TestCase):
         return {"Authorization": f"Bearer {token}"}
 
     @staticmethod
-    def _fake_llm_workout(_user, exercises, _request) -> _LLMWorkout:
+    def _fake_llm_workout(_user, exercises, _request, history_context=None) -> _LLMWorkout:
         selected = exercises[:5]
         return _LLMWorkout(
             workout_name="Treino de Teste API",
@@ -154,6 +154,29 @@ class ApiWorkoutHistoryFlowTests(unittest.TestCase):
 
         other_history_response = self.client.get(f"/history/{current_user_id + 999}", headers=headers)
         self.assertEqual(other_history_response.status_code, 403)
+
+    def test_dashboard_returns_today_workout_when_generated_today(self) -> None:
+        token = self._register_and_login()
+        headers = self._auth_headers(token)
+
+        with patch(
+            "app.services.workout_service.call_groq_for_workout",
+            side_effect=self._fake_llm_workout,
+        ):
+            generate_response = self.client.post(
+                "/workout/generate",
+                headers=headers,
+                json={"duration_minutes": 45},
+            )
+
+        self.assertEqual(generate_response.status_code, 201)
+        generated_workout_id = generate_response.json()["id"]
+
+        dashboard_response = self.client.get("/dashboard", headers=headers)
+        self.assertEqual(dashboard_response.status_code, 200)
+        payload = dashboard_response.json()
+        self.assertIsNotNone(payload["today_workout"])
+        self.assertEqual(payload["today_workout"]["id"], generated_workout_id)
 
 
 if __name__ == "__main__":

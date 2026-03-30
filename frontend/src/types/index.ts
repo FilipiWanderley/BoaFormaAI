@@ -124,6 +124,7 @@ export interface DashboardStats {
 
 export interface DashboardResponse {
   user: UserResponse
+  today_workout: WorkoutSummary | null
   last_workout: WorkoutSummary | null
   stats: DashboardStats
 }

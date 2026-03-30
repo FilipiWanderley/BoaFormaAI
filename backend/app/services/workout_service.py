@@ -2,14 +2,16 @@
 Workout service — orchestrates the full generate → validate → persist → respond pipeline.
 """
 
+from datetime import date
 from typing import List, Optional
 
 from fastapi import HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.exercise import Exercise, WorkoutExercise
 from app.models.user import User
-from app.models.workout import Workout
+from app.models.workout import History, Workout
 from app.schemas.workout import (
     WorkoutExerciseDetail,
     WorkoutGenerateRequest,
@@ -66,6 +68,43 @@ def _build_workout_exercise_detail(
         notes=item.notes,
         order=order,
         image_url=exercise.image_url,
+    )
+
+
+def _build_history_context(db: Session, user_id: int) -> str:
+    recent_workouts = (
+        db.query(Workout)
+        .filter(Workout.user_id == user_id)
+        .order_by(Workout.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    recent_feedback = [w.feedback for w in recent_workouts if w.feedback]
+
+    completed_count = (
+        db.query(History)
+        .filter(History.user_id == user_id)
+        .count()
+    )
+    completed_today_count = (
+        db.query(func.count(History.id))
+        .filter(
+            History.user_id == user_id,
+            func.date(History.completed_at) == date.today().isoformat(),
+        )
+        .scalar()
+        or 0
+    )
+
+    if not recent_workouts and completed_count == 0:
+        return "Sem histórico de treino anterior."
+
+    feedback_summary = ", ".join(recent_feedback[-3:]) if recent_feedback else "sem feedback recente"
+    return (
+        f"Treinos gerados recentemente: {len(recent_workouts)}. "
+        f"Treinos concluídos no total: {completed_count}. "
+        f"Treinos concluídos hoje: {completed_today_count}. "
+        f"Feedbacks recentes: {feedback_summary}."
     )
 
 
@@ -142,7 +181,8 @@ def generate_workout(
             ),
         )
 
-    llm_workout = call_groq_for_workout(user, exercises, request)
+    history_context = _build_history_context(db, user.id)
+    llm_workout = call_groq_for_workout(user, exercises, request, history_context=history_context)
 
     exercise_map = {ex.id: ex for ex in exercises}
     prompt_context = request.model_dump_json()

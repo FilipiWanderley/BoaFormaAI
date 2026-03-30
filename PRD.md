@@ -49,7 +49,7 @@
 
 **Checklist:**
 - [x] Criar endpoint `GET /dashboard`
-- [ ] Retornar treino do dia
+- [x] Retornar treino do dia
 - [x] Retornar progresso
 - [x] Criar tela frontend
 
@@ -79,7 +79,7 @@
 
 **Checklist:**
 - [x] Criar lógica de feedback
-- [ ] Ajustar prompt com histórico
+- [x] Ajustar prompt com histórico
 - [x] Regerar treino com base no feedback
 
 ---

@@ -93,6 +93,7 @@ def _build_user_prompt(
     user: User,
     exercises: List[Exercise],
     request: WorkoutGenerateRequest,
+    history_context: Optional[str] = None,
 ) -> str:
     goal_params = _GOAL_PARAMS.get(
         user.goal.lower(),
@@ -126,6 +127,10 @@ PARÂMETROS DO TREINO
 {focus_hint}
 Parâmetros de volume para o objetivo "{_sanitize(user.goal)}": {goal_params}
 {feedback_hint}
+
+HISTÓRICO RECENTE
+-----------------
+{_sanitize(history_context, max_len=400)}
 
 EXERCÍCIOS DISPONÍVEIS (use APENAS estes — copie o ID exato)
 -------------------------------------------------------------
@@ -187,13 +192,14 @@ def call_groq_for_workout(
     user: User,
     exercises: List[Exercise],
     request: WorkoutGenerateRequest,
+    history_context: Optional[str] = None,
 ) -> _LLMWorkout:
     """
     Calls Groq and returns a validated _LLMWorkout.
     Raises HTTPException on any LLM or parsing failure.
     """
     client = _get_client()
-    user_prompt = _build_user_prompt(user, exercises, request)
+    user_prompt = _build_user_prompt(user, exercises, request, history_context)
     valid_ids = {ex.id for ex in exercises}
 
     try:

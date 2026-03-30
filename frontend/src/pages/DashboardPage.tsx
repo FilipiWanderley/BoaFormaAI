@@ -43,7 +43,8 @@ export function DashboardPage() {
   )
   if (isError || !data) return <p className="text-white/40">Erro ao carregar dashboard.</p>
 
-  const { user, stats, last_workout } = data
+  const { user, stats, last_workout, today_workout } = data
+  const workoutOfDay = today_workout ?? last_workout
   const days    = getWeekDays()
   const kcal    = stats.total_workouts_completed * 280
   const km      = (stats.total_workouts_completed * 1.8).toFixed(1)
@@ -142,7 +143,7 @@ export function DashboardPage() {
         {/* Last workout */}
         <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <p className="text-[12px] font-medium text-white/40 uppercase tracking-wider">Último Treino</p>
+            <p className="text-[12px] font-medium text-white/40 uppercase tracking-wider">Treino do Dia</p>
             <button
               onClick={() => navigate('/workout')}
               className="flex items-center gap-1 text-[12px] text-white/40 hover:text-white transition-colors"
@@ -151,7 +152,7 @@ export function DashboardPage() {
             </button>
           </div>
 
-          {last_workout ? (
+          {workoutOfDay ? (
             <button
               onClick={() => navigate('/workout')}
               className="flex items-start gap-4 text-left group mt-4"
@@ -161,13 +162,13 @@ export function DashboardPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-medium text-white capitalize group-hover:text-white/80 transition-colors truncate">
-                  {last_workout.workout_name}
+                  {workoutOfDay.workout_name}
                 </p>
                 <p className="text-[12px] text-white/40 mt-1">
-                  {last_workout.estimated_duration_minutes} min
+                  {workoutOfDay.estimated_duration_minutes} min
                 </p>
                 <p className="text-[12px] text-white/30 mt-0.5 line-clamp-1">
-                  {last_workout.focus}
+                  {workoutOfDay.focus}
                 </p>
               </div>
               <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white/50 transition-colors mt-0.5 shrink-0" />
