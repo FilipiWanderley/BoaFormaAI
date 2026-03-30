@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import Base, engine
+from app.lifecycle import run_db_migrations
 from app.models import ChatMessage, Exercise, History, User, Workout, WorkoutExercise  # noqa: F401
 from app.routers import (
     auth_router,
@@ -12,8 +12,6 @@ from app.routers import (
     users_router,
     workout_router,
 )
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Academia Boa Forma AI",
@@ -37,6 +35,11 @@ app.include_router(workout_router)
 app.include_router(history_router)
 app.include_router(dashboard_router)
 app.include_router(chat_router)
+
+
+@app.on_event("startup")
+def startup() -> None:
+    run_db_migrations()
 
 
 @app.get("/health", tags=["health"])
