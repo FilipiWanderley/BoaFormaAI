@@ -315,7 +315,7 @@ IA monta séries, reps e descanso usando esses exercícios
 - [x] Integrar filtro com geração de treino
 - [x] Garantir que IA usa apenas exercícios da base
 - [x] Adicionar campo de mídia (URL de imagem/GIF)
-- [ ] Testar exibição no frontend
+- [x] Testar exibição no frontend
 
 ---
 
@@ -437,7 +437,7 @@ O sistema deve validar que:
 - [x] Atualizar prompt da IA para usar exercícios da base
 - [x] Validar saída da IA (nenhum exercício inventado)
 - [x] Adicionar campo de mídia (image_url já presente)
-- [ ] Testar exibição no frontend
+- [x] Testar exibição no frontend
 
 ### Evolução futura
 

@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Clock, Play, Flame, MapPin, Zap,
-  CheckCircle, Dumbbell, ArrowLeft, ArrowRight, ChevronDown,
+  CheckCircle, Dumbbell, ArrowLeft, ArrowRight, ChevronDown, ImageOff,
 } from 'lucide-react'
 import { workoutService } from '../services/workout.service'
 import { historyService } from '../services/history.service'
+import { exercisesService } from '../services/exercises.service'
 import { RingProgress } from '../components/ui/RingProgress'
 import { Spinner } from '../components/ui/Spinner'
 import { formatDate } from '../lib/utils'
-import type { FeedbackValue, WorkoutGenerateRequest, WorkoutResponse, WorkoutSummary } from '../types'
+import type { ExerciseResponse, FeedbackValue, WorkoutGenerateRequest, WorkoutResponse, WorkoutSummary } from '../types'
 
 const MUSCLE_GROUPS = ['peito','costas','quadriceps','posterior','gluteos','ombros','biceps','triceps','abdomen','panturrilha']
 const EQUIPMENT     = ['barra','haltere','maquina','cabo','peso_corporal','kettlebell','elastico']
@@ -199,6 +200,18 @@ export function WorkoutPage() {
     queryFn:  workoutService.listMine,
   })
 
+  const { data: compatibleExercises = [], isLoading: loadingExercises } = useQuery<ExerciseResponse[]>({
+    queryKey: ['exercises-compatible', muscleGroups, equipment],
+    queryFn: () => (
+      muscleGroups.length || equipment.length
+        ? exercisesService.list({
+            muscle_group: muscleGroups.length ? muscleGroups : undefined,
+            equipment: equipment.length ? equipment : undefined,
+          })
+        : exercisesService.listCompatible()
+    ),
+  })
+
   const { data: activeWorkout, isLoading: loadingActive } = useQuery<WorkoutResponse>({
     queryKey: ['workout', activeId],
     queryFn:  () => workoutService.getOne(activeId!),
@@ -356,6 +369,60 @@ export function WorkoutPage() {
               </button>
             ))
           )}
+
+          <div className="mt-2">
+            <p className="text-[12px] font-medium text-white/40 uppercase tracking-wider mb-3">
+              Biblioteca Compatível
+              <span className="normal-case text-white/25 ml-1">
+                ({compatibleExercises.length})
+              </span>
+            </p>
+
+            {loadingExercises ? (
+              <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-6">
+                <Spinner label="Carregando exercícios..." />
+              </div>
+            ) : compatibleExercises.length === 0 ? (
+              <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-6 text-center">
+                <p className="text-[13px] text-white/35">Nenhum exercício compatível com os filtros atuais.</p>
+              </div>
+            ) : (
+              <div className="grid gap-2 max-h-[420px] overflow-y-auto pr-1">
+                {compatibleExercises.slice(0, 20).map((exercise) => (
+                  <div
+                    key={exercise.id}
+                    className="bg-surface-2 border border-white/[0.07] hover:border-white/[0.12] rounded-xl p-3 transition-colors"
+                  >
+                    <div className="flex gap-3">
+                      <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-surface-3 border border-white/[0.08]">
+                        {exercise.image_url ? (
+                          <img
+                            src={exercise.image_url}
+                            alt={exercise.name}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <ImageOff className="w-4 h-4 text-white/25" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-medium text-white truncate">{exercise.name}</p>
+                        <p className="text-[11px] text-white/35 mt-0.5 capitalize">
+                          {exercise.muscle_group} · {exercise.equipment}
+                        </p>
+                        <p className="text-[11px] text-white/30 mt-1 capitalize">
+                          Nível: {exercise.level}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
