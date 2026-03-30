@@ -220,10 +220,10 @@ frontend/
 ## 12. Testes
 
 **Checklist:**
-- [ ] Testar endpoints
-- [ ] Testar fluxo completo
-- [ ] Testar IA
-- [ ] Testar erros
+- [x] Testar endpoints
+- [x] Testar fluxo completo
+- [x] Testar IA
+- [x] Testar erros
 
 ---
 
