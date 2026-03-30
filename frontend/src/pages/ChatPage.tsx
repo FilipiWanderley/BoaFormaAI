@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Send, Trash2, Bot, ArrowUpRight } from 'lucide-react'
 import { chatService } from '../services/chat.service'
+import { EmptyState } from '../components/ui/EmptyState'
+import { PageHeader } from '../components/ui/PageHeader'
 import { Spinner } from '../components/ui/Spinner'
 import { formatDateTime } from '../lib/utils'
 import { useAuthStore } from '../store/authStore'
@@ -74,22 +76,21 @@ export function ChatPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-6rem)]">
 
-      {/* Header */}
-      <div className="flex items-end justify-between mb-6 shrink-0">
-        <div>
-          <p className="text-[13px] text-white/40 mb-1">Seu coach virtual</p>
-          <h1 className="text-[28px] font-semibold text-white tracking-tight">Chat IA</h1>
-        </div>
-        {messages.length > 0 && (
-          <button
-            onClick={() => clearMutation.mutate()}
-            disabled={clearMutation.isPending}
-            className="flex items-center gap-1.5 text-[12px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-40"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            Limpar
-          </button>
-        )}
+      <div className="mb-6 shrink-0">
+        <PageHeader
+          eyebrow="Seu coach virtual"
+          title="Chat IA"
+          right={messages.length > 0 ? (
+            <button
+              onClick={() => clearMutation.mutate()}
+              disabled={clearMutation.isPending}
+              className="flex items-center gap-1.5 text-[12px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-40"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Limpar
+            </button>
+          ) : null}
+        />
       </div>
 
       {/* Layout */}
@@ -102,17 +103,11 @@ export function ChatPage() {
             {isLoading && <div className="flex h-32 items-center justify-center"><Spinner /></div>}
 
             {!isLoading && messages.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
-                <Bot className="w-8 h-8 text-white/15" />
-                <div>
-                  <p className="text-[14px] font-medium text-white/50">
-                    Olá{firstName ? `, ${firstName}` : ''}
-                  </p>
-                  <p className="text-[13px] text-white/30 mt-1">
-                    Pergunte sobre treinos, nutrição ou qualquer dúvida de fitness.
-                  </p>
-                </div>
-              </div>
+              <EmptyState
+                icon={<Bot className="w-8 h-8 text-white/15" />}
+                title={`Olá${firstName ? `, ${firstName}` : ''}`}
+                description="Pergunte sobre treinos, nutrição ou qualquer dúvida de fitness."
+              />
             )}
 
             {messages.map((msg) => <MessageBubble key={msg.id} msg={msg} />)}

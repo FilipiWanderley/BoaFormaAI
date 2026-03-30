@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { CheckCircle, Calendar } from 'lucide-react'
 import { historyService } from '../services/history.service'
 import { Spinner } from '../components/ui/Spinner'
+import { PageHeader } from '../components/ui/PageHeader'
+import { EmptyState } from '../components/ui/EmptyState'
 import { formatDate, formatDateTime } from '../lib/utils'
 
 export function HistoryPage() {
@@ -21,17 +23,15 @@ export function HistoryPage() {
     <div className="flex flex-col gap-7 pb-6">
 
       {/* Header */}
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="text-[13px] text-white/40 mb-1">Seu progresso</p>
-          <h1 className="text-[28px] font-semibold text-white tracking-tight">Histórico</h1>
-        </div>
-        {history.length > 0 && (
+      <PageHeader
+        eyebrow="Seu progresso"
+        title="Histórico"
+        right={history.length > 0 ? (
           <p className="text-[13px] text-white/30">
             <span className="text-white/60">{history.length}</span> treino{history.length !== 1 ? 's' : ''}
           </p>
-        )}
-      </div>
+        ) : null}
+      />
 
       {isLoading && (
         <div className="flex h-48 items-center justify-center">
@@ -40,13 +40,11 @@ export function HistoryPage() {
       )}
 
       {!isLoading && history.length === 0 && (
-        <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-14 flex flex-col items-center gap-4 text-center">
-          <Calendar className="w-8 h-8 text-white/15" />
-          <div>
-            <p className="text-[15px] font-medium text-white/60">Nenhum treino concluído</p>
-            <p className="text-[13px] text-white/30 mt-1">Complete um treino para ver seu histórico aqui.</p>
-          </div>
-        </div>
+        <EmptyState
+          icon={<Calendar className="w-8 h-8 text-white/15" />}
+          title="Nenhum treino concluído"
+          description="Complete um treino para ver seu histórico aqui."
+        />
       )}
 
       {/* Stats row */}
