@@ -28,7 +28,7 @@ export function LoginPage() {
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
       const token = await authService.login(data.email, data.password)
-      const user  = await authService.me()
+      const user  = await authService.me(token.access_token)
       return { token, user }
     },
     onSuccess: ({ token, user }) => {

@@ -25,62 +25,62 @@
 **Dados do usuário:** nome, idade, peso, altura, objetivo, nível, restrições
 
 **Checklist:**
-- [ ] Criar tabela `users`
-- [ ] Implementar cadastro (`POST /users`)
-- [ ] Implementar login (`POST /auth/login`)
-- [ ] Hash de senha (bcrypt)
-- [ ] JWT
-- [ ] Middleware de autenticação
+- [x] Criar tabela `users`
+- [x] Implementar cadastro (`POST /users`)
+- [x] Implementar login (`POST /auth/login`)
+- [x] Hash de senha (bcrypt)
+- [x] JWT
+- [x] Middleware de autenticação
 
 ---
 
 ### 3.2 Geração de Treino com IA
 
 **Checklist:**
-- [ ] Criar endpoint `POST /workout/generate`
-- [ ] Criar prompt base
-- [ ] Integrar Groq
-- [ ] Estruturar resposta (JSON)
-- [ ] Salvar treino no banco
+- [x] Criar endpoint `POST /workout/generate`
+- [x] Criar prompt base
+- [x] Integrar Groq
+- [x] Estruturar resposta (JSON)
+- [x] Salvar treino no banco
 
 ---
 
 ### 3.3 Dashboard
 
 **Checklist:**
-- [ ] Criar endpoint `GET /dashboard`
+- [x] Criar endpoint `GET /dashboard`
 - [ ] Retornar treino do dia
-- [ ] Retornar progresso
-- [ ] Criar tela frontend
+- [x] Retornar progresso
+- [x] Criar tela frontend
 
 ---
 
 ### 3.4 Histórico
 
 **Checklist:**
-- [ ] Criar tabela `history`
+- [x] Criar tabela `history`
 - [ ] Criar endpoint `GET /history/{user_id}`
-- [ ] Criar endpoint `POST /history`
-- [ ] Conectar com treino
+- [x] Criar endpoint `POST /history`
+- [x] Conectar com treino
 
 ---
 
 ### 3.5 Chat com IA
 
 **Checklist:**
-- [ ] Criar endpoint `POST /chat`
-- [ ] Criar memória básica
-- [ ] Integrar com LLM
-- [ ] Salvar histórico
+- [x] Criar endpoint `POST /chat`
+- [x] Criar memória básica
+- [x] Integrar com LLM
+- [x] Salvar histórico
 
 ---
 
 ### 3.6 Adaptação Inteligente
 
 **Checklist:**
-- [ ] Criar lógica de feedback
+- [x] Criar lógica de feedback
 - [ ] Ajustar prompt com histórico
-- [ ] Regerar treino com base no feedback
+- [x] Regerar treino com base no feedback
 
 ---
 
@@ -106,10 +106,10 @@ frontend/
 ```
 
 **Checklist:**
-- [ ] Criar estrutura de pastas backend
-- [ ] Criar estrutura frontend
-- [ ] Definir padrões de código
-- [ ] Separar responsabilidades
+- [x] Criar estrutura de pastas backend
+- [x] Criar estrutura frontend
+- [x] Definir padrões de código
+- [x] Separar responsabilidades
 
 ---
 
@@ -127,10 +127,10 @@ frontend/
 | GET | `/exercises/{id}` | Detalhes de um exercício |
 
 **Checklist:**
-- [ ] Definir schemas (Pydantic)
-- [ ] Implementar validação
+- [x] Definir schemas (Pydantic)
+- [x] Implementar validação
 - [ ] Testar endpoints no Swagger
-- [ ] Criar tratamento de erro
+- [x] Criar tratamento de erro
 
 ---
 
@@ -141,12 +141,12 @@ frontend/
 - **Arquivo principal:** `llm_service.py`
 
 **Checklist:**
-- [ ] Criar `llm_service.py`
-- [ ] Criar prompt base
-- [ ] Criar prompt com contexto
+- [x] Criar `llm_service.py`
+- [x] Criar prompt base
+- [x] Criar prompt com contexto
 - [ ] Testar respostas
 - [ ] Ajustar qualidade
-- [ ] Evitar prompt injection básico
+- [x] Evitar prompt injection básico
 
 ---
 
@@ -156,10 +156,10 @@ frontend/
 - **Tabelas:** `users`, `workouts`, `history`, `exercises`, `workout_exercises`
 
 **Checklist:**
-- [ ] Criar SQLite
-- [ ] Criar models
+- [x] Criar SQLite
+- [x] Criar models
 - [ ] Criar migrations (opcional)
-- [ ] Testar persistência
+- [x] Testar persistência
 
 ---
 
@@ -170,11 +170,11 @@ frontend/
 - Validação de inputs
 
 **Checklist:**
-- [ ] Implementar bcrypt
-- [ ] Implementar JWT
-- [ ] Proteger rotas
-- [ ] Validar dados de entrada
-- [ ] Evitar prompt injection básico
+- [x] Implementar bcrypt
+- [x] Implementar JWT
+- [x] Proteger rotas
+- [x] Validar dados de entrada
+- [x] Evitar prompt injection básico
 
 ---
 
@@ -188,10 +188,10 @@ frontend/
 - Perfil
 
 **Checklist:**
-- [ ] Criar layout base
-- [ ] Criar navegação
-- [ ] Integrar com API
-- [ ] Criar estados (loading/error)
+- [x] Criar layout base
+- [x] Criar navegação
+- [x] Integrar com API
+- [x] Criar estados (loading/error)
 - [ ] Testar fluxo completo
 
 ---
@@ -199,12 +199,12 @@ frontend/
 ## 10. UI (Figma)
 
 **Checklist:**
-- [ ] Subir app funcional
+- [x] Subir app funcional
 - [ ] Validar todas as telas
 - [ ] Importar referências do Figma
-- [ ] Ajustar layout
+- [x] Ajustar layout
 - [ ] Criar design system
-- [ ] Padronizar componentes
+- [x] Padronizar componentes
 
 ---
 
@@ -230,29 +230,29 @@ frontend/
 ## 13. Roadmap de Execução
 
 ### Fase 1 — Base
-- [ ] Estrutura backend
-- [ ] Banco de dados
-- [ ] Autenticação
+- [x] Estrutura backend
+- [x] Banco de dados
+- [x] Autenticação
 
 ### Fase 1.5 — Exercise Library
-- [ ] Escolher fonte de dados (API ou dataset)
-- [ ] Criar tabelas `exercises` e `workout_exercises`
-- [ ] Importar dados iniciais
-- [ ] Criar service de exercícios com filtros
+- [x] Escolher fonte de dados (API ou dataset)
+- [x] Criar tabelas `exercises` e `workout_exercises`
+- [x] Importar dados iniciais
+- [x] Criar service de exercícios com filtros
 
 ### Fase 2 — IA
-- [ ] Geração de treino
-- [ ] Integração LLM (Groq)
-- [ ] IA seleciona da base, não inventa exercícios
+- [x] Geração de treino
+- [x] Integração LLM (Groq)
+- [x] IA seleciona da base, não inventa exercícios
 
 ### Fase 3 — Funcionalidade
-- [ ] Dashboard
-- [ ] Histórico
-- [ ] Chat
+- [x] Dashboard
+- [x] Histórico
+- [x] Chat
 
 ### Fase 4 — Frontend
-- [ ] Telas
-- [ ] Integração com API
+- [x] Telas
+- [x] Integração com API
 
 ### Fase 5 — UI
 - [ ] Aplicar Figma
@@ -307,14 +307,14 @@ IA monta séries, reps e descanso usando esses exercícios
 - `workout_exercises` — relacionamento treino ↔ exercícios selecionados
 
 **Checklist:**
-- [ ] Escolher fonte de dados (API ou dataset)
-- [ ] Criar tabela `exercises`
-- [ ] Criar tabela `workout_exercises`
-- [ ] Importar dados iniciais
-- [ ] Criar service com filtros por músculo, equipamento e nível
-- [ ] Integrar filtro com geração de treino
-- [ ] Garantir que IA usa apenas exercícios da base
-- [ ] Adicionar campo de mídia (URL de imagem/GIF)
+- [x] Escolher fonte de dados (API ou dataset)
+- [x] Criar tabela `exercises`
+- [x] Criar tabela `workout_exercises`
+- [x] Importar dados iniciais
+- [x] Criar service com filtros por músculo, equipamento e nível
+- [x] Integrar filtro com geração de treino
+- [x] Garantir que IA usa apenas exercícios da base
+- [x] Adicionar campo de mídia (URL de imagem/GIF)
 - [ ] Testar exibição no frontend
 
 ---
@@ -426,17 +426,17 @@ O sistema deve validar que:
 - [x] Criar tabela `exercises`
 - [x] Criar tabela `workout_exercises`
 - [x] Criar script de importação (`scripts/seed_exercises.py`)
-- [x] Popular banco com dados iniciais (59 exercícios — base MVP)
+- [x] Popular banco com dados iniciais (200 exercícios — base MVP)
 - [x] Criar service de exercícios (`services/exercise.py`)
 - [x] Implementar filtro por músculo
 - [x] Implementar filtro por equipamento
 - [x] Implementar filtro por nível (com progressão: avancado acessa todos)
 - [x] Implementar filtro por restrições físicas (keyword matching)
-- [ ] Expandir base para 200+ exercícios
-- [ ] Integrar com geração de treino (Fase 2)
-- [ ] Atualizar prompt da IA para usar exercícios da base
-- [ ] Validar saída da IA (nenhum exercício inventado)
-- [ ] Adicionar campo de mídia (image_url já presente)
+- [x] Expandir base para 200+ exercícios
+- [x] Integrar com geração de treino (Fase 2)
+- [x] Atualizar prompt da IA para usar exercícios da base
+- [x] Validar saída da IA (nenhum exercício inventado)
+- [x] Adicionar campo de mídia (image_url já presente)
 - [ ] Testar exibição no frontend
 
 ### Evolução futura
@@ -450,10 +450,10 @@ O sistema deve validar que:
 
 ## Checklist Final (Nível Portfólio)
 
-- [ ] App funcionando ponta a ponta
-- [ ] IA integrada
-- [ ] Autenticação
-- [ ] Banco persistente
-- [ ] UI moderna
-- [ ] README profissional
+- [x] App funcionando ponta a ponta
+- [x] IA integrada
+- [x] Autenticação
+- [x] Banco persistente
+- [x] UI moderna
+- [x] README profissional
 - [ ] Deploy (opcional)

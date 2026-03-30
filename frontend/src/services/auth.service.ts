@@ -12,8 +12,10 @@ export const authService = {
     return data
   },
 
-  me: async (): Promise<UserResponse> => {
-    const { data } = await api.get<UserResponse>('/users/me')
+  me: async (token?: string): Promise<UserResponse> => {
+    const { data } = await api.get<UserResponse>('/users/me', {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    })
     return data
   },
 
