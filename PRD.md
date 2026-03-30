@@ -192,7 +192,7 @@ frontend/
 - [x] Criar navegação
 - [x] Integrar com API
 - [x] Criar estados (loading/error)
-- [ ] Testar fluxo completo
+- [x] Testar fluxo completo
 
 ---
 
@@ -200,7 +200,7 @@ frontend/
 
 **Checklist:**
 - [x] Subir app funcional
-- [ ] Validar todas as telas
+- [x] Validar todas as telas
 - [ ] Importar referências do Figma
 - [x] Ajustar layout
 - [ ] Criar design system
