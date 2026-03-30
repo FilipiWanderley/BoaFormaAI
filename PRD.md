@@ -212,7 +212,7 @@ frontend/
 
 **Checklist:**
 - [x] Dockerizar backend
-- [ ] Deploy simples (Render/Vercel)
+- [x] Deploy simples (Render/Vercel)
 - [x] Configurar variáveis de ambiente
 
 ---
