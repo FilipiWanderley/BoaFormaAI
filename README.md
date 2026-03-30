@@ -16,7 +16,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 ### Backend (API + domínio)
 
 - Estrutura modular por camadas (`routers`, `services`, `schemas`, `models`).
-- Criação automática de tabelas via SQLAlchemy (`Base.metadata.create_all`).
+- Banco versionado com Alembic (migration inicial + upgrade automático no startup da API).
 - Banco SQLite com entidades principais:
   - `users`
   - `workouts`
@@ -40,6 +40,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Feedback usado como pista de intensidade em gerações futuras
 - Dashboard:
   - Retorno de dados do usuário
+  - Treino do dia (`today_workout`)
   - Último treino gerado
   - Estatísticas de treinos gerados/concluídos
   - Cálculo de streak
@@ -55,6 +56,8 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Listagem geral com filtros
   - Listagem de exercícios compatíveis com nível/restrições
   - Busca por ID
+- Histórico por usuário:
+  - Endpoint `GET /history/{user_id}` com controle de acesso (somente o próprio usuário)
 - Health check (`/health`) para monitoramento básico.
 
 ### Frontend (Web App)
@@ -74,6 +77,8 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Histórico
   - Perfil
 - Layout base com sidebar e componentes reutilizáveis de UI.
+- Biblioteca compatível de exercícios integrada na tela de treino (com imagem/fallback e filtros ativos).
+- Base URL da API configurável por ambiente (`VITE_API_BASE_URL`).
 - Estilização com Tailwind CSS + design escuro moderno.
 - Build de produção funcional com Vite.
 
@@ -92,6 +97,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - **Integração LLM:** Groq SDK
 - **Variáveis de ambiente:** python-dotenv
 - **Banco de dados:** SQLite
+- **Migrations:** Alembic
 
 Dependências principais (arquivo `backend/requirements.txt`):
 
@@ -105,6 +111,7 @@ Dependências principais (arquivo `backend/requirements.txt`):
 - python-multipart==0.0.20
 - groq==0.13.1
 - python-dotenv==1.0.1
+- alembic==1.14.1
 
 ### Frontend
 
@@ -139,6 +146,8 @@ Dependências principais (arquivo `frontend/package.json`):
 .
 ├── PRD.md
 ├── README.md
+├── docker-compose.yml
+├── render.yaml
 ├── backend/
 │   ├── app/
 │   │   ├── models/
@@ -151,6 +160,10 @@ Dependências principais (arquivo `frontend/package.json`):
 │   │   └── main.py
 │   ├── scripts/
 │   ├── requirements.txt
+│   ├── alembic.ini
+│   ├── migrations/
+│   ├── Dockerfile
+│   └── .dockerignore
 │   └── .env.example
 └── frontend/
     ├── src/
@@ -190,6 +203,7 @@ Dependências principais (arquivo `frontend/package.json`):
 
 - `POST /history` — marcar treino como concluído
 - `GET /history/me` — histórico do usuário
+- `GET /history/{user_id}` — histórico por usuário autenticado (com autorização)
 - `GET /dashboard` — visão consolidada
 
 ### Chat IA
@@ -209,6 +223,7 @@ Dependências principais (arquivo `frontend/package.json`):
 ```bash
 cd backend
 ./.venv/bin/pip install -r requirements.txt
+./.venv/bin/alembic upgrade head
 ./.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -233,25 +248,52 @@ App web: `http://localhost:3000`
 API: `http://localhost:8000`  
 Docs Swagger: `http://localhost:8000/docs`
 
+## Deploy e execução com containers
+
+### Backend com Docker
+
+```bash
+docker build -t boaforma-backend:local ./backend
+docker run --rm -p 8000:8000 --env-file backend/.env boaforma-backend:local
+```
+
+### Execução com Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Arquivo de configuração:
+
+- `docker-compose.yml` (execução local)
+- `render.yaml` (deploy simples em Render: backend + frontend)
+
 ## Qualidade e validações já executadas
 
 - Instalação de dependências frontend concluída com sucesso.
 - Instalação de dependências backend concluída com sucesso.
 - Build do frontend validado (`npm run build`).
 - Validação de sintaxe Python backend (`python -m compileall app`).
+- Suíte de testes backend validada (`python -m unittest discover -s tests -v`) com cenários de auth, treino, histórico, chat, erros de API e camada LLM.
 - Health check da API validado com retorno `{"status":"ok"}`.
+- Build e execução do backend em container Docker validados.
 
 ## Commits já realizados no repositório
 
 - `753fc59` — docs: adiciona PRD do projeto
 - `96a1aea` — feat(backend): implementa API FastAPI com auth, treino IA, chat e dashboard
 - `9d3e7f2` — feat(frontend): adiciona app React com telas e integração da API
+- `e551445` — chore(db): adiciona alembic e migration inicial
+- `24ee327` — feat(history): adiciona endpoint /history/{user_id} com controle de acesso
+- `99cb5d7` — feat(deploy): prepara render e baseURL configurável no frontend
+- `f74a6be` — refactor(db): executa migrations no startup da API
+- `92c9d74` — feat(frontend): exibe biblioteca de exercícios compatíveis na tela de treino
+- `a7eadc6` — refactor(frontend): padroniza header e estado vazio em páginas
+- `8e69c44` — docs(prd): marca validação de telas e fluxo frontend
 
 ## Pendências principais (próximos passos)
 
-- Expandir base de exercícios para 200+ itens.
-- Criar suíte de testes automatizados (backend e frontend).
-- Adicionar migrações de banco (ex.: Alembic).
-- Definir pipeline de lint/typecheck/test no CI.
-- Hardening para produção (CORS por ambiente, deploy e observabilidade).
-
+- Testar endpoints de forma formal no Swagger.
+- Rodar bateria de testes manuais de qualidade de resposta da IA e calibrar prompt.
+- Aplicar referências de Figma e consolidar design system final.
+- Definir pipeline de CI com lint/typecheck/test automatizados.
