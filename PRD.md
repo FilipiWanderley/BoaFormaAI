@@ -59,7 +59,7 @@
 
 **Checklist:**
 - [x] Criar tabela `history`
-- [ ] Criar endpoint `GET /history/{user_id}`
+- [x] Criar endpoint `GET /history/{user_id}`
 - [x] Criar endpoint `POST /history`
 - [x] Conectar com treino
 

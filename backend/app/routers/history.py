@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -30,4 +30,20 @@ def get_my_history(
     current_user: User = Depends(get_current_user),
 ) -> List[HistoryResponse]:
     """Returns the authenticated user's completed workout history, most recent first."""
+    return list_history(db, current_user.id, limit=limit, offset=offset)
+
+
+@router.get("/{user_id}", response_model=List[HistoryResponse])
+def get_history_by_user_id(
+    user_id: int,
+    limit: int = Query(default=30, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> List[HistoryResponse]:
+    if user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Você só pode acessar seu próprio histórico.",
+        )
     return list_history(db, current_user.id, limit=limit, offset=offset)

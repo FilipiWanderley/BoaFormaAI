@@ -141,6 +141,20 @@ class ApiWorkoutHistoryFlowTests(unittest.TestCase):
         self.assertEqual(workout_response.status_code, 403)
         self.assertEqual(history_response.status_code, 403)
 
+    def test_history_by_user_id_allows_owner_and_blocks_other_users(self) -> None:
+        token = self._register_and_login()
+        headers = self._auth_headers(token)
+
+        me_response = self.client.get("/users/me", headers=headers)
+        self.assertEqual(me_response.status_code, 200)
+        current_user_id = me_response.json()["id"]
+
+        own_history_response = self.client.get(f"/history/{current_user_id}", headers=headers)
+        self.assertEqual(own_history_response.status_code, 200)
+
+        other_history_response = self.client.get(f"/history/{current_user_id + 999}", headers=headers)
+        self.assertEqual(other_history_response.status_code, 403)
+
 
 if __name__ == "__main__":
     unittest.main()
