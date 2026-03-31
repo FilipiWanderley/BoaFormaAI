@@ -49,11 +49,11 @@ export function LoginPage() {
         />
 
         {/* Logo */}
-        <div className="relative">
+        <div className="relative flex items-center">
           <img
             src="/Logo_Branca.svg"
             alt="BoaForma AI"
-            className="h-8 w-auto"
+            className="h-20 w-auto max-w-[380px] object-contain"
             loading="eager"
           />
         </div>
@@ -89,11 +89,11 @@ export function LoginPage() {
         <div className="w-full max-w-[380px]">
 
           {/* Mobile logo */}
-          <div className="lg:hidden mb-10">
+          <div className="lg:hidden mb-8 flex justify-center">
             <img
               src="/Logo_Branca.svg"
               alt="BoaForma AI"
-              className="h-8 w-auto"
+              className="h-16 w-auto max-w-[320px] object-contain"
               loading="eager"
             />
           </div>
