@@ -27,8 +27,10 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Autenticação completa:
   - Cadastro de usuário
   - Login com JWT
+  - Refresh token com rotação e revogação
   - Hash de senha com bcrypt
   - Middleware de proteção de rotas com bearer token
+  - Logout com invalidação de sessão de refresh token
 - Geração de treino com IA:
   - Integração com Groq
   - Prompt estruturado com regras de segurança
@@ -61,6 +63,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Histórico por usuário:
   - Endpoint `GET /history/{user_id}` com controle de acesso (somente o próprio usuário)
 - Health check (`/health`) para monitoramento básico.
+- Rate limit em endpoints críticos (`/auth/login`, `/chat`, `/workout/generate`).
 
 ### Frontend (Web App)
 
@@ -190,6 +193,8 @@ Dependências principais (arquivo `frontend/package.json`):
 
 - `POST /users` — cadastro
 - `POST /auth/login` — login
+- `POST /auth/refresh` — renovar sessão com refresh token
+- `POST /auth/logout` — invalidar refresh token
 - `GET /users/me` — dados do usuário autenticado
 - `PATCH /users/me` — atualização de perfil
 
@@ -241,7 +246,18 @@ Criar `.env` baseado no `.env.example` com:
 - `SECRET_KEY`
 - `ALGORITHM`
 - `ACCESS_TOKEN_EXPIRE_MINUTES`
+- `REFRESH_TOKEN_EXPIRE_MINUTES`
 - `DATABASE_URL`
+- `DB_POOL_SIZE`
+- `DB_MAX_OVERFLOW`
+- `CORS_ALLOWED_ORIGINS`
+- `CORS_ALLOWED_ORIGIN_REGEX`
+- `LOGIN_RATE_LIMIT`
+- `LOGIN_RATE_WINDOW_SECONDS`
+- `CHAT_RATE_LIMIT`
+- `CHAT_RATE_WINDOW_SECONDS`
+- `WORKOUT_RATE_LIMIT`
+- `WORKOUT_RATE_WINDOW_SECONDS`
 - `GROQ_API_KEY`
 - `GROQ_MODEL`
 

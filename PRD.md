@@ -544,3 +544,407 @@ A interface frontend deve ser construída com princípios de responsividade desd
 - Permitir adicionar à tela inicial do celular
 - Melhorar experiência semelhante a app nativo
 - Avaliar publicação futura em lojas móveis
+
+---
+
+## 17. Arquitetura de Produção (Production Architecture)
+
+### Descrição
+
+Definição da arquitetura necessária para suportar uso real por alunos da academia, garantindo escalabilidade, segurança e disponibilidade.
+
+### Objetivos
+
+- Suportar múltiplos usuários simultâneos
+- Garantir alta disponibilidade
+- Separar responsabilidades (frontend, backend, banco)
+- Preparar base para crescimento
+
+### Arquitetura proposta
+
+```text
+Usuário (web/mobile browser)
+        ↓
+Cloudflare (CDN + WAF + DNS)
+        ↓
+Frontend (Cloudflare Pages / Vercel)
+        ↓
+Backend API (Render / Railway / Fly.io)
+        ↓
+Banco de Dados (PostgreSQL gerenciado)
+        ↓
+Serviço de IA (Groq)
+```
+
+### Componentes
+
+- Frontend: aplicação web responsiva
+- Backend: API REST com autenticação e lógica de negócio
+- Banco: PostgreSQL (produção)
+- CDN/WAF: Cloudflare
+- LLM: Groq
+
+### Regras obrigatórias
+
+- ❌ Não usar SQLite em produção
+- ✅ Separar frontend e backend
+- ✅ Usar banco gerenciado (Postgres)
+- ✅ Todas as comunicações via HTTPS
+
+### Checklist de implementação
+
+- [ ] Definir provedor final de frontend e backend
+- [ ] Provisionar Cloudflare (DNS + WAF + SSL)
+- [ ] Provisionar Postgres gerenciado
+- [ ] Configurar variáveis de ambiente de produção
+- [ ] Validar arquitetura ponta a ponta em ambiente produtivo
+
+---
+
+## 18. Segurança (Production-Grade Security)
+
+### Descrição
+
+Requisitos para garantir segurança de dados e proteção contra ataques.
+
+### Objetivos
+
+- Proteger dados dos alunos
+- Evitar acesso não autorizado
+- Mitigar ataques comuns (brute force, injection, etc.)
+
+### Autenticação
+
+- JWT com expiração curta
+- Refresh token
+- Hash de senha com bcrypt
+- Logout com invalidação de sessão
+
+### Proteções obrigatórias
+
+- Rate limit em:
+  - login
+  - chat
+  - geração de treino
+- Bloqueio após tentativas falhas
+- Validação de input (backend)
+- CORS restrito
+- Headers de segurança
+
+### Infra de segurança
+
+- HTTPS obrigatório
+- WAF (Cloudflare)
+- Proteção contra brute force
+- Logs de acesso e auditoria
+
+### IA (segurança)
+
+- Sanitizar input do usuário
+- Limitar contexto
+- Validar output do LLM
+- Evitar prompt injection
+
+### Checklist de implementação
+
+- [x] Implementar refresh token com rotação/revogação
+- [x] Implementar rate limit por endpoint crítico
+- [ ] Implementar lockout temporário por falhas de login
+- [x] Restringir CORS por ambiente/domínio
+- [ ] Adicionar headers de segurança (CSP, X-Frame-Options, etc.)
+- [ ] Estruturar logs de auditoria para eventos sensíveis
+
+---
+
+## 19. Banco de Dados (Produção)
+
+### Descrição
+
+Estratégia de banco para ambiente real.
+
+### Mudanças necessárias
+
+- Migrar de SQLite → PostgreSQL
+
+### Requisitos
+
+- Backup automático diário
+- Possibilidade de restore
+- Índices nas tabelas principais
+- Conexões seguras (SSL)
+
+### Performance
+
+Indexar:
+
+- users
+- workouts
+- history
+
+Boas práticas:
+
+- Evitar queries pesadas sem filtro
+- Paginação em endpoints
+
+### Checklist de implementação
+
+- [x] Configurar `DATABASE_URL` para Postgres em produção
+- [ ] Criar migration com índices estratégicos
+- [ ] Validar SSL no driver/conexão de banco
+- [ ] Configurar política de backup e restore testado
+- [ ] Revisar endpoints para paginação consistente
+
+---
+
+## 20. Escalabilidade e Performance
+
+### Descrição
+
+Garantir que o sistema suporte crescimento de usuários.
+
+### Cenário inicial
+
+- ~1000 alunos cadastrados
+- uso simultâneo moderado
+
+### Estratégias
+
+- CDN para frontend
+- Backend stateless
+- Pool de conexões no banco
+- Cache (futuro)
+
+### Pontos críticos
+
+- Chat com IA (latência)
+- Geração de treino
+- Queries no banco
+
+### Regras
+
+- Timeout nas requisições de IA
+- Retry controlado
+- Fallback em falha de IA
+
+### Checklist de implementação
+
+- [ ] Configurar timeout e retry com política clara no serviço de IA
+- [ ] Configurar pool de conexões para produção
+- [ ] Definir fallback funcional para indisponibilidade do LLM
+- [ ] Medir latência por endpoint crítico
+
+---
+
+## 21. Observabilidade (Logs, Monitoramento e Alertas)
+
+### Descrição
+
+Sistema deve ser monitorado continuamente.
+
+### Requisitos
+
+Logs de:
+
+- login
+- geração de treino
+- erros
+- chat
+
+Operação:
+
+- Monitoramento de uptime
+- Alertas em falhas
+
+### Métricas importantes
+
+- tempo de resposta da API
+- erros por endpoint
+- uso de IA
+- número de usuários ativos
+
+### Checklist de implementação
+
+- [ ] Padronizar logs estruturados (JSON) no backend
+- [ ] Integrar monitoramento de uptime
+- [ ] Definir alertas de erro/latência
+- [ ] Expor métricas mínimas de aplicação
+
+---
+
+## 22. Deploy e Ambientes
+
+### Descrição
+
+Estratégia de deploy e separação de ambientes.
+
+### Ambientes
+
+- Dev
+- Staging
+- Produção
+
+### Regras
+
+- ❌ Não deployar direto em produção
+- ✅ Testar em staging antes
+- ✅ Variáveis de ambiente separadas
+
+### Deploy
+
+- CI/CD automatizado
+- Rollback possível
+- Versionamento
+
+### Checklist de implementação
+
+- [ ] Criar ambiente de staging completo
+- [x] Configurar pipeline CI/CD com gates de qualidade
+- [ ] Definir estratégia de rollback
+- [ ] Separar segredos por ambiente (dev/staging/prod)
+
+---
+
+## 23. Domínio e Acesso Público
+
+### Descrição
+
+Como o sistema será acessado pelos alunos.
+
+### Estrutura
+
+- `app.academia.com` → frontend
+- `api.academia.com` → backend
+
+### Requisitos
+
+- HTTPS obrigatório
+- DNS configurado
+- Certificado SSL ativo
+
+### Acesso
+
+- via navegador (mobile e desktop)
+- sem necessidade de app store
+
+### Checklist de implementação
+
+- [ ] Configurar subdomínios de frontend e backend
+- [ ] Configurar certificados SSL
+- [ ] Validar CORS e cookies/tokens com domínio final
+
+---
+
+## 24. PWA (Evolução futura opcional)
+
+### Descrição
+
+Transformar o sistema em app instalável sem loja.
+
+### Benefícios
+
+- adicionar à tela inicial
+- experiência tipo app
+- offline básico (futuro)
+
+### Checklist de evolução
+
+- [x] Base inicial de manifest e service worker
+- [ ] Estratégia de cache offline robusta
+- [ ] UX de instalação guiada (prompt install)
+
+---
+
+## 25. Testes de Produção
+
+### Tipos
+
+- testes de carga (simular usuários)
+- testes de segurança
+- testes de API
+- testes de fluxo completo
+
+### Checklist de implementação
+
+- [ ] Definir suíte de testes de carga
+- [ ] Definir suíte de segurança (OWASP básico)
+- [ ] Automatizar smoke tests de produção
+- [ ] Definir critérios de aceitação por ambiente
+
+---
+
+## 26. Backup e Recuperação
+
+### Requisitos
+
+- backup automático diário
+- retenção de backups
+- teste de restore
+
+### Checklist de implementação
+
+- [ ] Configurar backup diário no banco gerenciado
+- [ ] Definir janela de retenção
+- [ ] Executar restore de teste e documentar procedimento
+
+---
+
+## 27. LGPD e Privacidade
+
+### Dados tratados
+
+- nome
+- idade
+- peso
+- altura
+- objetivo
+- restrições físicas
+
+### Requisitos
+
+- consentimento do usuário
+- política de privacidade
+- opção de exclusão de conta
+- proteção de dados sensíveis
+
+### Checklist de implementação
+
+- [ ] Implementar fluxo de consentimento
+- [ ] Publicar política de privacidade
+- [ ] Implementar exclusão de conta/dados
+- [ ] Definir política de retenção e minimização de dados
+
+---
+
+## 28. Custos e Infraestrutura
+
+### Descrição
+
+Planejamento mínimo de custos.
+
+### Observação crítica
+
+- ❌ Free tier não é confiável para produção
+- ✅ Usar planos básicos pagos
+
+### Componentes com custo
+
+- backend
+- banco
+- domínio
+- IA (uso)
+
+### Checklist de implementação
+
+- [ ] Estimar custo mensal por ambiente
+- [ ] Definir orçamento e limites de consumo
+- [ ] Configurar alertas de custo (quando disponível)
+
+---
+
+## 29. Roadmap Pós-Produção
+
+- versão PWA
+- vídeos próprios da academia
+- painel admin
+- recomendação inteligente
+- integração com wearables

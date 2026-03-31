@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
@@ -18,13 +19,21 @@ from app.services.workout_service import (
     list_user_workouts,
     submit_feedback,
 )
+from app.services.rate_limit import enforce_rate_limit
 
 router = APIRouter(prefix="/workout", tags=["workout"])
+
+workout_rate_limit = enforce_rate_limit(
+    key_prefix="workout:generate",
+    limit=settings.workout_rate_limit,
+    window_seconds=settings.workout_rate_window_seconds,
+)
 
 
 @router.post("/generate", response_model=WorkoutResponse, status_code=201)
 def generate(
     body: WorkoutGenerateRequest,
+    _: None = Depends(workout_rate_limit),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> WorkoutResponse:

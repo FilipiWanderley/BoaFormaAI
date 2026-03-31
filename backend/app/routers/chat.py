@@ -3,18 +3,27 @@ from typing import List
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.chat import ChatMessageResponse, ChatRequest, ChatResponse
 from app.services.chat_service import chat, clear_chat_history, list_chat_history
+from app.services.rate_limit import enforce_rate_limit
 
 router = APIRouter(prefix="/chat", tags=["chat"])
+
+chat_rate_limit = enforce_rate_limit(
+    key_prefix="chat:send",
+    limit=settings.chat_rate_limit,
+    window_seconds=settings.chat_rate_window_seconds,
+)
 
 
 @router.post("", response_model=ChatResponse)
 def send_message(
     body: ChatRequest,
+    _: None = Depends(chat_rate_limit),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ChatResponse:

@@ -43,7 +43,9 @@ class ApiAuthFlowTests(unittest.TestCase):
         )
         self.assertEqual(login_response.status_code, 200)
         token = login_response.json().get("access_token")
+        refresh_token = login_response.json().get("refresh_token")
         self.assertTrue(token)
+        self.assertTrue(refresh_token)
 
         me_response = self.client.get(
             "/users/me",
@@ -51,6 +53,44 @@ class ApiAuthFlowTests(unittest.TestCase):
         )
         self.assertEqual(me_response.status_code, 200)
         self.assertEqual(me_response.json()["email"], email)
+
+    def test_refresh_and_logout_flow(self) -> None:
+        email = self._unique_email()
+        password = "SenhaForte@123"
+        register_payload = {
+            "name": "Teste Refresh",
+            "email": email,
+            "password": password,
+            "age": 30,
+            "weight_kg": 82,
+            "height_cm": 178,
+            "goal": "forca",
+            "level": "intermediario",
+            "restrictions": "nenhuma",
+        }
+        self.client.post("/users", json=register_payload)
+
+        login_response = self.client.post("/auth/login", json={"email": email, "password": password})
+        self.assertEqual(login_response.status_code, 200)
+        access_token = login_response.json()["access_token"]
+        refresh_token = login_response.json()["refresh_token"]
+
+        refresh_response = self.client.post("/auth/refresh", json={"refresh_token": refresh_token})
+        self.assertEqual(refresh_response.status_code, 200)
+        new_access_token = refresh_response.json()["access_token"]
+        new_refresh_token = refresh_response.json()["refresh_token"]
+        self.assertTrue(new_access_token)
+        self.assertNotEqual(new_refresh_token, refresh_token)
+
+        logout_response = self.client.post(
+            "/auth/logout",
+            json={"refresh_token": new_refresh_token},
+            headers={"Authorization": f"Bearer {new_access_token}"},
+        )
+        self.assertEqual(logout_response.status_code, 204)
+
+        refresh_after_logout = self.client.post("/auth/refresh", json={"refresh_token": new_refresh_token})
+        self.assertEqual(refresh_after_logout.status_code, 401)
 
     def test_login_with_invalid_credentials(self) -> None:
         response = self.client.post(

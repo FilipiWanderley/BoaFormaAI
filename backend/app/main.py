@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.lifecycle import run_db_migrations
-from app.models import ChatMessage, Exercise, History, User, Workout, WorkoutExercise  # noqa: F401
+from app.models import ChatMessage, Exercise, History, RefreshTokenSession, User, Workout, WorkoutExercise  # noqa: F401
 from app.routers import (
     auth_router,
     chat_router,
@@ -21,8 +22,8 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_origins=settings.cors_origins_list,
+    allow_origin_regex=settings.cors_allowed_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
