@@ -282,6 +282,15 @@ Criar `.env` baseado no `.env.example` com:
 - `GROQ_API_KEY`
 - `GROQ_MODEL`
 
+Frontend (`frontend/.env`), com base em `frontend/.env.example`:
+
+- `VITE_API_BASE_URL`
+- `VITE_GOOGLE_CLIENT_ID`
+
+Guia de configuração Google OAuth:
+
+- `GOOGLE_OAUTH_SETUP.md`
+
 Templates adicionais por ambiente:
 
 - `backend/.env.staging.example`

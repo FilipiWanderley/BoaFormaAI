@@ -1290,7 +1290,7 @@ Comportamento:
 - [x] Garantir persistência de sessão
 - [x] Tratar erros de login
 - [x] Testar fluxo completo
-- [ ] Validar UX em mobile
+- [x] Validar UX em mobile
 
 ### Evolução futura
 

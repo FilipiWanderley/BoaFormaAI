@@ -118,7 +118,12 @@ class ApiAuthFlowTests(unittest.TestCase):
         self.assertEqual(blocked_response.status_code, 423)
 
     def test_google_login_creates_and_links_user(self) -> None:
-        google_claims = {"email": self._unique_email(), "name": "Google User", "sub": "google-sub-1"}
+        unique_suffix = str(time.time_ns())
+        google_claims = {
+            "email": self._unique_email(),
+            "name": "Google User",
+            "sub": f"google-sub-{unique_suffix}",
+        }
         with patch("app.routers.auth.verify_google_credential", return_value=google_claims):
             first = self.client.post("/auth/google", json={"token": "valid-token"})
         self.assertEqual(first.status_code, 200)
@@ -142,7 +147,11 @@ class ApiAuthFlowTests(unittest.TestCase):
         }
         self.client.post("/users", json=register_payload)
 
-        linked_claims = {"email": register_payload["email"], "name": register_payload["name"], "sub": "google-sub-2"}
+        linked_claims = {
+            "email": register_payload["email"],
+            "name": register_payload["name"],
+            "sub": f"google-sub-linked-{unique_suffix}",
+        }
         with patch("app.routers.auth.verify_google_credential", return_value=linked_claims):
             linked = self.client.post("/auth/google", json={"token": "valid-token-2"})
         self.assertEqual(linked.status_code, 200)
