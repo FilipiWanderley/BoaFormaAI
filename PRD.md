@@ -526,14 +526,14 @@ A interface frontend deve ser construída com princípios de responsividade desd
 
 ### Checklist de implementação
 
-- [ ] Definir estratégia responsiva do frontend
-- [ ] Adaptar layout global para mobile
-- [ ] Criar breakpoints padrão do projeto
-- [ ] Ajustar navbar/menu para telas pequenas
-- [ ] Validar telas de login, dashboard, treino, chat, histórico e perfil no mobile
-- [ ] Ajustar formulários para toque
-- [ ] Garantir legibilidade tipográfica em telas pequenas
-- [ ] Corrigir overflow horizontal
+- [x] Definir estratégia responsiva do frontend
+- [x] Adaptar layout global para mobile
+- [x] Criar breakpoints padrão do projeto
+- [x] Ajustar navbar/menu para telas pequenas
+- [x] Validar telas de login, dashboard, treino, chat, histórico e perfil no mobile
+- [x] Ajustar formulários para toque
+- [x] Garantir legibilidade tipográfica em telas pequenas
+- [x] Corrigir overflow horizontal
 - [ ] Testar responsividade em diferentes resoluções
 - [ ] Validar experiência mobile web completa
 

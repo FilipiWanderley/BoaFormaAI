@@ -74,7 +74,7 @@ export function ChatPage() {
   const firstName = user?.name.split(' ')[0] ?? ''
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)]">
+    <div className="flex flex-col min-h-[calc(100vh-7rem)] md:h-[calc(100vh-6rem)]">
 
       <div className="mb-6 shrink-0">
         <PageHeader
@@ -94,7 +94,7 @@ export function ChatPage() {
       </div>
 
       {/* Layout */}
-      <div className="flex gap-5 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-5 flex-1 min-h-0">
 
         {/* Chat */}
         <div className="flex-1 flex flex-col bg-surface-2 border border-white/[0.07] rounded-2xl overflow-hidden">
@@ -150,7 +150,7 @@ export function ChatPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="w-52 shrink-0 flex flex-col gap-4">
+        <div className="w-full lg:w-52 shrink-0 flex flex-col gap-4">
           <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-4">
             <p className="text-[11px] font-medium text-white/30 uppercase tracking-wider mb-3">Sugestões</p>
             <div className="flex flex-col gap-1.5">

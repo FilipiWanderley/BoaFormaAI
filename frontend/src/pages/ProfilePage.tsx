@@ -57,7 +57,7 @@ export function ProfilePage() {
 
       <PageHeader eyebrow="Configurações" title="Perfil" />
 
-      <div className="grid grid-cols-[1fr_1.8fr] gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.8fr] gap-6 items-start">
 
         {/* Identity */}
         <div className="flex flex-col gap-4">
@@ -104,11 +104,11 @@ export function ProfilePage() {
         </div>
 
         {/* Form */}
-        <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-7">
+        <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-5 md:p-7">
           <p className="text-[11px] font-medium text-white/30 uppercase tracking-wider mb-6">Atualizar dados</p>
 
           <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="flex flex-col gap-5">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-[12px] text-white/40">Peso (kg)</label>
                 <input {...register('weight_kg')} type="number" step="0.1" className={inputCls} />

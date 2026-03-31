@@ -69,7 +69,7 @@ function WorkoutDetail({ workout, onBack }: { workout: WorkoutResponse; onBack: 
       </div>
 
       {/* Two column */}
-      <div className="grid grid-cols-[1fr_1.5fr] gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_1.5fr] gap-6 items-start">
 
         {/* Left */}
         <div className="flex flex-col gap-4">
@@ -241,7 +241,7 @@ export function WorkoutPage() {
         <h1 className="text-[28px] font-semibold text-white tracking-tight">Novo Treino</h1>
       </div>
 
-      <div className="grid grid-cols-[1.3fr_1fr] gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[1.3fr_1fr] gap-6 items-start">
 
         {/* Config */}
         <div className="flex flex-col gap-5">
@@ -277,7 +277,7 @@ export function WorkoutPage() {
 
             <div>
               <p className="text-[12px] font-medium text-white/40 uppercase tracking-wider mb-3">Duração</p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {DURATIONS.map(d => (
                   <button key={d} type="button" onClick={() => setDuration(d)}
                     className={`flex-1 py-2 rounded-lg border text-[12px] font-medium transition-colors ${
@@ -298,7 +298,7 @@ export function WorkoutPage() {
                 Último treino foi…
                 <span className="normal-case font-normal ml-1 text-white/25">(opcional)</span>
               </p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {([
                   ['facil',   'Fácil',   '#22c55e'],
                   ['ok',      'Ok',      '#facc15'],

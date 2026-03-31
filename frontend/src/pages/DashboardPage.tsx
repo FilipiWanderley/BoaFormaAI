@@ -91,7 +91,7 @@ export function DashboardPage() {
       </div>
 
       {/* ── Main grid ──────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
 
         {/* Activity ring — spans 1 col */}
         <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-6 flex flex-col justify-between">
@@ -105,7 +105,7 @@ export function DashboardPage() {
         </div>
 
         {/* Stats — spans 2 cols */}
-        <div className="col-span-2 grid grid-cols-2 gap-4">
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { icon: Dumbbell, value: stats.total_workouts_generated, label: 'Total Gerados',  sub: 'treinos' },
             { icon: Clock,    value: minutes > 0 ? minutes : '—',    label: 'Tempo Total',    sub: 'minutos' },
@@ -123,7 +123,7 @@ export function DashboardPage() {
       </div>
 
       {/* ── Distance + best workout row ───────────────── */}
-      <div className="grid grid-cols-[1fr_1.8fr] gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.8fr] gap-5">
 
         {/* Distance */}
         <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-6 flex flex-col justify-between">
