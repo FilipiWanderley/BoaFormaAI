@@ -12,7 +12,11 @@ import { Spinner } from '../components/ui/Spinner'
 import { formatDate } from '../lib/utils'
 import type { ExerciseResponse, FeedbackValue, WorkoutGenerateRequest, WorkoutResponse, WorkoutSummary } from '../types'
 
-const MUSCLE_GROUPS = ['peito','costas','quadriceps','posterior','gluteos','ombros','biceps','triceps','abdomen','panturrilha']
+const MUSCLE_GROUPS = [
+  'peito', 'costas', 'quadriceps', 'posterior', 'gluteos', 'ombros',
+  'biceps', 'triceps', 'abdomen', 'panturrilha', 'trapezio', 'antebraco',
+  'adutores', 'abdutores', 'lombar', 'core',
+]
 const EQUIPMENT     = ['barra','haltere','maquina','cabo','peso_corporal','kettlebell','elastico']
 const DURATIONS     = [30, 45, 60, 75, 90]
 

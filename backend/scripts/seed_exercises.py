@@ -1253,6 +1253,90 @@ EXERCISES: list[tuple] = [
 ]
 
 
+def _build_large_dataset(
+    base_exercises: list[tuple],
+    *,
+    target_total: int = 1000,
+) -> list[tuple]:
+    if len(base_exercises) >= target_total:
+        return base_exercises
+
+    muscle_groups = [
+        "peito",
+        "costas",
+        "quadriceps",
+        "posterior",
+        "gluteos",
+        "ombros",
+        "biceps",
+        "triceps",
+        "abdomen",
+        "panturrilha",
+        "trapezio",
+        "antebraco",
+        "adutores",
+        "abdutores",
+        "lombar",
+        "core",
+    ]
+    equipment_priority = ["maquina", "cabo", "haltere", "barra", "elastico", "kettlebell", "peso_corporal"]
+    level_cycle = ["iniciante", "intermediario", "avancado"]
+    contraindications_map = {
+        "peito": "ombro,punho",
+        "costas": "lombar,ombro",
+        "quadriceps": "joelho,lombar",
+        "posterior": "lombar,joelho",
+        "gluteos": "joelho,lombar",
+        "ombros": "ombro,cervical",
+        "biceps": "cotovelo,punho",
+        "triceps": "cotovelo,punho",
+        "abdomen": "lombar,cervical",
+        "panturrilha": "tornozelo,joelho",
+        "trapezio": "cervical,ombro",
+        "antebraco": "punho,cotovelo",
+        "adutores": "virilha,joelho",
+        "abdutores": "quadril,joelho",
+        "lombar": "lombar,cervical",
+        "core": "lombar,ombro",
+    }
+
+    dataset = list(base_exercises)
+    existing_names = {row[0].lower() for row in dataset}
+    next_index = 1
+
+    while len(dataset) < target_total:
+        for muscle_group in muscle_groups:
+            for level in level_cycle:
+                for equipment in equipment_priority:
+                    if len(dataset) >= target_total:
+                        break
+                    name = f"{muscle_group.title()} Protocolo {level.title()} {equipment.title()} {next_index:03d}"
+                    next_index += 1
+                    key = name.lower()
+                    if key in existing_names:
+                        continue
+                    instructions = (
+                        f"Série guiada para {muscle_group} com foco em técnica, amplitude e controle. "
+                        f"Ajuste carga conforme nível {level}."
+                    )
+                    dataset.append(
+                        (
+                            name,
+                            muscle_group,
+                            None,
+                            equipment,
+                            level,
+                            instructions,
+                            contraindications_map.get(muscle_group),
+                        )
+                    )
+                    existing_names.add(key)
+    return dataset
+
+
+EXERCISES = _build_large_dataset(EXERCISES, target_total=1000)
+
+
 def seed() -> None:
     db = SessionLocal()
     try:

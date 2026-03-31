@@ -15,6 +15,10 @@ MuscleGroup = Literal[
     "panturrilha",
     "trapezio",
     "antebraco",
+    "adutores",
+    "abdutores",
+    "lombar",
+    "core",
 ]
 
 Equipment = Literal[
