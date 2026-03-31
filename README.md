@@ -79,6 +79,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Layout base com sidebar e componentes reutilizáveis de UI.
 - Biblioteca compatível de exercícios integrada na tela de treino (com imagem/fallback e filtros ativos).
 - Base URL da API configurável por ambiente (`VITE_API_BASE_URL`).
+- Base inicial para evolução PWA (manifest + service worker de cache estático em produção).
 - Estilização com Tailwind CSS + design escuro moderno.
 - Build de produção funcional com Vite.
 
