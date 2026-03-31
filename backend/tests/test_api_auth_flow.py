@@ -20,6 +20,9 @@ class ApiAuthFlowTests(unittest.TestCase):
         self.assertEqual(response.json(), {"status": "ok"})
         self.assertEqual(response.headers.get("x-frame-options"), "DENY")
         self.assertEqual(response.headers.get("x-content-type-options"), "nosniff")
+        ready_response = self.client.get("/ready")
+        self.assertEqual(ready_response.status_code, 200)
+        self.assertEqual(ready_response.json(), {"status": "ready"})
 
     def test_register_login_and_get_me(self) -> None:
         email = self._unique_email()

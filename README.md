@@ -238,6 +238,7 @@ Observação de domínio: a biblioteca atual contém **1000 exercícios** com **
 ### Saúde da API
 
 - `GET /health`
+- `GET /ready`
 - `GET /ops/metrics` — métricas operacionais (uptime, contagem de requests, erros e uso de IA)
 
 ## Como rodar localmente
@@ -327,6 +328,9 @@ Arquivo de configuração:
 
 - `docker-compose.yml` (execução local)
 - `render.yaml` (deploy simples em Render: backend + frontend)
+- `deploy/render.staging.yaml` (template staging em Render)
+- `deploy/render.production.yaml` (template produção em Render)
+- `DEPLOYMENT_RUNBOOK.md` (sequência de release, smoke e rollback)
 
 ## Operação de banco (SQLite local)
 

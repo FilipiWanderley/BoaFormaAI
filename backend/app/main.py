@@ -2,8 +2,10 @@ from time import perf_counter
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.config import settings
+from app.database import SessionLocal
 from app.lifecycle import run_db_migrations
 from app.models import ChatMessage, Exercise, History, RefreshTokenSession, User, Workout, WorkoutExercise  # noqa: F401
 from app.routers import (
@@ -78,3 +80,13 @@ def startup() -> None:
 @app.get("/health", tags=["health"])
 def health() -> dict:
     return {"status": "ok"}
+
+
+@app.get("/ready", tags=["health"])
+def readiness() -> dict:
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+    finally:
+        db.close()
+    return {"status": "ready"}
