@@ -767,7 +767,7 @@ Operação:
 - [x] Padronizar logs estruturados (JSON) no backend
 - [ ] Integrar monitoramento de uptime
 - [ ] Definir alertas de erro/latência
-- [ ] Expor métricas mínimas de aplicação
+- [x] Expor métricas mínimas de aplicação
 
 ---
 
@@ -800,7 +800,7 @@ Estratégia de deploy e separação de ambientes.
 - [ ] Criar ambiente de staging completo
 - [x] Configurar pipeline CI/CD com gates de qualidade
 - [ ] Definir estratégia de rollback
-- [ ] Separar segredos por ambiente (dev/staging/prod)
+- [x] Separar segredos por ambiente (dev/staging/prod)
 
 ---
 

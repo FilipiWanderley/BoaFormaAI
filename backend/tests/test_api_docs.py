@@ -20,14 +20,26 @@ class ApiDocsTests(unittest.TestCase):
         paths = response.json().get("paths", {})
         for route in [
             "/auth/login",
+            "/auth/refresh",
             "/users",
             "/dashboard",
             "/workout/generate",
             "/history/me",
             "/chat",
             "/exercises/compatible",
+            "/ops/metrics",
         ]:
             self.assertIn(route, paths)
+
+    def test_metrics_endpoint_returns_observability_payload(self) -> None:
+        response = self.client.get("/ops/metrics")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("uptime_seconds", payload)
+        self.assertIn("request_count", payload)
+        self.assertIn("error_count", payload)
+        self.assertIn("ai_usage_count", payload)
+        self.assertIn("endpoints", payload)
 
 
 if __name__ == "__main__":

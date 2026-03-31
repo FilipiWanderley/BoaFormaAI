@@ -20,6 +20,7 @@ from app.models.user import User
 from app.models.workout import History, Workout
 from app.schemas.chat import ChatMessageResponse, ChatResponse
 from app.services.llm_service import _get_client, _sanitize
+from app.services.metrics import metrics_store
 
 MEMORY_WINDOW = 10  # number of past messages sent as context
 
@@ -118,6 +119,7 @@ def chat(db: Session, user: User, message: str) -> ChatResponse:
     messages = _to_groq_messages(system_prompt, history, message)
 
     try:
+        metrics_store.track_ai_call()
         completion = client.chat.completions.create(
             model=settings.groq_model,
             messages=messages,

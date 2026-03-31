@@ -56,6 +56,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Memória conversacional (janela de mensagens)
   - Persistência dos turnos usuário/assistente
   - Endpoint para limpar histórico
+  - Métrica de uso de IA em endpoint operacional
 - Exercícios:
   - Base expandida para 1000 exercícios
   - 16 grupos musculares suportados
@@ -233,6 +234,7 @@ Observação de domínio: a biblioteca atual contém **1000 exercícios** com **
 ### Saúde da API
 
 - `GET /health`
+- `GET /ops/metrics` — métricas operacionais (uptime, contagem de requests, erros e uso de IA)
 
 ## Como rodar localmente
 
@@ -266,6 +268,11 @@ Criar `.env` baseado no `.env.example` com:
 - `GROQ_API_KEY`
 - `GROQ_MODEL`
 
+Templates adicionais por ambiente:
+
+- `backend/.env.staging.example`
+- `backend/.env.production.example`
+
 ### 2) Frontend
 
 ```bash
@@ -297,6 +304,16 @@ Arquivo de configuração:
 
 - `docker-compose.yml` (execução local)
 - `render.yaml` (deploy simples em Render: backend + frontend)
+
+## Operação de banco (SQLite local)
+
+Script utilitário para backup/restore local:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.db_maintenance backup --output ./backups/boaforma.sqlite3.bak
+./.venv/bin/python -m scripts.db_maintenance restore --input ./backups/boaforma.sqlite3.bak
+```
 
 ## Qualidade e validações já executadas
 

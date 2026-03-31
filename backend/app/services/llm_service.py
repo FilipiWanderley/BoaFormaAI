@@ -20,6 +20,7 @@ from app.config import settings
 from app.models.exercise import Exercise
 from app.models.user import User
 from app.schemas.workout import WorkoutGenerateRequest, _LLMWorkout
+from app.services.metrics import metrics_store
 
 # ---------------------------------------------------------------------------
 # Client — lazy singleton
@@ -209,6 +210,7 @@ def call_groq_for_workout(
     valid_ids = {ex.id for ex in exercises}
 
     try:
+        metrics_store.track_ai_call()
         completion = client.chat.completions.create(
             model=settings.groq_model,
             messages=[

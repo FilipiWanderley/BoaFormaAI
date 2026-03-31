@@ -1,3 +1,5 @@
+from time import perf_counter
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,9 +12,11 @@ from app.routers import (
     dashboard_router,
     exercises_router,
     history_router,
+    ops_router,
     users_router,
     workout_router,
 )
+from app.services.metrics import metrics_store
 
 app = FastAPI(
     title="Academia Boa Forma AI",
@@ -32,7 +36,14 @@ app.add_middleware(
 
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
+    started_at = perf_counter()
     response = await call_next(request)
+    latency_ms = (perf_counter() - started_at) * 1000
+    metrics_store.track_request(
+        path=request.url.path,
+        status_code=response.status_code,
+        latency_ms=latency_ms,
+    )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "same-origin"
@@ -56,6 +67,7 @@ app.include_router(workout_router)
 app.include_router(history_router)
 app.include_router(dashboard_router)
 app.include_router(chat_router)
+app.include_router(ops_router)
 
 
 @app.on_event("startup")
