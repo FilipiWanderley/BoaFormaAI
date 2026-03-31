@@ -201,7 +201,7 @@ frontend/
 **Checklist:**
 - [x] Subir app funcional
 - [x] Validar todas as telas
-- [ ] Importar referências do Figma
+- [x] Importar referências do Figma
 - [x] Ajustar layout
 - [x] Criar design system
 - [x] Padronizar componentes
@@ -255,7 +255,7 @@ frontend/
 - [x] Integração com API
 
 ### Fase 5 — UI
-- [ ] Aplicar Figma
+- [x] Aplicar Figma
 - [x] Design system
 
 ---

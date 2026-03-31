@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle } from 'lucide-react'
 import { authService } from '../services/auth.service'
+import { PageHeader } from '../components/ui/PageHeader'
 import { useAuthStore } from '../store/authStore'
 import { Spinner } from '../components/ui/Spinner'
 import { levelLabel } from '../lib/utils'
@@ -54,10 +55,7 @@ export function ProfilePage() {
   return (
     <div className="flex flex-col gap-7 pb-6">
 
-      <div>
-        <p className="text-[13px] text-white/40 mb-1">Configurações</p>
-        <h1 className="text-[28px] font-semibold text-white tracking-tight">Perfil</h1>
-      </div>
+      <PageHeader eyebrow="Configurações" title="Perfil" />
 
       <div className="grid grid-cols-[1fr_1.8fr] gap-6 items-start">
 

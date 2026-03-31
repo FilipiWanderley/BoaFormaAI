@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Flame, Zap, Dumbbell, Clock } from 'lucide-react'
 import { dashboardService } from '../services/dashboard.service'
+import { PageHeader } from '../components/ui/PageHeader'
 import { RingProgress } from '../components/ui/RingProgress'
 import { Spinner } from '../components/ui/Spinner'
 import { formatDate } from '../lib/utils'
@@ -55,22 +56,16 @@ export function DashboardPage() {
     <div className="flex flex-col gap-8">
 
       {/* ── Greeting ───────────────────────────────────── */}
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="text-[13px] text-white/40 mb-1">
-            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-          <h1 className="text-[28px] font-semibold text-white tracking-tight">
-            Olá, {user.name.split(' ')[0]}
-          </h1>
-        </div>
-        {stats.current_streak_days > 0 && (
+      <PageHeader
+        eyebrow={new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+        title={`Olá, ${user.name.split(' ')[0]}`}
+        right={stats.current_streak_days > 0 ? (
           <div className="flex items-center gap-1.5 text-[13px] text-white/50 bg-white/[0.05] border border-white/[0.08] rounded-full px-3 py-1.5">
             <Flame className="w-3.5 h-3.5 text-orange-400" />
             {stats.current_streak_days} dia{stats.current_streak_days !== 1 ? 's' : ''} de sequência
           </div>
-        )}
-      </div>
+        ) : null}
+      />
 
       {/* ── Calendar strip ─────────────────────────────── */}
       <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-5">
