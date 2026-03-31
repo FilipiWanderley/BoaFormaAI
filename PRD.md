@@ -594,10 +594,10 @@ Serviço de IA (Groq)
 ### Checklist de implementação
 
 - [x] Definir provedor final de frontend e backend
-- [ ] Provisionar Cloudflare (DNS + WAF + SSL)
+- [x] Provisionar Cloudflare (DNS + WAF + SSL)
 - [x] Provisionar Postgres gerenciado
 - [x] Configurar variáveis de ambiente de produção
-- [ ] Validar arquitetura ponta a ponta em ambiente produtivo
+- [x] Validar arquitetura ponta a ponta em ambiente produtivo
 
 ---
 
@@ -828,8 +828,8 @@ Como o sistema será acessado pelos alunos.
 
 ### Checklist de implementação
 
-- [ ] Configurar subdomínios de frontend e backend
-- [ ] Configurar certificados SSL
+- [x] Configurar subdomínios de frontend e backend
+- [x] Configurar certificados SSL
 - [x] Validar CORS e cookies/tokens com domínio final
 
 ---
@@ -882,9 +882,9 @@ Transformar o sistema em app instalável sem loja.
 
 ### Checklist de implementação
 
-- [ ] Configurar backup diário no banco gerenciado
-- [ ] Definir janela de retenção
-- [ ] Executar restore de teste e documentar procedimento
+- [x] Configurar backup diário no banco gerenciado
+- [x] Definir janela de retenção
+- [x] Executar restore de teste e documentar procedimento
 
 ---
 
@@ -1078,8 +1078,8 @@ Fluxo:
 
 ### Checklist de implementação
 
-- [ ] Criar credenciais no Google Cloud Console
-- [ ] Configurar OAuth Client ID
+- [x] Criar credenciais no Google Cloud Console
+- [x] Configurar OAuth Client ID
 - [x] Implementar botão no frontend
 - [x] Integrar Google Identity Services
 - [x] Criar endpoint `/auth/google`

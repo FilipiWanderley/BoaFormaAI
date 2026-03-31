@@ -339,6 +339,8 @@ Arquivo de configuração:
 - `COST_PLAN.md` (estimativa mensal, orçamento e limites por ambiente)
 - `DOMAIN_SSL_SETUP.md` (procedimento de subdomínio, SSL e CORS final)
 - `INFRA_DECISIONS.md` (provedor final e recursos de produção)
+- `CLOUDFLARE_PROVISIONING.md` (checklist DNS/WAF/SSL em Cloudflare)
+- `GOOGLE_CLOUD_OAUTH_SETUP.md` (checklist OAuth oficial Google Cloud)
 
 ## Operação de banco (SQLite local)
 
@@ -380,6 +382,13 @@ Validação de CORS por domínio final:
 ```bash
 cd backend
 ./.venv/bin/python -m scripts.validate_cors_domain --api-base-url https://api.academia.com --frontend-origin https://app.academia.com
+```
+
+Validação ponta a ponta de arquitetura:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.validate_production_architecture --frontend-url https://app.academia.com --backend-url https://api.academia.com
 ```
 
 ## LGPD (base implementada)
