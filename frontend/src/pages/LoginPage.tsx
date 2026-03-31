@@ -49,9 +49,13 @@ export function LoginPage() {
         />
 
         {/* Logo */}
-        <div className="flex items-center gap-2 relative">
-          <span className="text-[15px] font-semibold text-white tracking-tight">BoaForma</span>
-          <span className="text-[10px] font-medium text-accent px-1 py-0.5 rounded bg-accent-muted">AI</span>
+        <div className="relative">
+          <img
+            src="/Logo_Branca.svg"
+            alt="BoaForma AI"
+            className="h-8 w-auto"
+            loading="eager"
+          />
         </div>
 
         {/* Headline */}
@@ -85,9 +89,13 @@ export function LoginPage() {
         <div className="w-full max-w-[380px]">
 
           {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-2 mb-10">
-            <span className="text-[15px] font-semibold text-white">BoaForma</span>
-            <span className="text-[10px] font-medium text-accent px-1 py-0.5 rounded bg-accent-muted">AI</span>
+          <div className="lg:hidden mb-10">
+            <img
+              src="/Logo_Branca.svg"
+              alt="BoaForma AI"
+              className="h-8 w-auto"
+              loading="eager"
+            />
           </div>
 
           <h2 className="text-[22px] font-semibold text-white tracking-tight mb-1">
