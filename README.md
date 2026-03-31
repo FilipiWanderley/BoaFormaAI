@@ -341,6 +341,7 @@ Arquivo de configuração:
 - `INFRA_DECISIONS.md` (provedor final e recursos de produção)
 - `CLOUDFLARE_PROVISIONING.md` (checklist DNS/WAF/SSL em Cloudflare)
 - `GOOGLE_CLOUD_OAUTH_SETUP.md` (checklist OAuth oficial Google Cloud)
+- `GO_LIVE_CHECKLIST.md` (sequência final de publicação em produção)
 
 ## Operação de banco (SQLite local)
 
