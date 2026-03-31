@@ -948,3 +948,359 @@ Planejamento mínimo de custos.
 - painel admin
 - recomendação inteligente
 - integração com wearables
+
+---
+
+## 30. Autenticação Social (Login com Google)
+
+### Descrição
+
+Implementação de login social utilizando Google como provedor de autenticação, permitindo que usuários acessem o sistema sem necessidade de criação de senha.
+
+O login social deve ser integrado ao sistema atual de autenticação, garantindo consistência, segurança e evitando duplicação de contas.
+
+### Objetivos
+
+- Reduzir fricção no cadastro/login
+- Melhorar experiência do usuário
+- Aumentar taxa de conversão no onboarding
+- Permitir login rápido via conta Google
+- Manter compatibilidade com login tradicional (email + senha)
+
+### Provedores suportados (MVP)
+
+- ✅ Google
+- ❌ Facebook (fora do escopo inicial)
+- ❌ Microsoft (futuro)
+
+### Fluxo de autenticação
+
+```text
+Usuário clica em "Continuar com Google"
+        ↓
+Frontend inicia autenticação com Google
+        ↓
+Usuário autoriza acesso
+        ↓
+Google retorna token (credential)
+        ↓
+Frontend envia token para backend
+        ↓
+Backend valida token com Google
+        ↓
+Backend extrai dados do usuário (email, nome, provider_id)
+        ↓
+Sistema verifica existência do usuário:
+    - Se NÃO existir → cria novo usuário
+    - Se existir → vincula conta Google
+        ↓
+Backend gera JWT da aplicação
+        ↓
+Usuário autenticado no sistema
+```
+
+### Estrutura de dados (User)
+
+A tabela `users` deve suportar autenticação por múltiplos provedores.
+
+Campos adicionais:
+
+- `provider` → `"email"` | `"google"`
+- `provider_id` → identificador único do Google
+- `password` → opcional (`null` para login social)
+
+### Regras de negócio
+
+- ✅ Email é a identidade única do usuário
+- ❌ Não permitir múltiplas contas com o mesmo email
+- ✅ Se usuário já existir com email + senha: vincular login Google à mesma conta
+- ❌ Não criar duplicidade de usuários
+- ✅ Usuários Google não precisam de senha
+- ✅ Usuários podem continuar usando login tradicional
+
+### Endpoint
+
+- `POST /auth/google`
+
+Entrada:
+
+```json
+{
+  "token": "google_credential_token"
+}
+```
+
+Processamento:
+
+- Validar token com Google
+- Extrair dados do usuário
+- Criar ou vincular conta
+- Gerar JWT
+
+Saída:
+
+```json
+{
+  "access_token": "jwt_token",
+  "user": {}
+}
+```
+
+### Segurança
+
+- ✅ Validar token do Google no backend (obrigatório)
+- ❌ Nunca confiar apenas no frontend
+- ✅ Utilizar HTTPS em todas as requisições
+- ✅ Validar expiração do token
+- ✅ Verificar issuer (Google)
+- ✅ Sanitizar dados recebidos
+- ✅ Logs de autenticação
+
+### Frontend
+
+Adicionar botão de login:
+
+- "Continuar com Google"
+
+Fluxo:
+
+- abrir popup de autenticação
+- receber token (credential)
+- enviar para backend
+- armazenar JWT retornado
+
+### UX (Experiência do Usuário)
+
+- Login com Google deve ser rápido e sem fricção
+- Não solicitar dados duplicados após login
+- Redirecionar diretamente para dashboard após autenticação
+- Manter consistência com login tradicional
+
+### Checklist de implementação
+
+- [ ] Criar credenciais no Google Cloud Console
+- [ ] Configurar OAuth Client ID
+- [ ] Implementar botão no frontend
+- [ ] Integrar Google Identity Services
+- [ ] Criar endpoint `/auth/google`
+- [ ] Validar token no backend
+- [ ] Implementar lógica de criação/vinculação de usuário
+- [ ] Gerar JWT após autenticação
+- [ ] Testar fluxo completo
+- [ ] Testar casos de usuário existente
+- [ ] Garantir ausência de duplicação de contas
+
+### Evolução futura
+
+- Adicionar login com Microsoft
+- Adicionar login sem senha (magic link / OTP)
+- Permitir vinculação de múltiplos provedores
+- Dashboard de gerenciamento de contas vinculadas
+
+### Observação crítica
+
+O login social deve ser tratado como extensão do sistema atual de autenticação, não como um sistema separado.
+
+A consistência da identidade do usuário (email único) é essencial para evitar problemas de duplicação e inconsistência de dados.
+
+---
+
+## 31. Fluxo de Autenticação e Estados da Aplicação
+
+### Descrição
+
+Definição completa dos fluxos de autenticação e dos estados da aplicação relacionados ao login, logout e sessão do usuário.
+
+Esta seção garante consistência entre login tradicional (email + senha) e login social (Google), além de definir o comportamento do sistema em cenários de erro, expiração de sessão e navegação.
+
+### Objetivos
+
+- Garantir experiência consistente de login
+- Evitar estados inválidos de autenticação
+- Definir comportamento em todos os cenários possíveis
+- Reduzir erros de UX
+- Padronizar fluxos entre frontend e backend
+
+### Estados da Aplicação
+
+O sistema deve operar com os seguintes estados:
+
+- Não autenticado
+- Autenticando
+- Autenticado
+- Sessão expirada
+- Erro de autenticação
+
+### Fluxo de Login (Email + Senha)
+
+```text
+Usuário insere email e senha
+        ↓
+Frontend envia para /auth/login
+        ↓
+Backend valida credenciais
+        ↓
+Se válido:
+    - retorna JWT
+    - frontend salva token
+    - redireciona para dashboard
+Se inválido:
+    - exibir erro ao usuário
+```
+
+### Fluxo de Login (Google)
+
+```text
+Usuário clica "Continuar com Google"
+        ↓
+Popup de autenticação Google
+        ↓
+Usuário autoriza
+        ↓
+Frontend recebe credential
+        ↓
+Envia para /auth/google
+        ↓
+Backend valida token
+        ↓
+Cria ou autentica usuário
+        ↓
+Retorna JWT
+        ↓
+Frontend salva token
+        ↓
+Redireciona para dashboard
+```
+
+### Fluxo de Sessão
+
+Sessão ativa:
+
+- JWT válido armazenado no frontend
+- Usuário acessa rotas protegidas normalmente
+
+Sessão expirada:
+
+```text
+Frontend faz requisição
+        ↓
+Backend retorna 401 (token expirado)
+        ↓
+Frontend:
+    - limpa sessão
+    - redireciona para login
+    - exibe mensagem opcional
+```
+
+### Fluxo de Logout
+
+- Remover token do frontend
+- Limpar estado global do usuário
+- Redirecionar para tela de login
+
+### Persistência de sessão
+
+- Token armazenado em memory (preferencial) ou localStorage (com cuidado)
+- Validar token ao iniciar aplicação
+- Caso inválido: forçar logout
+
+### Tratamento de erros
+
+Login inválido:
+
+- Mensagem genérica: "Email ou senha inválidos"
+
+Erro no Google login:
+
+- Falha na autenticação → mostrar erro amigável
+- Token inválido → rejeitar login
+
+Falha de rede:
+
+- Exibir mensagem: "Erro de conexão. Tente novamente."
+
+API fora do ar:
+
+- Mostrar fallback amigável
+- Evitar travamento da UI
+
+### Vinculação de contas
+
+Cenário crítico:
+
+Usuário já possui conta com email + senha e tenta login com Google.
+
+Regra:
+
+- Identificar por email
+- Vincular conta Google à conta existente
+- NÃO criar nova conta
+
+### Regras globais
+
+- Email é identificador único
+- Não permitir duplicação de usuários
+- Usuário autenticado não deve ver tela de login
+- Rotas protegidas exigem autenticação
+
+### Rotas protegidas
+
+- Dashboard
+- Treino
+- Chat
+- Histórico
+- Perfil
+
+Comportamento:
+
+- Se não autenticado: redirecionar para login
+
+### Redirecionamentos
+
+- Login bem-sucedido → Dashboard
+- Logout → Login
+- Sessão expirada → Login
+- Usuário já autenticado acessa `/login` → redirecionar para dashboard
+
+### UX esperada
+
+- Login rápido e sem fricção
+- Feedback visual durante autenticação (loading)
+- Erros claros e não técnicos
+- Não exigir ações duplicadas
+- Navegação fluida após login
+
+### Cenários obrigatórios de teste
+
+- Login com email válido
+- Login com senha inválida
+- Login com Google (novo usuário)
+- Login com Google (usuário existente)
+- Logout
+- Token expirado
+- API offline
+- Requisição com token inválido
+
+### Checklist de implementação
+
+- [ ] Definir estados globais de autenticação
+- [ ] Implementar controle de sessão no frontend
+- [ ] Criar interceptador para respostas 401
+- [ ] Implementar redirecionamentos automáticos
+- [ ] Garantir persistência de sessão
+- [ ] Tratar erros de login
+- [ ] Testar fluxo completo
+- [ ] Validar UX em mobile
+
+### Evolução futura
+
+- Refresh token automático
+- Sessões simultâneas controladas
+- Logout global (todos dispositivos)
+- Autenticação multifator (MFA)
+
+### Observação crítica
+
+Autenticação não é apenas login — é o controle completo do estado do usuário dentro da aplicação.
+
+Um fluxo mal definido pode gerar bugs críticos, problemas de segurança e má experiência do usuário.
