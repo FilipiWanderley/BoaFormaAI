@@ -325,6 +325,18 @@ cd backend
 - Health check da API validado com retorno `{"status":"ok"}`.
 - Build e execução do backend em container Docker validados.
 
+## CI (GitHub Actions)
+
+Pipeline automático configurado em `.github/workflows/ci.yml` com execução em `push` e `pull_request` para `main`:
+
+- **Backend**
+  - Instala dependências (`pip install -r requirements.txt`)
+  - Executa testes (`python -m unittest discover -s tests -v`)
+  - Executa validação de compilação (`python -m compileall app`)
+- **Frontend**
+  - Instala dependências (`npm ci`)
+  - Executa build (`npm run build`)
+
 ## Commits já realizados no repositório
 
 - `753fc59` — docs: adiciona PRD do projeto
