@@ -337,6 +337,7 @@ Arquivo de configuração:
 - `PRIVACY_POLICY.md` (política de privacidade e minimização de dados)
 - `ACCEPTANCE_CRITERIA.md` (critérios de aceitação por ambiente)
 - `COST_PLAN.md` (estimativa mensal, orçamento e limites por ambiente)
+- `DOMAIN_SSL_SETUP.md` (procedimento de subdomínio, SSL e CORS final)
 
 ## Operação de banco (SQLite local)
 
@@ -371,6 +372,13 @@ Segurança OWASP básico:
 ```bash
 cd backend
 ./.venv/bin/python -m scripts.security_check_basic --base-url https://api.academia.com
+```
+
+Validação de CORS por domínio final:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.validate_cors_domain --api-base-url https://api.academia.com --frontend-origin https://app.academia.com
 ```
 
 ## LGPD (base implementada)

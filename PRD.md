@@ -596,7 +596,7 @@ Serviço de IA (Groq)
 - [ ] Definir provedor final de frontend e backend
 - [ ] Provisionar Cloudflare (DNS + WAF + SSL)
 - [ ] Provisionar Postgres gerenciado
-- [ ] Configurar variáveis de ambiente de produção
+- [x] Configurar variáveis de ambiente de produção
 - [ ] Validar arquitetura ponta a ponta em ambiente produtivo
 
 ---
@@ -729,7 +729,7 @@ Garantir que o sistema suporte crescimento de usuários.
 ### Checklist de implementação
 
 - [x] Configurar timeout e retry com política clara no serviço de IA
-- [ ] Configurar pool de conexões para produção
+- [x] Configurar pool de conexões para produção
 - [x] Definir fallback funcional para indisponibilidade do LLM
 - [x] Medir latência por endpoint crítico
 
@@ -797,7 +797,7 @@ Estratégia de deploy e separação de ambientes.
 
 ### Checklist de implementação
 
-- [ ] Criar ambiente de staging completo
+- [x] Criar ambiente de staging completo
 - [x] Configurar pipeline CI/CD com gates de qualidade
 - [x] Definir estratégia de rollback
 - [x] Separar segredos por ambiente (dev/staging/prod)
@@ -830,7 +830,7 @@ Como o sistema será acessado pelos alunos.
 
 - [ ] Configurar subdomínios de frontend e backend
 - [ ] Configurar certificados SSL
-- [ ] Validar CORS e cookies/tokens com domínio final
+- [x] Validar CORS e cookies/tokens com domínio final
 
 ---
 
