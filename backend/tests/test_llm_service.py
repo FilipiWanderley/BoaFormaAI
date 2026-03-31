@@ -5,7 +5,13 @@ from unittest.mock import patch
 from fastapi import HTTPException
 
 from app.schemas.workout import WorkoutGenerateRequest
-from app.services.llm_service import _extract_json, _validate_exercise_ids, call_groq_for_workout
+from app.services.llm_service import (
+    _build_user_prompt,
+    _extract_json,
+    _validate_exercise_ids,
+    _validate_workout_quality,
+    call_groq_for_workout,
+)
 
 
 class _FakeMessage:
@@ -81,6 +87,58 @@ class LlmServiceTests(unittest.TestCase):
 
         self.assertEqual(workout.workout_name, "Treino IA")
         self.assertEqual(len(workout.exercises), 4)
+
+    def test_validate_workout_quality_rejects_duplicate_exercises(self) -> None:
+        llm_workout = SimpleNamespace(
+            estimated_duration_minutes=50,
+            exercises=[
+                SimpleNamespace(exercise_id=1, reps="10-12"),
+                SimpleNamespace(exercise_id=1, reps="10-12"),
+            ],
+        )
+        with self.assertRaises(HTTPException) as ctx:
+            _validate_workout_quality(llm_workout, target_duration_minutes=50)
+        self.assertEqual(ctx.exception.status_code, 502)
+
+    def test_validate_workout_quality_rejects_invalid_reps(self) -> None:
+        llm_workout = SimpleNamespace(
+            estimated_duration_minutes=50,
+            exercises=[SimpleNamespace(exercise_id=1, reps="dez")],
+        )
+        with self.assertRaises(HTTPException) as ctx:
+            _validate_workout_quality(llm_workout, target_duration_minutes=50)
+        self.assertEqual(ctx.exception.status_code, 502)
+
+    def test_validate_workout_quality_rejects_duration_far_from_target(self) -> None:
+        llm_workout = SimpleNamespace(
+            estimated_duration_minutes=95,
+            exercises=[SimpleNamespace(exercise_id=1, reps="10-12")],
+        )
+        with self.assertRaises(HTTPException) as ctx:
+            _validate_workout_quality(llm_workout, target_duration_minutes=45)
+        self.assertEqual(ctx.exception.status_code, 502)
+
+    def test_build_user_prompt_includes_history_and_duration_rules(self) -> None:
+        user = SimpleNamespace(
+            goal="emagrecimento",
+            level="iniciante",
+            restrictions="lombar",
+            weight_kg=92,
+            height_cm=175,
+        )
+        exercises = [
+            SimpleNamespace(id=1, name="Agachamento Goblet", muscle_group="pernas", equipment="haltere", level="iniciante"),
+            SimpleNamespace(id=2, name="Remada Curvada", muscle_group="costas", equipment="barra", level="intermediario"),
+        ]
+        request = WorkoutGenerateRequest(duration_minutes=40)
+        history_context = "Treinos concluídos no total: 6. Feedbacks recentes: dificil, ok."
+
+        prompt = _build_user_prompt(user, exercises, request, history_context=history_context)
+
+        self.assertIn("HISTÓRICO RECENTE", prompt)
+        self.assertIn("diferença máxima de 15 minutos", prompt)
+        self.assertIn("Não repita exercise_id", prompt)
+        self.assertIn("Treinos concluídos no total: 6", prompt)
 
 
 if __name__ == "__main__":

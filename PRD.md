@@ -129,7 +129,7 @@ frontend/
 **Checklist:**
 - [x] Definir schemas (Pydantic)
 - [x] Implementar validação
-- [ ] Testar endpoints no Swagger
+- [x] Testar endpoints no Swagger
 - [x] Criar tratamento de erro
 
 ---
@@ -144,8 +144,8 @@ frontend/
 - [x] Criar `llm_service.py`
 - [x] Criar prompt base
 - [x] Criar prompt com contexto
-- [ ] Testar respostas
-- [ ] Ajustar qualidade
+- [x] Testar respostas
+- [x] Ajustar qualidade
 - [x] Evitar prompt injection básico
 
 ---

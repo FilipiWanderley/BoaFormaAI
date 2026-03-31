@@ -9,6 +9,7 @@ Responsibilities:
 """
 
 import json
+from collections import Counter
 import re
 from typing import List, Optional
 
@@ -71,6 +72,8 @@ Você responde EXCLUSIVAMENTE com JSON válido — sem texto adicional, sem mark
 Você NUNCA inventa exercícios: usa apenas os exercícios da lista fornecida pelo sistema.
 Todos os campos do JSON são obrigatórios, exceto "notes" em cada exercício.\
 """
+
+_REPS_PATTERN = re.compile(r"^\d{1,2}(-\d{1,2})?$")
 
 
 def _sanitize(value: Optional[str], max_len: int = 200) -> str:
@@ -159,8 +162,11 @@ REGRAS OBRIGATÓRIAS
 -------------------
 - Inclua entre 5 e 10 exercícios.
 - Todos os exercise_id devem existir na lista fornecida.
+- Não repita exercise_id dentro do mesmo treino.
 - Ordene os exercícios de forma pedagógica (compostos antes de isolados).
 - Adapte séries, reps e descanso ao objetivo e nível do aluno.
+- Use "reps" no formato "N" ou "N-M" (ex: "12" ou "8-12").
+- A duração estimada deve ficar próxima da duração alvo (diferença máxima de 15 minutos).
 - Não use exercícios contraindicados para as restrições do aluno.
 - Responda APENAS com o JSON — nenhum texto antes ou depois.\
 """
@@ -232,6 +238,7 @@ def call_groq_for_workout(
         )
 
     _validate_exercise_ids(llm_workout, valid_ids)
+    _validate_workout_quality(llm_workout, request.duration_minutes)
     return llm_workout
 
 
@@ -251,6 +258,39 @@ def _validate_exercise_ids(llm_workout: _LLMWorkout, valid_ids: set[int]) -> Non
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=(
                 f"A IA retornou exercícios inválidos (IDs: {invalid}). "
+                "Tente gerar o treino novamente."
+            ),
+        )
+
+
+def _validate_workout_quality(llm_workout: _LLMWorkout, target_duration_minutes: int) -> None:
+    exercise_ids = [item.exercise_id for item in llm_workout.exercises]
+    id_counts = Counter(exercise_ids)
+    duplicate_ids = sorted([ex_id for ex_id, count in id_counts.items() if count > 1])
+    if duplicate_ids:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=(
+                f"A IA repetiu exercícios no treino (IDs duplicados: {duplicate_ids}). "
+                "Tente gerar novamente."
+            ),
+        )
+
+    invalid_reps = [item.reps for item in llm_workout.exercises if not _REPS_PATTERN.match(item.reps)]
+    if invalid_reps:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=(
+                f"A IA retornou formato de repetições inválido ({invalid_reps}). "
+                "Use apenas N ou N-M."
+            ),
+        )
+
+    if abs(llm_workout.estimated_duration_minutes - target_duration_minutes) > 15:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=(
+                "A IA retornou duração incompatível com o solicitado. "
                 "Tente gerar o treino novamente."
             ),
         )
