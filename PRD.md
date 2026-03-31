@@ -865,10 +865,10 @@ Transformar o sistema em app instalável sem loja.
 
 ### Checklist de implementação
 
-- [ ] Definir suíte de testes de carga
-- [ ] Definir suíte de segurança (OWASP básico)
+- [x] Definir suíte de testes de carga
+- [x] Definir suíte de segurança (OWASP básico)
 - [x] Automatizar smoke tests de produção
-- [ ] Definir critérios de aceitação por ambiente
+- [x] Definir critérios de aceitação por ambiente
 
 ---
 

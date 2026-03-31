@@ -333,6 +333,7 @@ Arquivo de configuração:
 - `DEPLOYMENT_RUNBOOK.md` (sequência de release, smoke e rollback)
 - `OBSERVABILITY_ALERTING.md` (monitoramento de uptime e alertas de latência/erro)
 - `BACKUP_POLICY.md` (política de backup/restore e retenção)
+- `ACCEPTANCE_CRITERIA.md` (critérios de aceitação por ambiente)
 
 ## Operação de banco (SQLite local)
 
@@ -351,6 +352,22 @@ Avaliação automática de métricas via `/ops/metrics`:
 ```bash
 cd backend
 ./.venv/bin/python -m scripts.evaluate_metrics_alerts --base-url https://api.academia.com
+```
+
+## Testes de produção (automação base)
+
+Carga:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.load_test_api --base-url https://api.academia.com --requests 100 --concurrency 10
+```
+
+Segurança OWASP básico:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.security_check_basic --base-url https://api.academia.com
 ```
 
 ## Qualidade e validações já executadas
