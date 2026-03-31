@@ -28,6 +28,7 @@ def create_user(db: Session, data: UserCreate) -> User:
         email=data.email,
         hashed_password=hash_password(data.password),
         provider="email",
+        is_admin=False,
         consent_given_at=datetime.now(timezone.utc),
         privacy_policy_version=data.privacy_policy_version,
         age=data.age,

@@ -4,6 +4,8 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
+from app.database import SessionLocal
+from app.models.user import User
 from app.main import app
 
 
@@ -193,6 +195,58 @@ class ApiAuthFlowTests(unittest.TestCase):
 
         login_after_delete = self.client.post("/auth/login", json={"email": email, "password": password})
         self.assertEqual(login_after_delete.status_code, 401)
+
+    def test_admin_exercises_crud(self) -> None:
+        email = self._unique_email()
+        password = "SenhaForte@123"
+        register_payload = {
+            "name": "Admin Curadoria",
+            "email": email,
+            "password": password,
+            "age": 33,
+            "weight_kg": 78,
+            "height_cm": 177,
+            "goal": "saude",
+            "level": "avancado",
+            "restrictions": "nenhuma",
+            "accept_terms": True,
+            "privacy_policy_version": "2026-01",
+        }
+        self.client.post("/users", json=register_payload)
+
+        db = SessionLocal()
+        try:
+            user = db.query(User).filter(User.email == email).first()
+            user.is_admin = True
+            db.commit()
+        finally:
+            db.close()
+
+        login = self.client.post("/auth/login", json={"email": email, "password": password})
+        token = login.json()["access_token"]
+        headers = {"Authorization": f"Bearer {token}"}
+
+        create_payload = {
+            "name": f"Exercicio Admin {self._unique_email()}",
+            "muscle_group": "peito",
+            "equipment": "barra",
+            "level": "iniciante",
+            "instructions": "Execução controlada.",
+        }
+        created = self.client.post("/admin/exercises", json=create_payload, headers=headers)
+        self.assertEqual(created.status_code, 201)
+        exercise_id = created.json()["id"]
+
+        listed = self.client.get("/admin/exercises?limit=100&offset=0", headers=headers)
+        self.assertEqual(listed.status_code, 200)
+        self.assertGreaterEqual(len(listed.json()), 1)
+
+        updated = self.client.patch(f"/admin/exercises/{exercise_id}", json={"level": "intermediario"}, headers=headers)
+        self.assertEqual(updated.status_code, 200)
+        self.assertEqual(updated.json()["level"], "intermediario")
+
+        deleted = self.client.delete(f"/admin/exercises/{exercise_id}", headers=headers)
+        self.assertEqual(deleted.status_code, 204)
 
 
 if __name__ == "__main__":

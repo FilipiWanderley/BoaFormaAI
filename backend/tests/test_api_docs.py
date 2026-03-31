@@ -22,6 +22,7 @@ class ApiDocsTests(unittest.TestCase):
             "/auth/login",
             "/auth/refresh",
             "/auth/google",
+            "/admin/exercises",
             "/users",
             "/dashboard",
             "/workout/generate",

@@ -1,3 +1,4 @@
+from app.routers.admin import router as admin_router
 from app.routers.auth import router as auth_router
 from app.routers.chat import router as chat_router
 from app.routers.dashboard import router as dashboard_router
@@ -9,6 +10,7 @@ from app.routers.workout import router as workout_router
 
 __all__ = [
     "auth_router",
+    "admin_router",
     "users_router",
     "exercises_router",
     "workout_router",

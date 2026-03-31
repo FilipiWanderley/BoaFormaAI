@@ -48,6 +48,28 @@ class ExerciseResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ExerciseCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=150)
+    muscle_group: MuscleGroup
+    secondary_muscles: Optional[str] = Field(default=None, max_length=200)
+    equipment: Equipment
+    level: Level
+    instructions: Optional[str] = None
+    image_url: Optional[str] = Field(default=None, max_length=500)
+    contraindications: Optional[str] = Field(default=None, max_length=300)
+
+
+class ExerciseUpdate(BaseModel):
+    name: Optional[str] = Field(default=None, min_length=2, max_length=150)
+    muscle_group: Optional[MuscleGroup] = None
+    secondary_muscles: Optional[str] = Field(default=None, max_length=200)
+    equipment: Optional[Equipment] = None
+    level: Optional[Level] = None
+    instructions: Optional[str] = None
+    image_url: Optional[str] = Field(default=None, max_length=500)
+    contraindications: Optional[str] = Field(default=None, max_length=300)
+
+
 class ExerciseFilterParams(BaseModel):
     muscle_groups: Optional[List[MuscleGroup]] = None
     equipment: Optional[List[Equipment]] = None

@@ -37,6 +37,7 @@ class UserResponse(BaseModel):
     restrictions: Optional[str]
     provider: str
     provider_id: Optional[str]
+    is_admin: bool
     consent_given_at: Optional[datetime]
     privacy_policy_version: Optional[str]
 

@@ -1,11 +1,12 @@
 from typing import List, Optional
 
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.models.exercise import Exercise, WorkoutExercise
 from app.models.user import User
 from app.models.workout import Workout
-from app.schemas.exercise import WorkoutExerciseCreate
+from app.schemas.exercise import ExerciseCreate, ExerciseUpdate, WorkoutExerciseCreate
 
 
 # ---------------------------------------------------------------------------
@@ -101,6 +102,34 @@ def filter_exercises(
 
 def get_exercise_by_id(db: Session, exercise_id: int) -> Optional[Exercise]:
     return db.get(Exercise, exercise_id)
+
+
+def create_exercise(db: Session, data: ExerciseCreate) -> Exercise:
+    existing = db.query(Exercise).filter(Exercise.name == data.name).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Exercício com este nome já existe.",
+        )
+    exercise = Exercise(**data.model_dump())
+    db.add(exercise)
+    db.commit()
+    db.refresh(exercise)
+    return exercise
+
+
+def update_exercise(db: Session, exercise: Exercise, data: ExerciseUpdate) -> Exercise:
+    values = data.model_dump(exclude_none=True)
+    for field, value in values.items():
+        setattr(exercise, field, value)
+    db.commit()
+    db.refresh(exercise)
+    return exercise
+
+
+def delete_exercise(db: Session, exercise: Exercise) -> None:
+    db.delete(exercise)
+    db.commit()
 
 
 def add_exercises_to_workout(

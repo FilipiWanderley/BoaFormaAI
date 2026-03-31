@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Dumbbell, MessageCircle, History, User, LogOut, X } from 'lucide-react'
+import { LayoutDashboard, Dumbbell, MessageCircle, History, User, LogOut, X, Shield } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 
 const nav = [
@@ -19,6 +19,9 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
   const firstName = user?.name.split(' ')[0] ?? ''
+  const navItems = user?.is_admin
+    ? [...nav, { to: '/admin/exercises', icon: Shield, label: 'Admin' }]
+    : nav
 
   return (
     <>
@@ -54,7 +57,7 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
 
         {/* Nav */}
         <nav className="flex flex-1 flex-col gap-px px-3 pt-4">
-          {nav.map(({ to, icon: Icon, label }) => (
+          {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink key={to} to={to}
               onClick={onCloseMobile}
               className={({ isActive }) =>

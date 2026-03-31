@@ -29,6 +29,7 @@ export interface UserResponse {
   restrictions: string | null
   provider: 'email' | 'google'
   provider_id: string | null
+  is_admin: boolean
   consent_given_at: string | null
   privacy_policy_version: string | null
 }

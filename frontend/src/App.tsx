@@ -9,6 +9,7 @@ import { ChatPage } from './pages/ChatPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { InstallPrompt } from './components/ui/InstallPrompt'
+import { AdminExercisesPage } from './pages/AdminExercisesPage'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/admin/exercises" element={<AdminExercisesPage />} />
           </Route>
         </Route>
 

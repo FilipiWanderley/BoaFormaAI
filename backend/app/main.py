@@ -10,6 +10,7 @@ from app.database import SessionLocal
 from app.lifecycle import run_db_migrations
 from app.models import ChatMessage, Exercise, History, RefreshTokenSession, User, Workout, WorkoutExercise  # noqa: F401
 from app.routers import (
+    admin_router,
     auth_router,
     chat_router,
     dashboard_router,
@@ -68,6 +69,7 @@ async def add_security_headers(request: Request, call_next):
 
 
 app.include_router(auth_router)
+app.include_router(admin_router)
 app.include_router(users_router)
 app.include_router(exercises_router)
 app.include_router(workout_router)

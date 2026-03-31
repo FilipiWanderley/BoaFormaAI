@@ -220,6 +220,10 @@ Dependências principais (arquivo `frontend/package.json`):
 - `GET /exercises` — lista com filtros e paginação (`limit`, `offset`)
 - `GET /exercises/compatible` — exercícios compatíveis com paginação (`limit`, `offset`)
 - `GET /exercises/{exercise_id}` — detalhe do exercício
+- `GET /admin/exercises` — curadoria (admin)
+- `POST /admin/exercises` — criar exercício (admin)
+- `PATCH /admin/exercises/{exercise_id}` — editar exercício (admin)
+- `DELETE /admin/exercises/{exercise_id}` — remover exercício (admin)
 
 Observação de domínio: a biblioteca atual contém **1000 exercícios** com **16 grupos musculares**.
 
@@ -452,4 +456,4 @@ cd backend
 
 ## Pendências principais (próximos passos)
 
-- Adicionar painel/admin para curadoria da Exercise Library em escala.
+- Evoluir painel/admin com busca avançada, edição em lote e trilha de auditoria.
