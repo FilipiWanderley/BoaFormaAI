@@ -456,7 +456,7 @@ O sistema deve validar que:
 - [x] Banco persistente
 - [x] UI moderna
 - [x] README profissional
-- [ ] Deploy (opcional)
+- [x] Deploy (opcional)
 
 ---
 
