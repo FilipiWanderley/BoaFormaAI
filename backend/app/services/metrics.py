@@ -10,6 +10,7 @@ class MetricsStore:
         self._request_count = 0
         self._error_count = 0
         self._ai_calls = 0
+        self._pwa_events = defaultdict(int)
         self._latency_sum_ms = defaultdict(float)
         self._latency_count = defaultdict(int)
 
@@ -25,6 +26,10 @@ class MetricsStore:
         with self._lock:
             self._ai_calls += 1
 
+    def track_pwa_event(self, event: str) -> None:
+        with self._lock:
+            self._pwa_events[event] += 1
+
     def snapshot(self) -> dict:
         with self._lock:
             by_endpoint = {}
@@ -36,6 +41,7 @@ class MetricsStore:
                 "request_count": self._request_count,
                 "error_count": self._error_count,
                 "ai_usage_count": self._ai_calls,
+                "pwa_events": dict(self._pwa_events),
                 "endpoints": by_endpoint,
             }
 

@@ -29,6 +29,7 @@ class ApiDocsTests(unittest.TestCase):
             "/chat",
             "/exercises/compatible",
             "/ops/metrics",
+            "/ops/pwa-events",
         ]:
             self.assertIn(route, paths)
 
@@ -40,7 +41,16 @@ class ApiDocsTests(unittest.TestCase):
         self.assertIn("request_count", payload)
         self.assertIn("error_count", payload)
         self.assertIn("ai_usage_count", payload)
+        self.assertIn("pwa_events", payload)
         self.assertIn("endpoints", payload)
+
+    def test_pwa_events_are_tracked(self) -> None:
+        event_response = self.client.post("/ops/pwa-events", json={"event": "install_prompt_shown"})
+        self.assertEqual(event_response.status_code, 204)
+        metrics_response = self.client.get("/ops/metrics")
+        self.assertEqual(metrics_response.status_code, 200)
+        payload = metrics_response.json()
+        self.assertGreaterEqual(payload.get("pwa_events", {}).get("install_prompt_shown", 0), 1)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { trackPwaEvent } from '../../services/pwaMetrics.service'
 
 type DeferredInstallPromptEvent = Event & {
   prompt: () => Promise<void>
@@ -14,11 +15,13 @@ export function InstallPrompt() {
       event.preventDefault()
       setDeferredPrompt(event as DeferredInstallPromptEvent)
       setVisible(true)
+      void trackPwaEvent('install_prompt_shown')
     }
 
     const handleInstalled = () => {
       setDeferredPrompt(null)
       setVisible(false)
+      void trackPwaEvent('app_installed')
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -36,7 +39,12 @@ export function InstallPrompt() {
 
   const install = async () => {
     await deferredPrompt.prompt()
-    await deferredPrompt.userChoice
+    const choice = await deferredPrompt.userChoice
+    if (choice.outcome === 'accepted') {
+      void trackPwaEvent('install_accepted')
+    } else {
+      void trackPwaEvent('install_dismissed')
+    }
     setDeferredPrompt(null)
     setVisible(false)
   }
@@ -50,7 +58,10 @@ export function InstallPrompt() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setVisible(false)}
+            onClick={() => {
+              void trackPwaEvent('install_dismissed')
+              setVisible(false)
+            }}
             className="h-9 rounded-lg border border-white/10 px-3 text-xs text-text-muted"
           >
             Agora não

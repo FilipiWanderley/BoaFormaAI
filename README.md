@@ -404,6 +404,15 @@ cd backend
 - Exclusão de conta disponível no perfil
 - Retenção/minimização documentadas em `PRIVACY_POLICY.md`
 
+## PWA (métricas de engajamento)
+
+- Eventos rastreados em `/ops/pwa-events`:
+  - `install_prompt_shown`
+  - `install_accepted`
+  - `install_dismissed`
+  - `app_installed`
+- Métricas consolidadas em `/ops/metrics` no campo `pwa_events`
+
 ## Custos (guardrails)
 
 Validação de orçamento mensal:
@@ -443,5 +452,4 @@ cd backend
 
 ## Pendências principais (próximos passos)
 
-- Consolidar métricas de instalação/engajamento do PWA para evolução de produto.
 - Adicionar painel/admin para curadoria da Exercise Library em escala.
