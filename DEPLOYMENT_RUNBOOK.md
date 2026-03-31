@@ -60,3 +60,20 @@ git log --oneline -n 20
   - indisponibilidade por 2 checagens consecutivas
   - erro HTTP 5xx acima de limiar
   - latência média degradada em endpoints críticos
+
+## Backup e recuperação
+
+- Política operacional: `BACKUP_POLICY.md`
+- Comando de backup (Postgres):
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.db_maintenance backup --output ./backups --retention-days 30
+```
+
+- Comando de restore (Postgres):
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.db_maintenance restore --input ./backups/boaforma_pg_YYYYMMDD_HHMMSS.dump --clean
+```

@@ -332,6 +332,7 @@ Arquivo de configuração:
 - `deploy/render.production.yaml` (template produção em Render)
 - `DEPLOYMENT_RUNBOOK.md` (sequência de release, smoke e rollback)
 - `OBSERVABILITY_ALERTING.md` (monitoramento de uptime e alertas de latência/erro)
+- `BACKUP_POLICY.md` (política de backup/restore e retenção)
 
 ## Operação de banco (SQLite local)
 

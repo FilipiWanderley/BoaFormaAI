@@ -691,7 +691,7 @@ Boas práticas:
 - [x] Configurar `DATABASE_URL` para Postgres em produção
 - [x] Criar migration com índices estratégicos
 - [x] Validar SSL no driver/conexão de banco
-- [ ] Configurar política de backup e restore testado
+- [x] Configurar política de backup e restore testado
 - [ ] Revisar endpoints para paginação consistente
 
 ---
@@ -799,7 +799,7 @@ Estratégia de deploy e separação de ambientes.
 
 - [ ] Criar ambiente de staging completo
 - [x] Configurar pipeline CI/CD com gates de qualidade
-- [ ] Definir estratégia de rollback
+- [x] Definir estratégia de rollback
 - [x] Separar segredos por ambiente (dev/staging/prod)
 
 ---
@@ -867,7 +867,7 @@ Transformar o sistema em app instalável sem loja.
 
 - [ ] Definir suíte de testes de carga
 - [ ] Definir suíte de segurança (OWASP básico)
-- [ ] Automatizar smoke tests de produção
+- [x] Automatizar smoke tests de produção
 - [ ] Definir critérios de aceitação por ambiente
 
 ---
