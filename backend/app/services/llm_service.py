@@ -20,6 +20,7 @@ from app.config import settings
 from app.models.exercise import Exercise
 from app.models.user import User
 from app.schemas.workout import WorkoutGenerateRequest, _LLMWorkout
+from app.services.llm_resilience import execute_with_retry
 from app.services.metrics import metrics_store
 
 # ---------------------------------------------------------------------------
@@ -209,7 +210,7 @@ def call_groq_for_workout(
     user_prompt = _build_user_prompt(user, exercises, request, history_context)
     valid_ids = {ex.id for ex in exercises}
 
-    try:
+    def _attempt() -> _LLMWorkout:
         metrics_store.track_ai_call()
         completion = client.chat.completions.create(
             model=settings.groq_model,
@@ -218,30 +219,68 @@ def call_groq_for_workout(
                 {"role": "user", "content": user_prompt},
             ],
             response_format={"type": "json_object"},
-            temperature=0.4,  # low enough for consistent structure, high enough for variety
+            temperature=0.4,
             max_tokens=2048,
         )
+        raw_content = completion.choices[0].message.content or ""
+        json_str = _extract_json(raw_content)
+        data = json.loads(json_str)
+        llm_workout = _LLMWorkout.model_validate(data)
+        _validate_exercise_ids(llm_workout, valid_ids)
+        _validate_workout_quality(llm_workout, request.duration_minutes)
+        return llm_workout
+
+    try:
+        return execute_with_retry(
+            _attempt,
+            timeout_seconds=float(settings.llm_timeout_seconds),
+            max_retries=settings.llm_max_retries,
+            backoff_seconds=float(settings.llm_retry_backoff_seconds),
+        )
     except Exception as exc:
+        if settings.llm_enable_fallback:
+            return _build_fallback_workout(exercises, request)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=f"Falha na comunicação com o serviço de IA: {exc}",
         )
 
-    raw_content = completion.choices[0].message.content or ""
 
-    try:
-        json_str = _extract_json(raw_content)
-        data = json.loads(json_str)
-        llm_workout = _LLMWorkout.model_validate(data)
-    except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"A IA retornou uma resposta inválida. Tente novamente. ({exc})",
-        )
+def _build_fallback_workout(exercises: List[Exercise], request: WorkoutGenerateRequest) -> _LLMWorkout:
+    selected = exercises[: min(6, len(exercises))]
+    if len(selected) < 4:
+        selected = exercises[:4]
 
-    _validate_exercise_ids(llm_workout, valid_ids)
-    _validate_workout_quality(llm_workout, request.duration_minutes)
-    return llm_workout
+    goal = request.feedback_on_last or "ok"
+    if goal == "dificil":
+        sets, reps, rest = 3, "10-12", 75
+    elif goal == "facil":
+        sets, reps, rest = 4, "8-12", 60
+    else:
+        sets, reps, rest = 3, "10-12", 60
+
+    workout_exercises = [
+        {
+            "exercise_id": ex.id,
+            "exercise_name": ex.name,
+            "sets": sets,
+            "reps": reps,
+            "rest_seconds": rest,
+            "notes": "Treino gerado em modo de contingência. Ajuste carga conforme percepção de esforço.",
+        }
+        for ex in selected
+    ]
+
+    estimated = min(max(request.duration_minutes, 20), 120)
+    return _LLMWorkout.model_validate(
+        {
+            "workout_name": "Treino Base de Contingência",
+            "focus": "Plano temporário gerado automaticamente para manter a consistência do treino.",
+            "estimated_duration_minutes": estimated,
+            "exercises": workout_exercises,
+            "general_tips": "Mantenha técnica estrita e interrompa se houver dor aguda.",
+        }
+    )
 
 
 # ---------------------------------------------------------------------------

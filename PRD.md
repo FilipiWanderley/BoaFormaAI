@@ -728,10 +728,10 @@ Garantir que o sistema suporte crescimento de usuários.
 
 ### Checklist de implementação
 
-- [ ] Configurar timeout e retry com política clara no serviço de IA
+- [x] Configurar timeout e retry com política clara no serviço de IA
 - [ ] Configurar pool de conexões para produção
-- [ ] Definir fallback funcional para indisponibilidade do LLM
-- [ ] Medir latência por endpoint crítico
+- [x] Definir fallback funcional para indisponibilidade do LLM
+- [x] Medir latência por endpoint crítico
 
 ---
 

@@ -36,6 +36,8 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Geração de treino com IA:
   - Integração com Groq
   - Prompt estruturado com regras de segurança
+  - Timeout e retry com backoff para resiliência
+  - Fallback automático de treino quando o LLM está indisponível
   - Uso obrigatório de exercícios da base (sem invenção)
   - Validação de IDs retornados pela IA
   - Persistência do treino e seus exercícios selecionados
@@ -265,6 +267,10 @@ Criar `.env` baseado no `.env.example` com:
 - `CHAT_RATE_WINDOW_SECONDS`
 - `WORKOUT_RATE_LIMIT`
 - `WORKOUT_RATE_WINDOW_SECONDS`
+- `LLM_TIMEOUT_SECONDS`
+- `LLM_MAX_RETRIES`
+- `LLM_RETRY_BACKOFF_SECONDS`
+- `LLM_ENABLE_FALLBACK`
 - `GROQ_API_KEY`
 - `GROQ_MODEL`
 

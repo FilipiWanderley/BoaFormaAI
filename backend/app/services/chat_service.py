@@ -20,6 +20,7 @@ from app.models.user import User
 from app.models.workout import History, Workout
 from app.schemas.chat import ChatMessageResponse, ChatResponse
 from app.services.llm_service import _get_client, _sanitize
+from app.services.llm_resilience import execute_with_retry
 from app.services.metrics import metrics_store
 
 MEMORY_WINDOW = 10  # number of past messages sent as context
@@ -118,7 +119,7 @@ def chat(db: Session, user: User, message: str) -> ChatResponse:
     history = _load_recent_messages(db, user.id)
     messages = _to_groq_messages(system_prompt, history, message)
 
-    try:
+    def _attempt() -> str:
         metrics_store.track_ai_call()
         completion = client.chat.completions.create(
             model=settings.groq_model,
@@ -126,13 +127,25 @@ def chat(db: Session, user: User, message: str) -> ChatResponse:
             temperature=0.7,
             max_tokens=1024,
         )
-    except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Falha na comunicação com o serviço de IA: {exc}",
-        )
+        return completion.choices[0].message.content or ""
 
-    reply_text = completion.choices[0].message.content or ""
+    try:
+        reply_text = execute_with_retry(
+            _attempt,
+            timeout_seconds=float(settings.llm_timeout_seconds),
+            max_retries=settings.llm_max_retries,
+            backoff_seconds=float(settings.llm_retry_backoff_seconds),
+        )
+    except Exception as exc:
+        if not settings.llm_enable_fallback:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Falha na comunicação com o serviço de IA: {exc}",
+            )
+        reply_text = (
+            "Estou com instabilidade temporária no serviço de IA. "
+            "Posso continuar com orientações básicas de treino e segurança enquanto normaliza."
+        )
     assistant_record = _save_turn(db, user.id, message, reply_text)
 
     # Reload the full window so the response includes the saved turn

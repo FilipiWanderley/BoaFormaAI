@@ -43,6 +43,16 @@ class _FakeCompletions:
         return _FakeCompletion(payload)
 
 
+class _AlwaysFailCompletions:
+    def create(self, **_kwargs):
+        raise RuntimeError("llm unavailable")
+
+
+class _AlwaysFailGroqClient:
+    def __init__(self) -> None:
+        self.chat = SimpleNamespace(completions=_AlwaysFailCompletions())
+
+
 class _FakeChat:
     def __init__(self) -> None:
         self.completions = _FakeCompletions()
@@ -139,6 +149,30 @@ class LlmServiceTests(unittest.TestCase):
         self.assertIn("diferença máxima de 15 minutos", prompt)
         self.assertIn("Não repita exercise_id", prompt)
         self.assertIn("Treinos concluídos no total: 6", prompt)
+
+    def test_call_groq_for_workout_uses_fallback_when_llm_fails(self) -> None:
+        user = SimpleNamespace(
+            goal="hipertrofia",
+            level="intermediario",
+            restrictions="nenhuma",
+            weight_kg=80,
+            height_cm=178,
+        )
+        exercises = [
+            SimpleNamespace(id=1, name="Supino", muscle_group="peito", equipment="barra", level="intermediario"),
+            SimpleNamespace(id=2, name="Remada", muscle_group="costas", equipment="barra", level="intermediario"),
+            SimpleNamespace(id=3, name="Desenvolvimento", muscle_group="ombros", equipment="haltere", level="intermediario"),
+            SimpleNamespace(id=4, name="Rosca", muscle_group="biceps", equipment="haltere", level="intermediario"),
+            SimpleNamespace(id=5, name="Tríceps Corda", muscle_group="triceps", equipment="cabo", level="intermediario"),
+        ]
+        request = WorkoutGenerateRequest(duration_minutes=45)
+
+        with patch("app.services.llm_service._get_client", return_value=_AlwaysFailGroqClient()):
+            with patch("app.services.llm_service.settings.llm_enable_fallback", True):
+                workout = call_groq_for_workout(user, exercises, request)
+
+        self.assertEqual(workout.workout_name, "Treino Base de Contingência")
+        self.assertGreaterEqual(len(workout.exercises), 4)
 
 
 if __name__ == "__main__":

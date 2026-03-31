@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     chat_rate_window_seconds: int = 60
     workout_rate_limit: int = 30
     workout_rate_window_seconds: int = 60
+    llm_timeout_seconds: int = 20
+    llm_max_retries: int = 2
+    llm_retry_backoff_seconds: float = 0.6
+    llm_enable_fallback: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
