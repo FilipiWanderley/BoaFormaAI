@@ -457,3 +457,89 @@ O sistema deve validar que:
 - [x] UI moderna
 - [x] README profissional
 - [ ] Deploy (opcional)
+
+---
+
+## 16. Responsividade e Experiência Mobile Web
+
+### Descrição
+
+A plataforma deve ser desenvolvida com abordagem **responsive web**, garantindo funcionamento adequado em **desktop, tablet e smartphones**, sem necessidade inicial de publicação em lojas como App Store ou Google Play.
+
+O produto deve oferecer uma experiência consistente e adaptada para diferentes tamanhos de tela, permitindo que o aluno utilize o sistema diretamente pelo navegador do celular com usabilidade, legibilidade e navegação adequadas.
+
+### Objetivos
+
+- Garantir acesso completo ao sistema em dispositivos móveis
+- Adaptar todas as telas para diferentes resoluções
+- Melhorar usabilidade em navegação por toque
+- Permitir uso do sistema como mobile web
+- Preparar base futura para possível evolução para PWA
+
+### Regras obrigatórias
+
+- ✅ Todas as telas devem ser totalmente responsivas
+- ✅ O sistema deve funcionar em desktop, tablet e mobile
+- ✅ Componentes devem se adaptar sem quebrar layout
+- ✅ Botões, inputs e áreas clicáveis devem ser adequados para toque
+- ✅ Textos devem manter legibilidade em telas menores
+- ✅ Menus e navegação devem ser simplificados no mobile
+- ❌ Não depender exclusivamente de interface desktop
+- ❌ Não permitir overflow horizontal ou elementos fora da tela
+
+### Escopo de responsividade
+
+As seguintes telas devem obrigatoriamente possuir versão responsiva:
+
+- Login
+- Dashboard
+- Treino
+- Chat com IA
+- Histórico
+- Perfil
+
+### Requisitos de UI/UX
+
+- Layout com adaptação para múltiplos breakpoints
+- Grid e espaçamentos fluidos
+- Navegação otimizada para touch
+- Sidebar convertida em menu mobile quando necessário
+- Cards, tabelas e listas adaptados para telas pequenas
+- Formulários com boa usabilidade em celular
+- Prioridade para performance e carregamento leve no mobile
+
+### Breakpoints sugeridos
+
+- Mobile: até 767px
+- Tablet: 768px até 1023px
+- Desktop: 1024px ou mais
+
+### Estratégia técnica
+
+A interface frontend deve ser construída com princípios de responsividade desde a base, utilizando:
+
+- Media queries
+- Layout flexível
+- Grid responsivo
+- Componentes reutilizáveis adaptáveis
+- Abordagem mobile-first sempre que possível
+
+### Checklist de implementação
+
+- [ ] Definir estratégia responsiva do frontend
+- [ ] Adaptar layout global para mobile
+- [ ] Criar breakpoints padrão do projeto
+- [ ] Ajustar navbar/menu para telas pequenas
+- [ ] Validar telas de login, dashboard, treino, chat, histórico e perfil no mobile
+- [ ] Ajustar formulários para toque
+- [ ] Garantir legibilidade tipográfica em telas pequenas
+- [ ] Corrigir overflow horizontal
+- [ ] Testar responsividade em diferentes resoluções
+- [ ] Validar experiência mobile web completa
+
+### Evolução futura
+
+- Transformar a aplicação em PWA
+- Permitir adicionar à tela inicial do celular
+- Melhorar experiência semelhante a app nativo
+- Avaliar publicação futura em lojas móveis
