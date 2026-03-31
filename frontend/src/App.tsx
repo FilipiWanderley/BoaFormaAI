@@ -8,10 +8,12 @@ import { WorkoutPage } from './pages/WorkoutPage'
 import { ChatPage } from './pages/ChatPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { InstallPrompt } from './components/ui/InstallPrompt'
 
 export default function App() {
   return (
     <BrowserRouter>
+      <InstallPrompt />
       <Routes>
         {/* Public */}
         <Route path="/login" element={<LoginPage />} />

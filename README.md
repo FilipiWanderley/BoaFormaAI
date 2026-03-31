@@ -92,7 +92,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Layout base com sidebar e componentes reutilizáveis de UI.
 - Biblioteca compatível de exercícios integrada na tela de treino (com imagem/fallback e filtros ativos).
 - Base URL da API configurável por ambiente (`VITE_API_BASE_URL`).
-- Base inicial para evolução PWA (manifest + service worker de cache estático em produção).
+- PWA com cache offline robusto (app shell + runtime cache) e prompt de instalação guiado.
 - Responsividade mobile-first aplicada (menu mobile, grids adaptáveis e ajuste de touch targets).
 - Estilização com Tailwind CSS + design escuro moderno.
 - Build de produção funcional com Vite.
@@ -384,5 +384,5 @@ cd backend
 ## Pendências principais (próximos passos)
 
 - Definir pipeline de CI com lint/typecheck/test automatizados.
-- Evoluir service worker para estratégia offline mais robusta (cache versionado por assets críticos).
+- Consolidar métricas de instalação/engajamento do PWA para evolução de produto.
 - Adicionar painel/admin para curadoria da Exercise Library em escala.

@@ -849,8 +849,8 @@ Transformar o sistema em app instalável sem loja.
 ### Checklist de evolução
 
 - [x] Base inicial de manifest e service worker
-- [ ] Estratégia de cache offline robusta
-- [ ] UX de instalação guiada (prompt install)
+- [x] Estratégia de cache offline robusta
+- [x] UX de instalação guiada (prompt install)
 
 ---
 
