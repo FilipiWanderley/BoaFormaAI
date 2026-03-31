@@ -1,5 +1,6 @@
 import time
 import unittest
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -115,6 +116,39 @@ class ApiAuthFlowTests(unittest.TestCase):
             json={"email": email, "password": "senhaerrada"},
         )
         self.assertEqual(blocked_response.status_code, 423)
+
+    def test_google_login_creates_and_links_user(self) -> None:
+        google_claims = {"email": self._unique_email(), "name": "Google User", "sub": "google-sub-1"}
+        with patch("app.routers.auth.verify_google_credential", return_value=google_claims):
+            first = self.client.post("/auth/google", json={"token": "valid-token"})
+        self.assertEqual(first.status_code, 200)
+        body = first.json()
+        self.assertTrue(body.get("access_token"))
+        self.assertTrue(body.get("refresh_token"))
+        self.assertEqual(body["user"]["email"], google_claims["email"])
+        self.assertEqual(body["user"]["provider"], "google")
+
+        password = "SenhaForte@123"
+        register_payload = {
+            "name": "Pessoa Vinculada",
+            "email": self._unique_email(),
+            "password": password,
+            "age": 28,
+            "weight_kg": 74,
+            "height_cm": 173,
+            "goal": "hipertrofia",
+            "level": "intermediario",
+            "restrictions": "nenhuma",
+        }
+        self.client.post("/users", json=register_payload)
+
+        linked_claims = {"email": register_payload["email"], "name": register_payload["name"], "sub": "google-sub-2"}
+        with patch("app.routers.auth.verify_google_credential", return_value=linked_claims):
+            linked = self.client.post("/auth/google", json={"token": "valid-token-2"})
+        self.assertEqual(linked.status_code, 200)
+        linked_user = linked.json()["user"]
+        self.assertEqual(linked_user["email"], register_payload["email"])
+        self.assertEqual(linked_user["provider"], "google")
 
 
 if __name__ == "__main__":

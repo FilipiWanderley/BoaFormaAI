@@ -21,6 +21,7 @@ class ApiDocsTests(unittest.TestCase):
         for route in [
             "/auth/login",
             "/auth/refresh",
+            "/auth/google",
             "/users",
             "/dashboard",
             "/workout/generate",

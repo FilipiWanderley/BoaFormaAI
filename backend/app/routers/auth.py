@@ -5,7 +5,15 @@ from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.auth import LoginRequest, LogoutRequest, RefreshTokenRequest, TokenResponse
+from app.schemas.auth import (
+    GoogleAuthRequest,
+    GoogleAuthResponse,
+    LoginRequest,
+    LogoutRequest,
+    RefreshTokenRequest,
+    TokenResponse,
+)
+from app.schemas.user import UserResponse
 from app.services.audit import log_event
 from app.services.auth import (
     authenticate_user,
@@ -13,8 +21,10 @@ from app.services.auth import (
     revoke_refresh_token,
     rotate_refresh_token,
 )
+from app.services.google_auth import verify_google_credential
 from app.services.login_guard import login_guard
 from app.services.rate_limit import client_ip, enforce_rate_limit
+from app.services.user import get_by_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -82,3 +92,52 @@ def logout(
 ) -> None:
     revoked = revoke_refresh_token(db, body.refresh_token, current_user.id)
     log_event("auth_logout", user_id=current_user.id, revoked=revoked)
+
+
+@router.post("/google", response_model=GoogleAuthResponse)
+def google_login(
+    body: GoogleAuthRequest,
+    db: Session = Depends(get_db),
+) -> GoogleAuthResponse:
+    claims = verify_google_credential(body.token)
+    email = str(claims.get("email", "")).strip().lower()
+    name = str(claims.get("name", "")).strip() or email.split("@")[0]
+    provider_id = str(claims.get("sub", "")).strip()
+
+    user = get_by_email(db, email)
+    if user is None:
+        user = User(
+            name=name,
+            email=email,
+            hashed_password=None,
+            provider="google",
+            provider_id=provider_id,
+            age=settings.social_default_age,
+            weight_kg=settings.social_default_weight_kg,
+            height_cm=settings.social_default_height_cm,
+            goal=settings.social_default_goal,
+            level=settings.social_default_level,
+            restrictions=None,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        log_event("auth_google_user_created", user_id=user.id, email=email)
+    else:
+        if user.provider_id and user.provider_id != provider_id:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Conta já vinculada a outro provedor Google.",
+            )
+        user.provider = "google" if user.provider == "email" else user.provider
+        user.provider_id = provider_id
+        db.commit()
+        db.refresh(user)
+        log_event("auth_google_user_linked", user_id=user.id, email=email)
+
+    access_token, refresh_token = issue_token_pair(db, user.id)
+    return GoogleAuthResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        user=UserResponse.model_validate(user),
+    )

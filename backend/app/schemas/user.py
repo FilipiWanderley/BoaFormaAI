@@ -32,6 +32,8 @@ class UserResponse(BaseModel):
     goal: str
     level: str
     restrictions: Optional[str]
+    provider: str
+    provider_id: Optional[str]
 
     model_config = {"from_attributes": True}
 

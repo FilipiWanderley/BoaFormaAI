@@ -18,7 +18,7 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      useAuthStore.getState().logout()
+      useAuthStore.getState().setSessionExpired()
       window.location.href = '/login'
     }
     return Promise.reject(err)

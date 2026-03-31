@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -19,7 +19,37 @@ const inputCls = "w-full bg-surface-3 border border-white/[0.08] rounded-xl px-4
 export function LoginPage() {
   const navigate  = useNavigate()
   const login     = useAuthStore((s) => s.login)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const status = useAuthStore((s) => s.status)
+  const authError = useAuthStore((s) => s.error)
+  const setAuthenticating = useAuthStore((s) => s.setAuthenticating)
+  const setAuthError = useAuthStore((s) => s.setAuthError)
   const [showForm, setShowForm] = useState(false)
+  const [googleReady, setGoogleReady] = useState(false)
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
+
+  useEffect(() => {
+    if (!googleClientId) return
+    const scriptId = 'google-identity-services'
+    const existing = document.getElementById(scriptId) as HTMLScriptElement | null
+    if (existing) {
+      setGoogleReady(true)
+      return
+    }
+    const script = document.createElement('script')
+    script.id = scriptId
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => setGoogleReady(true)
+    document.head.appendChild(script)
+  }, [googleClientId])
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -27,15 +57,45 @@ export function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
+      setAuthenticating()
       const token = await authService.login(data.email, data.password)
       const user  = await authService.me(token.access_token)
       return { token, user }
     },
     onSuccess: ({ token, user }) => {
-      login(token.access_token, user)
+      login(token.access_token, token.refresh_token, user)
       navigate('/dashboard')
     },
+    onError: () => {
+      setAuthError('Email ou senha inválidos.')
+    },
   })
+
+  const handleGoogleLogin = () => {
+    if (!googleClientId || !googleReady || !(window as any).google?.accounts?.id) {
+      setAuthError('Login Google indisponível no momento.')
+      return
+    }
+    setAuthenticating()
+    ;(window as any).google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: async (response: { credential?: string }) => {
+        try {
+          if (!response.credential) {
+            setAuthError('Falha na autenticação com Google.')
+            return
+          }
+          const result = await authService.googleLogin(response.credential)
+          login(result.access_token, result.refresh_token, result.user)
+          navigate('/dashboard')
+        } catch {
+          setAuthError('Falha na autenticação com Google.')
+        }
+      },
+      ux_mode: 'popup',
+    })
+    ;(window as any).google.accounts.id.prompt()
+  }
 
   return (
     <div className="min-h-screen flex bg-surface-0">
@@ -119,28 +179,37 @@ export function LoginPage() {
                 {errors.password && <p className="text-[11px] text-red-400 mt-1">{errors.password.message}</p>}
               </div>
 
-              {mutation.isError && (
-                <p className="text-[13px] text-red-400/80 text-center pt-1">Email ou senha incorretos.</p>
+              {(mutation.isError || status === 'erro_autenticacao' || status === 'sessao_expirada') && (
+                <p className="text-[13px] text-red-400/80 text-center pt-1">{authError || 'Falha na autenticação.'}</p>
               )}
 
               <button
                 onClick={handleSubmit((d) => mutation.mutate(d))}
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || status === 'autenticando'}
                 className="mt-1 w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium text-white transition-colors disabled:opacity-50"
               >
-                {mutation.isPending ? 'Entrando...' : (
+                {mutation.isPending || status === 'autenticando' ? 'Entrando...' : (
                   <>Entrar <ArrowRight className="w-4 h-4" /></>
                 )}
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => setShowForm(true)}
-              className="w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium text-white transition-colors mb-5"
-            >
-              <Mail className="w-4 h-4" />
-              Entrar com Email
-            </button>
+            <div className="flex flex-col gap-3 mb-5">
+              <button
+                onClick={handleGoogleLogin}
+                disabled={!googleClientId || status === 'autenticando'}
+                className="w-full h-[44px] bg-white text-black rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium transition-colors disabled:opacity-50"
+              >
+                Continuar com Google
+              </button>
+              <button
+                onClick={() => setShowForm(true)}
+                className="w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium text-white transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                Entrar com Email
+              </button>
+            </div>
           )}
 
           <Link

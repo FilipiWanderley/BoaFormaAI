@@ -1080,15 +1080,15 @@ Fluxo:
 
 - [ ] Criar credenciais no Google Cloud Console
 - [ ] Configurar OAuth Client ID
-- [ ] Implementar botão no frontend
-- [ ] Integrar Google Identity Services
-- [ ] Criar endpoint `/auth/google`
-- [ ] Validar token no backend
-- [ ] Implementar lógica de criação/vinculação de usuário
-- [ ] Gerar JWT após autenticação
-- [ ] Testar fluxo completo
-- [ ] Testar casos de usuário existente
-- [ ] Garantir ausência de duplicação de contas
+- [x] Implementar botão no frontend
+- [x] Integrar Google Identity Services
+- [x] Criar endpoint `/auth/google`
+- [x] Validar token no backend
+- [x] Implementar lógica de criação/vinculação de usuário
+- [x] Gerar JWT após autenticação
+- [x] Testar fluxo completo
+- [x] Testar casos de usuário existente
+- [x] Garantir ausência de duplicação de contas
 
 ### Evolução futura
 
@@ -1283,13 +1283,13 @@ Comportamento:
 
 ### Checklist de implementação
 
-- [ ] Definir estados globais de autenticação
-- [ ] Implementar controle de sessão no frontend
-- [ ] Criar interceptador para respostas 401
-- [ ] Implementar redirecionamentos automáticos
-- [ ] Garantir persistência de sessão
-- [ ] Tratar erros de login
-- [ ] Testar fluxo completo
+- [x] Definir estados globais de autenticação
+- [x] Implementar controle de sessão no frontend
+- [x] Criar interceptador para respostas 401
+- [x] Implementar redirecionamentos automáticos
+- [x] Garantir persistência de sessão
+- [x] Tratar erros de login
+- [x] Testar fluxo completo
 - [ ] Validar UX em mobile
 
 ### Evolução futura

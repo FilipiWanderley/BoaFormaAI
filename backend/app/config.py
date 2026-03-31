@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     llm_max_retries: int = 2
     llm_retry_backoff_seconds: float = 0.6
     llm_enable_fallback: bool = True
+    google_oauth_client_id: str = ""
+    social_default_age: int = 25
+    social_default_weight_kg: float = 70
+    social_default_height_cm: float = 170
+    social_default_goal: str = "saude"
+    social_default_level: str = "iniciante"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

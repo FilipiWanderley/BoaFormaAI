@@ -2,8 +2,16 @@
 
 export interface TokenResponse {
   access_token: string
+  refresh_token: string
   token_type: string
 }
+
+export type AuthStatus =
+  | 'nao_autenticado'
+  | 'autenticando'
+  | 'autenticado'
+  | 'sessao_expirada'
+  | 'erro_autenticacao'
 
 // ── User ────────────────────────────────────────────────────────────────────
 
@@ -19,6 +27,8 @@ export interface UserResponse {
   goal: string
   level: Level
   restrictions: string | null
+  provider: 'email' | 'google'
+  provider_id: string | null
 }
 
 export interface UserCreate {

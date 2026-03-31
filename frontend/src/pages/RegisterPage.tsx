@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -42,7 +42,14 @@ const FEATURES = [
 export function RegisterPage() {
   const navigate  = useNavigate()
   const login     = useAuthStore((s) => s.login)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [step, setStep] = useState<1 | 2>(1)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
 
   const { register, handleSubmit, formState: { errors }, trigger } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -57,7 +64,7 @@ export function RegisterPage() {
       return { token, user }
     },
     onSuccess: ({ token, user }) => {
-      login(token.access_token, user)
+      login(token.access_token, token.refresh_token, user)
       navigate('/dashboard')
     },
   })

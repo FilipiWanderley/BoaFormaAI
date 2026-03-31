@@ -19,6 +19,11 @@ export const authService = {
     return data
   },
 
+  googleLogin: async (token: string): Promise<{ access_token: string; refresh_token: string; token_type: string; user: UserResponse }> => {
+    const { data } = await api.post('/auth/google', { token })
+    return data
+  },
+
   updateMe: async (payload: Partial<UserCreate>): Promise<UserResponse> => {
     const { data } = await api.patch<UserResponse>('/users/me', payload)
     return data

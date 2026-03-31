@@ -28,6 +28,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Autenticação completa:
   - Cadastro de usuário
   - Login com JWT
+  - Login social com Google (`/auth/google`)
   - Refresh token com rotação e revogação
   - Bloqueio temporário após tentativas inválidas consecutivas
   - Hash de senha com bcrypt
@@ -200,6 +201,7 @@ Dependências principais (arquivo `frontend/package.json`):
 
 - `POST /users` — cadastro
 - `POST /auth/login` — login
+- `POST /auth/google` — login social com Google
 - `POST /auth/refresh` — renovar sessão com refresh token
 - `POST /auth/logout` — invalidar refresh token
 - `GET /users/me` — dados do usuário autenticado
@@ -271,6 +273,12 @@ Criar `.env` baseado no `.env.example` com:
 - `LLM_MAX_RETRIES`
 - `LLM_RETRY_BACKOFF_SECONDS`
 - `LLM_ENABLE_FALLBACK`
+- `GOOGLE_OAUTH_CLIENT_ID`
+- `SOCIAL_DEFAULT_AGE`
+- `SOCIAL_DEFAULT_WEIGHT_KG`
+- `SOCIAL_DEFAULT_HEIGHT_CM`
+- `SOCIAL_DEFAULT_GOAL`
+- `SOCIAL_DEFAULT_LEVEL`
 - `GROQ_API_KEY`
 - `GROQ_MODEL`
 
