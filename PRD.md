@@ -1304,3 +1304,169 @@ Comportamento:
 Autenticação não é apenas login — é o controle completo do estado do usuário dentro da aplicação.
 
 Um fluxo mal definido pode gerar bugs críticos, problemas de segurança e má experiência do usuário.
+
+---
+
+## 32. Checklist de Go-Live em Produção
+
+### Descrição
+
+Checklist final obrigatório para validação antes da liberação do sistema para uso real pelos alunos da academia.
+
+Esta seção garante que o sistema não apenas foi desenvolvido, mas também está operacional, seguro e estável em ambiente de produção.
+
+### Objetivos
+
+- Validar ambiente real de produção
+- Reduzir risco de falhas após lançamento
+- Garantir estabilidade para usuários reais
+- Confirmar que todos os sistemas críticos estão funcionando
+
+### 🌐 1. Infraestrutura e Deploy
+
+- [ ] Domínio configurado (`app.academia.com`)
+- [ ] API publicada (`api.academia.com`)
+- [ ] HTTPS ativo e válido
+- [ ] DNS configurado corretamente
+- [ ] Frontend acessível publicamente
+- [ ] Backend acessível publicamente
+- [ ] Variáveis de ambiente configuradas
+- [ ] CORS configurado para domínio final
+- [ ] WAF ativo (Cloudflare)
+
+### 🗄️ 2. Banco de Dados
+
+- [ ] Banco em produção utilizando PostgreSQL
+- [ ] Conexão segura (SSL)
+- [ ] Dados persistindo corretamente
+- [ ] Índices aplicados
+- [ ] Teste de leitura e escrita validado
+- [ ] Nenhuma dependência de SQLite em produção
+
+### 🔐 3. Segurança
+
+- [ ] Login protegido contra brute force
+- [ ] Rate limit ativo (login, chat, geração de treino)
+- [ ] JWT com expiração configurada
+- [ ] Refresh token implementado (se aplicável)
+- [ ] Senhas com hash bcrypt
+- [ ] CORS restrito corretamente
+- [ ] Headers de segurança aplicados
+- [ ] Tokens e secrets protegidos (env vars)
+- [ ] Validação de input em todos endpoints
+- [ ] Teste de acesso não autorizado (rotas protegidas)
+
+### 🔑 4. Autenticação (Email + Google)
+
+- [ ] Login com email + senha funcionando
+- [ ] Login com Google funcionando
+- [ ] Token do Google validado no backend
+- [ ] Não há duplicação de contas por email
+- [ ] Vinculação de contas funcionando
+- [ ] Fluxo completo testado (login → dashboard)
+
+### 🤖 5. IA (Treino e Chat)
+
+- [ ] Geração de treino funcionando
+- [ ] IA utilizando apenas exercícios da base
+- [ ] Estrutura JSON validada antes de salvar
+- [ ] Chat funcionando com memória básica
+- [ ] Timeout configurado para chamadas IA
+- [ ] Tratamento de erro da IA implementado
+- [ ] Sistema funcional mesmo com falha da IA (fallback)
+
+### 📊 6. Observabilidade
+
+- [ ] Logs de autenticação funcionando
+- [ ] Logs de erro funcionando
+- [ ] Logs de geração de treino
+- [ ] Monitoramento de uptime ativo
+- [ ] Alertas configurados (falhas críticas)
+- [ ] Métricas básicas disponíveis
+
+### 💾 7. Backup e Recuperação
+
+- [ ] Backup automático configurado
+- [ ] Retenção de backups definida
+- [ ] Teste de backup realizado
+- [ ] Teste de restore realizado (obrigatório)
+
+### ⚙️ 8. Performance e Carga
+
+- [ ] Teste com múltiplos logins simultâneos
+- [ ] Teste de geração de treino em carga
+- [ ] Teste do chat com múltiplos usuários
+- [ ] Tempo de resposta aceitável (< 2–3s)
+- [ ] Backend sem erros sob carga moderada
+
+### 📱 9. UX e Responsividade
+
+- [ ] Login funcional no mobile
+- [ ] Dashboard funcional no mobile
+- [ ] Treino funcional no mobile
+- [ ] Chat funcional no mobile
+- [ ] Sem quebra de layout
+- [ ] Navegação fluida
+- [ ] Loading states implementados
+- [ ] Mensagens de erro amigáveis
+
+### 🔄 10. Fluxos Críticos
+
+- [ ] Cadastro → login → dashboard
+- [ ] Geração de treino completa
+- [ ] Histórico funcionando
+- [ ] Chat funcionando
+- [ ] Logout funcionando
+- [ ] Sessão expirada sendo tratada corretamente
+
+### ⚖️ 11. LGPD e Privacidade
+
+- [ ] Política de privacidade publicada
+- [ ] Consentimento do usuário implementado
+- [ ] Opção de exclusão de conta funcional
+- [ ] Dados sensíveis protegidos
+- [ ] Fluxo de remoção de dados validado
+
+### 🧪 12. Testes Finais
+
+- [ ] Teste completo do sistema ponta a ponta
+- [ ] Teste com usuários reais (piloto)
+- [ ] Teste em diferentes dispositivos
+- [ ] Teste em diferentes navegadores
+- [ ] Teste de falha de rede
+- [ ] Teste de API fora do ar
+
+### 🚀 13. Estratégia de Go-Live
+
+Lançamento controlado:
+
+- [ ] Liberar para grupo piloto (20–50 alunos)
+- [ ] Coletar feedback
+- [ ] Corrigir problemas críticos
+- [ ] Expandir para 100 usuários
+- [ ] Monitorar estabilidade
+- [ ] Liberar para todos os alunos
+
+### 🔥 Critério de aprovação
+
+O sistema só deve ser liberado para produção completa quando:
+
+- Todos os itens críticos estiverem validados
+- Nenhum erro bloqueante estiver presente
+- O sistema estiver estável sob uso real
+- Logs, monitoramento e backup estiverem funcionando
+
+### ⚠️ Observação crítica
+
+Um sistema só está pronto para produção quando:
+
+- Funciona corretamente
+- É seguro
+- É monitorável
+- É recuperável em caso de falha
+
+Desenvolvimento concluído não garante produção segura.
+
+### 🧠 Definição de pronto para produção
+
+“O sistema está pronto para produção quando pode falhar sem causar perda de dados, pode ser monitorado em tempo real e pode ser recuperado rapidamente.”
