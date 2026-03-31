@@ -17,6 +17,8 @@ class ApiAuthFlowTests(unittest.TestCase):
         response = self.client.get("/health")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ok"})
+        self.assertEqual(response.headers.get("x-frame-options"), "DENY")
+        self.assertEqual(response.headers.get("x-content-type-options"), "nosniff")
 
     def test_register_login_and_get_me(self) -> None:
         email = self._unique_email()
@@ -98,6 +100,21 @@ class ApiAuthFlowTests(unittest.TestCase):
             json={"email": "naoexiste@boaforma.ai", "password": "senhaerrada"},
         )
         self.assertEqual(response.status_code, 401)
+
+    def test_login_lockout_after_repeated_failures(self) -> None:
+        email = self._unique_email()
+        for _ in range(5):
+            response = self.client.post(
+                "/auth/login",
+                json={"email": email, "password": "senhaerrada"},
+            )
+            self.assertIn(response.status_code, (401, 423))
+
+        blocked_response = self.client.post(
+            "/auth/login",
+            json={"email": email, "password": "senhaerrada"},
+        )
+        self.assertEqual(blocked_response.status_code, 423)
 
 
 if __name__ == "__main__":

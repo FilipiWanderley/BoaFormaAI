@@ -28,6 +28,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Cadastro de usuário
   - Login com JWT
   - Refresh token com rotação e revogação
+  - Bloqueio temporário após tentativas inválidas consecutivas
   - Hash de senha com bcrypt
   - Middleware de proteção de rotas com bearer token
   - Logout com invalidação de sessão de refresh token
@@ -64,6 +65,8 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Endpoint `GET /history/{user_id}` com controle de acesso (somente o próprio usuário)
 - Health check (`/health`) para monitoramento básico.
 - Rate limit em endpoints críticos (`/auth/login`, `/chat`, `/workout/generate`).
+- Headers de segurança HTTP habilitados (CSP, X-Frame-Options, HSTS, etc.).
+- Logs estruturados de auditoria para eventos críticos (auth/chat/workout).
 
 ### Frontend (Web App)
 

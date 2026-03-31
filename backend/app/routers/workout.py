@@ -20,6 +20,7 @@ from app.services.workout_service import (
     submit_feedback,
 )
 from app.services.rate_limit import enforce_rate_limit
+from app.services.audit import log_event
 
 router = APIRouter(prefix="/workout", tags=["workout"])
 
@@ -41,7 +42,14 @@ def generate(
     Generates a personalized workout using AI.
     The IA selects exercises exclusively from our validated database.
     """
-    return generate_workout(db, current_user, body)
+    workout = generate_workout(db, current_user, body)
+    log_event(
+        "workout_generated",
+        user_id=current_user.id,
+        duration_minutes=body.duration_minutes,
+        exercise_count=len(workout.exercises),
+    )
+    return workout
 
 
 @router.get("/me", response_model=List[WorkoutSummary])

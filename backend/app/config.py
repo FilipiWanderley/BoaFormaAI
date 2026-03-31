@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     groq_model: str = "llama-3.3-70b-versatile"
     login_rate_limit: int = 30
     login_rate_window_seconds: int = 60
+    login_lockout_threshold: int = 5
+    login_lockout_seconds: int = 300
     chat_rate_limit: int = 60
     chat_rate_window_seconds: int = 60
     workout_rate_limit: int = 30

@@ -649,10 +649,10 @@ Requisitos para garantir segurança de dados e proteção contra ataques.
 
 - [x] Implementar refresh token com rotação/revogação
 - [x] Implementar rate limit por endpoint crítico
-- [ ] Implementar lockout temporário por falhas de login
+- [x] Implementar lockout temporário por falhas de login
 - [x] Restringir CORS por ambiente/domínio
-- [ ] Adicionar headers de segurança (CSP, X-Frame-Options, etc.)
-- [ ] Estruturar logs de auditoria para eventos sensíveis
+- [x] Adicionar headers de segurança (CSP, X-Frame-Options, etc.)
+- [x] Estruturar logs de auditoria para eventos sensíveis
 
 ---
 
@@ -764,7 +764,7 @@ Operação:
 
 ### Checklist de implementação
 
-- [ ] Padronizar logs estruturados (JSON) no backend
+- [x] Padronizar logs estruturados (JSON) no backend
 - [ ] Integrar monitoramento de uptime
 - [ ] Definir alertas de erro/latência
 - [ ] Expor métricas mínimas de aplicação

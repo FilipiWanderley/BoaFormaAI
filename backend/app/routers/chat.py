@@ -8,6 +8,7 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.chat import ChatMessageResponse, ChatRequest, ChatResponse
+from app.services.audit import log_event
 from app.services.chat_service import chat, clear_chat_history, list_chat_history
 from app.services.rate_limit import enforce_rate_limit
 
@@ -31,7 +32,9 @@ def send_message(
     Sends a message to the AI fitness assistant.
     The last 10 messages are used as conversation memory.
     """
-    return chat(db, current_user, body.message)
+    response = chat(db, current_user, body.message)
+    log_event("chat_message_sent", user_id=current_user.id, message_length=len(body.message))
+    return response
 
 
 @router.get("/history", response_model=List[ChatMessageResponse])
