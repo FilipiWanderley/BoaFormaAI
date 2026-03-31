@@ -593,9 +593,9 @@ Serviço de IA (Groq)
 
 ### Checklist de implementação
 
-- [ ] Definir provedor final de frontend e backend
+- [x] Definir provedor final de frontend e backend
 - [ ] Provisionar Cloudflare (DNS + WAF + SSL)
-- [ ] Provisionar Postgres gerenciado
+- [x] Provisionar Postgres gerenciado
 - [x] Configurar variáveis de ambiente de produção
 - [ ] Validar arquitetura ponta a ponta em ambiente produtivo
 

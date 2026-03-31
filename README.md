@@ -338,6 +338,7 @@ Arquivo de configuração:
 - `ACCEPTANCE_CRITERIA.md` (critérios de aceitação por ambiente)
 - `COST_PLAN.md` (estimativa mensal, orçamento e limites por ambiente)
 - `DOMAIN_SSL_SETUP.md` (procedimento de subdomínio, SSL e CORS final)
+- `INFRA_DECISIONS.md` (provedor final e recursos de produção)
 
 ## Operação de banco (SQLite local)
 
