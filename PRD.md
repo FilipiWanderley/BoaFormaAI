@@ -203,7 +203,7 @@ frontend/
 - [x] Validar todas as telas
 - [ ] Importar referências do Figma
 - [x] Ajustar layout
-- [ ] Criar design system
+- [x] Criar design system
 - [x] Padronizar componentes
 
 ---
@@ -256,7 +256,7 @@ frontend/
 
 ### Fase 5 — UI
 - [ ] Aplicar Figma
-- [ ] Design system
+- [x] Design system
 
 ---
 

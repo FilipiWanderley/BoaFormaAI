@@ -3,9 +3,9 @@ import { Loader2 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 const variants = {
-  primary: 'bg-brand-500 hover:bg-brand-600 text-white',
-  secondary: 'bg-gray-800 hover:bg-gray-700 text-white border border-gray-700',
-  ghost: 'hover:bg-gray-800 text-gray-300 hover:text-white',
+  primary: 'bg-accent hover:bg-accent-hover text-white',
+  secondary: 'bg-surface-3 hover:bg-surface-4 text-white border border-border',
+  ghost: 'hover:bg-surface-3 text-text-secondary hover:text-text-primary',
   danger: 'bg-red-600 hover:bg-red-700 text-white',
 }
 
@@ -29,7 +29,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled={disabled || loading}
       className={cn(
         'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors',
-        'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-gray-950',
+        'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface-0',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variants[variant],
         sizes[size],
