@@ -765,8 +765,8 @@ Operação:
 ### Checklist de implementação
 
 - [x] Padronizar logs estruturados (JSON) no backend
-- [ ] Integrar monitoramento de uptime
-- [ ] Definir alertas de erro/latência
+- [x] Integrar monitoramento de uptime
+- [x] Definir alertas de erro/latência
 - [x] Expor métricas mínimas de aplicação
 
 ---

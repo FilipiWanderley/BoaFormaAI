@@ -331,6 +331,7 @@ Arquivo de configuração:
 - `deploy/render.staging.yaml` (template staging em Render)
 - `deploy/render.production.yaml` (template produção em Render)
 - `DEPLOYMENT_RUNBOOK.md` (sequência de release, smoke e rollback)
+- `OBSERVABILITY_ALERTING.md` (monitoramento de uptime e alertas de latência/erro)
 
 ## Operação de banco (SQLite local)
 
@@ -340,6 +341,15 @@ Script utilitário para backup/restore local:
 cd backend
 ./.venv/bin/python -m scripts.db_maintenance backup --output ./backups/boaforma.sqlite3.bak
 ./.venv/bin/python -m scripts.db_maintenance restore --input ./backups/boaforma.sqlite3.bak
+```
+
+## Alertas de métricas
+
+Avaliação automática de métricas via `/ops/metrics`:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.evaluate_metrics_alerts --base-url https://api.academia.com
 ```
 
 ## Qualidade e validações já executadas
