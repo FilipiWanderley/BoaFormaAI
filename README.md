@@ -342,6 +342,8 @@ Arquivo de configuração:
 - `CLOUDFLARE_PROVISIONING.md` (checklist DNS/WAF/SSL em Cloudflare)
 - `GOOGLE_CLOUD_OAUTH_SETUP.md` (checklist OAuth oficial Google Cloud)
 - `GO_LIVE_CHECKLIST.md` (sequência final de publicação em produção)
+- `GO_LIVE_RUNBOOK.md` (runbook por fase com critérios de saída)
+- `GO_LIVE_EXECUTION_LOG.md` (template de registro da execução real)
 
 ## Operação de banco (SQLite local)
 
