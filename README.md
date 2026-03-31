@@ -346,6 +346,7 @@ Arquivo de configuração:
 - `GO_LIVE_EXECUTION_LOG.md` (template de registro da execução real)
 - `GO_LIVE_EXECUTION_LOG_EXAMPLE.md` (exemplo preenchido para usar no dia do go-live)
 - `GO_LIVE_EXECUTION_LOG_TEMPLATE.md` (template com placeholders para preenchimento rápido)
+- `.github/workflows/ci.yml` (pipeline CI para backend e frontend)
 
 ## Operação de banco (SQLite local)
 
@@ -442,6 +443,5 @@ cd backend
 
 ## Pendências principais (próximos passos)
 
-- Definir pipeline de CI com lint/typecheck/test automatizados.
 - Consolidar métricas de instalação/engajamento do PWA para evolução de produto.
 - Adicionar painel/admin para curadoria da Exercise Library em escala.
