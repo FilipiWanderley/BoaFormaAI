@@ -692,7 +692,7 @@ Boas práticas:
 - [x] Criar migration com índices estratégicos
 - [x] Validar SSL no driver/conexão de banco
 - [x] Configurar política de backup e restore testado
-- [ ] Revisar endpoints para paginação consistente
+- [x] Revisar endpoints para paginação consistente
 
 ---
 

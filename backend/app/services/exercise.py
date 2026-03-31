@@ -45,21 +45,24 @@ def _eligible_levels(user_level: str) -> List[str]:
 # Public service API
 # ---------------------------------------------------------------------------
 
-def get_compatible_exercises(db: Session, user: User) -> List[Exercise]:
+def get_compatible_exercises(
+    db: Session,
+    user: User,
+    *,
+    limit: int = 100,
+    offset: int = 0,
+) -> List[Exercise]:
     """
     Return all exercises compatible with the user's training level and
     health restrictions. Higher-level users have access to all easier exercises.
     """
-    eligible = _eligible_levels(user.level)
-    exercises = filter_exercises(db, levels=eligible)
-
-    if user.restrictions:
-        exercises = [
-            ex for ex in exercises
-            if not _is_contraindicated(ex, user.restrictions)
-        ]
-
-    return exercises
+    return filter_exercises(
+        db,
+        levels=_eligible_levels(user.level),
+        restrictions=user.restrictions,
+        limit=limit,
+        offset=offset,
+    )
 
 
 def filter_exercises(
@@ -68,6 +71,9 @@ def filter_exercises(
     muscle_groups: Optional[List[str]] = None,
     equipment: Optional[List[str]] = None,
     levels: Optional[List[str]] = None,
+    restrictions: Optional[str] = None,
+    limit: int = 100,
+    offset: int = 0,
 ) -> List[Exercise]:
     """
     General-purpose exercise filter. All parameters are optional; omitting
@@ -82,7 +88,15 @@ def filter_exercises(
     if levels:
         query = query.filter(Exercise.level.in_(levels))
 
-    return query.order_by(Exercise.muscle_group, Exercise.name).all()
+    items = (
+        query.order_by(Exercise.muscle_group, Exercise.name)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    if restrictions:
+        items = [exercise for exercise in items if not _is_contraindicated(exercise, restrictions)]
+    return items
 
 
 def get_exercise_by_id(db: Session, exercise_id: int) -> Optional[Exercise]:

@@ -117,6 +117,18 @@ class ApiChatAndErrorsTests(unittest.TestCase):
         )
         self.assertEqual(invalid_generate.status_code, 422)
 
+    def test_exercises_endpoints_support_pagination(self) -> None:
+        token = self._register_and_login()
+        headers = self._auth_headers(token)
+
+        list_response = self.client.get("/exercises?limit=5&offset=0", headers=headers)
+        self.assertEqual(list_response.status_code, 200)
+        self.assertLessEqual(len(list_response.json()), 5)
+
+        compatible_response = self.client.get("/exercises/compatible?limit=7&offset=0", headers=headers)
+        self.assertEqual(compatible_response.status_code, 200)
+        self.assertLessEqual(len(compatible_response.json()), 7)
+
 
 if __name__ == "__main__":
     unittest.main()

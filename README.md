@@ -216,8 +216,8 @@ Dependências principais (arquivo `frontend/package.json`):
 
 ### Exercícios
 
-- `GET /exercises` — lista com filtros
-- `GET /exercises/compatible` — exercícios compatíveis
+- `GET /exercises` — lista com filtros e paginação (`limit`, `offset`)
+- `GET /exercises/compatible` — exercícios compatíveis com paginação (`limit`, `offset`)
 - `GET /exercises/{exercise_id}` — detalhe do exercício
 
 Observação de domínio: a biblioteca atual contém **1000 exercícios** com **16 grupos musculares**.
