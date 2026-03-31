@@ -935,9 +935,9 @@ Planejamento mínimo de custos.
 
 ### Checklist de implementação
 
-- [ ] Estimar custo mensal por ambiente
-- [ ] Definir orçamento e limites de consumo
-- [ ] Configurar alertas de custo (quando disponível)
+- [x] Estimar custo mensal por ambiente
+- [x] Definir orçamento e limites de consumo
+- [x] Configurar alertas de custo (quando disponível)
 
 ---
 

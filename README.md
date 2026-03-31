@@ -336,6 +336,7 @@ Arquivo de configuração:
 - `BACKUP_POLICY.md` (política de backup/restore e retenção)
 - `PRIVACY_POLICY.md` (política de privacidade e minimização de dados)
 - `ACCEPTANCE_CRITERIA.md` (critérios de aceitação por ambiente)
+- `COST_PLAN.md` (estimativa mensal, orçamento e limites por ambiente)
 
 ## Operação de banco (SQLite local)
 
@@ -378,6 +379,15 @@ cd backend
 - Política publicada em `PRIVACY_POLICY.md` e `/privacy-policy.html`
 - Exclusão de conta disponível no perfil
 - Retenção/minimização documentadas em `PRIVACY_POLICY.md`
+
+## Custos (guardrails)
+
+Validação de orçamento mensal:
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.check_cost_guardrail --current-cost 180 --budget-limit 650
+```
 
 ## Qualidade e validações já executadas
 
