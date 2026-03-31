@@ -338,7 +338,7 @@ O sistema deve possuir uma base robusta e escalável de exercícios físicos con
 | Fase | Volume |
 |------|--------|
 | MVP | 200–400 exercícios |
-| Avançada | 500–1500+ exercícios |
+| Avançada | 1000+ exercícios |
 
 ### Fonte de dados
 
@@ -432,7 +432,8 @@ O sistema deve validar que:
 - [x] Implementar filtro por equipamento
 - [x] Implementar filtro por nível (com progressão: avancado acessa todos)
 - [x] Implementar filtro por restrições físicas (keyword matching)
-- [x] Expandir base para 200+ exercícios
+- [x] Expandir base para 1000 exercícios
+- [x] Expandir grupos musculares para 16 categorias
 - [x] Integrar com geração de treino (Fase 2)
 - [x] Atualizar prompt da IA para usar exercícios da base
 - [x] Validar saída da IA (nenhum exercício inventado)

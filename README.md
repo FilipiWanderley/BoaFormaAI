@@ -53,6 +53,8 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
   - Persistência dos turnos usuário/assistente
   - Endpoint para limpar histórico
 - Exercícios:
+  - Base expandida para 1000 exercícios
+  - 16 grupos musculares suportados
   - Listagem geral com filtros
   - Listagem de exercícios compatíveis com nível/restrições
   - Busca por ID
@@ -80,6 +82,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 - Biblioteca compatível de exercícios integrada na tela de treino (com imagem/fallback e filtros ativos).
 - Base URL da API configurável por ambiente (`VITE_API_BASE_URL`).
 - Base inicial para evolução PWA (manifest + service worker de cache estático em produção).
+- Responsividade mobile-first aplicada (menu mobile, grids adaptáveis e ajuste de touch targets).
 - Estilização com Tailwind CSS + design escuro moderno.
 - Build de produção funcional com Vite.
 
@@ -167,6 +170,9 @@ Dependências principais (arquivo `frontend/package.json`):
 │   └── .dockerignore
 │   └── .env.example
 └── frontend/
+    ├── DESIGN_SYSTEM.md
+    ├── FIGMA_REFERENCE.md
+    ├── public/
     ├── src/
     │   ├── components/
     │   ├── pages/
@@ -199,6 +205,8 @@ Dependências principais (arquivo `frontend/package.json`):
 - `GET /exercises` — lista com filtros
 - `GET /exercises/compatible` — exercícios compatíveis
 - `GET /exercises/{exercise_id}` — detalhe do exercício
+
+Observação de domínio: a biblioteca atual contém **1000 exercícios** com **16 grupos musculares**.
 
 ### Histórico e Dashboard
 
@@ -291,10 +299,14 @@ Arquivo de configuração:
 - `92c9d74` — feat(frontend): exibe biblioteca de exercícios compatíveis na tela de treino
 - `a7eadc6` — refactor(frontend): padroniza header e estado vazio em páginas
 - `8e69c44` — docs(prd): marca validação de telas e fluxo frontend
+- `6e719f5` — feat(mobile): implementa base responsiva e navegação mobile
+- `64629b8` — feat(pwa): adiciona base mobile web instalável
+- `1cdd192` — feat(exercises): expande para 1000 itens e 16 grupos musculares
+- `9a234cc` — feat(frontend): aplica logo branca no login e favicon azul
+- `79723b5` — style(login): amplia escala da logo para melhor presença visual
 
 ## Pendências principais (próximos passos)
 
-- Testar endpoints de forma formal no Swagger.
-- Rodar bateria de testes manuais de qualidade de resposta da IA e calibrar prompt.
-- Aplicar referências de Figma e consolidar design system final.
 - Definir pipeline de CI com lint/typecheck/test automatizados.
+- Evoluir service worker para estratégia offline mais robusta (cache versionado por assets críticos).
+- Adicionar painel/admin para curadoria da Exercise Library em escala.
