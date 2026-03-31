@@ -17,6 +17,7 @@ O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funciona
 
 - Estrutura modular por camadas (`routers`, `services`, `schemas`, `models`).
 - Banco versionado com Alembic (migration inicial + upgrade automático no startup da API).
+- Índices compostos de produção em `workouts(user_id, created_at)` e `history(user_id, completed_at)`.
 - Banco SQLite com entidades principais:
   - `users`
   - `workouts`
@@ -253,6 +254,7 @@ Criar `.env` baseado no `.env.example` com:
 - `DATABASE_URL`
 - `DB_POOL_SIZE`
 - `DB_MAX_OVERFLOW`
+- `DB_SSL_MODE` (ex.: `require` em Postgres gerenciado)
 - `CORS_ALLOWED_ORIGINS`
 - `CORS_ALLOWED_ORIGIN_REGEX`
 - `LOGIN_RATE_LIMIT`

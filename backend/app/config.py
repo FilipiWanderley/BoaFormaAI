@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./boaforma.db"
     db_pool_size: int = 5
     db_max_overflow: int = 10
+    db_ssl_mode: str = ""
     cors_allowed_origins: str = "http://localhost:3000,http://localhost:3001"
     cors_allowed_origin_regex: str = r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
     groq_api_key: str = ""

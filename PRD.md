@@ -689,8 +689,8 @@ Boas práticas:
 ### Checklist de implementação
 
 - [x] Configurar `DATABASE_URL` para Postgres em produção
-- [ ] Criar migration com índices estratégicos
-- [ ] Validar SSL no driver/conexão de banco
+- [x] Criar migration com índices estratégicos
+- [x] Validar SSL no driver/conexão de banco
 - [ ] Configurar política de backup e restore testado
 - [ ] Revisar endpoints para paginação consistente
 
