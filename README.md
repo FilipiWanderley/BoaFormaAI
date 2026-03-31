@@ -344,6 +344,8 @@ Arquivo de configuração:
 - `GO_LIVE_CHECKLIST.md` (sequência final de publicação em produção)
 - `GO_LIVE_RUNBOOK.md` (runbook por fase com critérios de saída)
 - `GO_LIVE_EXECUTION_LOG.md` (template de registro da execução real)
+- `GO_LIVE_EXECUTION_LOG_EXAMPLE.md` (exemplo preenchido para usar no dia do go-live)
+- `GO_LIVE_EXECUTION_LOG_TEMPLATE.md` (template com placeholders para preenchimento rápido)
 
 ## Operação de banco (SQLite local)
 
