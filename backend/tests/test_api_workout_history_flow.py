@@ -28,6 +28,8 @@ class ApiWorkoutHistoryFlowTests(unittest.TestCase):
             "goal": "hipertrofia",
             "level": "intermediario",
             "restrictions": "nenhuma",
+            "accept_terms": True,
+            "privacy_policy_version": "2026-01",
         }
         register_response = self.client.post("/users", json=register_payload)
         self.assertEqual(register_response.status_code, 201)

@@ -206,6 +206,7 @@ Dependências principais (arquivo `frontend/package.json`):
 - `POST /auth/logout` — invalidar refresh token
 - `GET /users/me` — dados do usuário autenticado
 - `PATCH /users/me` — atualização de perfil
+- `DELETE /users/me` — exclusão de conta e dados
 
 ### Treinos
 
@@ -333,6 +334,7 @@ Arquivo de configuração:
 - `DEPLOYMENT_RUNBOOK.md` (sequência de release, smoke e rollback)
 - `OBSERVABILITY_ALERTING.md` (monitoramento de uptime e alertas de latência/erro)
 - `BACKUP_POLICY.md` (política de backup/restore e retenção)
+- `PRIVACY_POLICY.md` (política de privacidade e minimização de dados)
 - `ACCEPTANCE_CRITERIA.md` (critérios de aceitação por ambiente)
 
 ## Operação de banco (SQLite local)
@@ -369,6 +371,13 @@ Segurança OWASP básico:
 cd backend
 ./.venv/bin/python -m scripts.security_check_basic --base-url https://api.academia.com
 ```
+
+## LGPD (base implementada)
+
+- Consentimento explícito no cadastro
+- Política publicada em `PRIVACY_POLICY.md` e `/privacy-policy.html`
+- Exclusão de conta disponível no perfil
+- Retenção/minimização documentadas em `PRIVACY_POLICY.md`
 
 ## Qualidade e validações já executadas
 

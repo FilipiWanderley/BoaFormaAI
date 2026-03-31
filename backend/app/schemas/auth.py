@@ -24,6 +24,8 @@ class LogoutRequest(BaseModel):
 
 class GoogleAuthRequest(BaseModel):
     token: str
+    accept_terms: bool = False
+    privacy_policy_version: str = "2026-01"
 
 
 class GoogleAuthResponse(BaseModel):

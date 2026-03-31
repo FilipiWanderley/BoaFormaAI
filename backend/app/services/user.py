@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import HTTPException, status
@@ -27,6 +28,8 @@ def create_user(db: Session, data: UserCreate) -> User:
         email=data.email,
         hashed_password=hash_password(data.password),
         provider="email",
+        consent_given_at=datetime.now(timezone.utc),
+        privacy_policy_version=data.privacy_policy_version,
         age=data.age,
         weight_kg=data.weight_kg,
         height_cm=data.height_cm,
@@ -46,3 +49,8 @@ def update_user(db: Session, user: User, data: UserUpdate) -> User:
     db.commit()
     db.refresh(user)
     return user
+
+
+def delete_user_account(db: Session, user: User) -> None:
+    db.delete(user)
+    db.commit()

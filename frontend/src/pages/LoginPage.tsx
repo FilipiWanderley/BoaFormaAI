@@ -26,6 +26,7 @@ export function LoginPage() {
   const setAuthError = useAuthStore((s) => s.setAuthError)
   const [showForm, setShowForm] = useState(false)
   const [googleReady, setGoogleReady] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
 
   useEffect(() => {
@@ -72,6 +73,10 @@ export function LoginPage() {
   })
 
   const handleGoogleLogin = () => {
+    if (!termsAccepted) {
+      setAuthError('Aceite a política de privacidade para continuar com Google.')
+      return
+    }
     if (!googleClientId || !googleReady || !(window as any).google?.accounts?.id) {
       setAuthError('Login Google indisponível no momento.')
       return
@@ -85,7 +90,7 @@ export function LoginPage() {
             setAuthError('Falha na autenticação com Google.')
             return
           }
-          const result = await authService.googleLogin(response.credential)
+          const result = await authService.googleLogin(response.credential, '2026-01')
           login(result.access_token, result.refresh_token, result.user)
           navigate('/dashboard')
         } catch {
@@ -195,9 +200,23 @@ export function LoginPage() {
             </div>
           ) : (
             <div className="flex flex-col gap-3 mb-5">
+              <label className="flex items-start gap-2 rounded-xl border border-white/[0.08] bg-surface-3 px-3 py-2 text-[12px] text-white/70">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(event) => setTermsAccepted(event.target.checked)}
+                  className="mt-0.5"
+                />
+                <span>
+                  Li e aceito a política de privacidade.
+                  <a href="/privacy-policy.html" target="_blank" rel="noreferrer" className="ml-1 text-accent hover:text-accent-hover">
+                    Ver política
+                  </a>
+                </span>
+              </label>
               <button
                 onClick={handleGoogleLogin}
-                disabled={!googleClientId || status === 'autenticando'}
+                disabled={!googleClientId || status === 'autenticando' || !termsAccepted}
                 className="w-full h-[44px] bg-white text-black rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium transition-colors disabled:opacity-50"
               >
                 Continuar com Google

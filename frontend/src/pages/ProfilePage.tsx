@@ -26,7 +26,7 @@ const LEVEL_BADGE: Record<string, string> = {
 }
 
 export function ProfilePage() {
-  const { user, setUser } = useAuthStore()
+  const { user, setUser, logout } = useAuthStore()
   const qc = useQueryClient()
 
   const { register, handleSubmit, formState: { errors, isDirty } } = useForm<FormData>({
@@ -44,6 +44,14 @@ export function ProfilePage() {
     onSuccess: (updated) => {
       setUser(updated)
       qc.invalidateQueries({ queryKey: ['dashboard'] })
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: () => authService.deleteMe(),
+    onSuccess: () => {
+      logout()
+      window.location.href = '/login'
     },
   })
 
@@ -152,6 +160,18 @@ export function ProfilePage() {
               className="w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center text-[14px] font-medium text-white disabled:opacity-40 transition-colors"
             >
               {mutation.isPending ? <Spinner /> : 'Salvar alterações'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const confirmed = window.confirm('Deseja realmente excluir sua conta e todos os dados?')
+                if (confirmed) deleteMutation.mutate()
+              }}
+              disabled={deleteMutation.isPending}
+              className="w-full h-[44px] bg-red-500/15 hover:bg-red-500/25 border border-red-400/30 rounded-xl flex items-center justify-center text-[14px] font-medium text-red-300 disabled:opacity-40 transition-colors"
+            >
+              {deleteMutation.isPending ? <Spinner /> : 'Excluir conta'}
             </button>
           </form>
         </div>

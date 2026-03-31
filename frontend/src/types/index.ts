@@ -29,6 +29,8 @@ export interface UserResponse {
   restrictions: string | null
   provider: 'email' | 'google'
   provider_id: string | null
+  consent_given_at: string | null
+  privacy_policy_version: string | null
 }
 
 export interface UserCreate {
@@ -41,6 +43,8 @@ export interface UserCreate {
   goal: string
   level: Level
   restrictions?: string
+  accept_terms: true
+  privacy_policy_version?: string
 }
 
 export interface UserUpdate {

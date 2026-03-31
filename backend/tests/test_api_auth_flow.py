@@ -37,6 +37,8 @@ class ApiAuthFlowTests(unittest.TestCase):
             "goal": "hipertrofia",
             "level": "intermediario",
             "restrictions": "nenhuma",
+            "accept_terms": True,
+            "privacy_policy_version": "2026-01",
         }
 
         register_response = self.client.post("/users", json=register_payload)
@@ -73,6 +75,8 @@ class ApiAuthFlowTests(unittest.TestCase):
             "goal": "forca",
             "level": "intermediario",
             "restrictions": "nenhuma",
+            "accept_terms": True,
+            "privacy_policy_version": "2026-01",
         }
         self.client.post("/users", json=register_payload)
 
@@ -128,7 +132,7 @@ class ApiAuthFlowTests(unittest.TestCase):
             "sub": f"google-sub-{unique_suffix}",
         }
         with patch("app.routers.auth.verify_google_credential", return_value=google_claims):
-            first = self.client.post("/auth/google", json={"token": "valid-token"})
+            first = self.client.post("/auth/google", json={"token": "valid-token", "accept_terms": True, "privacy_policy_version": "2026-01"})
         self.assertEqual(first.status_code, 200)
         body = first.json()
         self.assertTrue(body.get("access_token"))
@@ -147,6 +151,8 @@ class ApiAuthFlowTests(unittest.TestCase):
             "goal": "hipertrofia",
             "level": "intermediario",
             "restrictions": "nenhuma",
+            "accept_terms": True,
+            "privacy_policy_version": "2026-01",
         }
         self.client.post("/users", json=register_payload)
 
@@ -156,11 +162,37 @@ class ApiAuthFlowTests(unittest.TestCase):
             "sub": f"google-sub-linked-{unique_suffix}",
         }
         with patch("app.routers.auth.verify_google_credential", return_value=linked_claims):
-            linked = self.client.post("/auth/google", json={"token": "valid-token-2"})
+            linked = self.client.post("/auth/google", json={"token": "valid-token-2", "accept_terms": True, "privacy_policy_version": "2026-01"})
         self.assertEqual(linked.status_code, 200)
         linked_user = linked.json()["user"]
         self.assertEqual(linked_user["email"], register_payload["email"])
         self.assertEqual(linked_user["provider"], "google")
+
+    def test_delete_account_removes_user_access(self) -> None:
+        email = self._unique_email()
+        password = "SenhaForte@123"
+        register_payload = {
+            "name": "Teste Excluir Conta",
+            "email": email,
+            "password": password,
+            "age": 29,
+            "weight_kg": 79,
+            "height_cm": 176,
+            "goal": "saude",
+            "level": "iniciante",
+            "restrictions": "nenhuma",
+            "accept_terms": True,
+            "privacy_policy_version": "2026-01",
+        }
+        self.client.post("/users", json=register_payload)
+
+        login_response = self.client.post("/auth/login", json={"email": email, "password": password})
+        token = login_response.json()["access_token"]
+        delete_response = self.client.delete("/users/me", headers={"Authorization": f"Bearer {token}"})
+        self.assertEqual(delete_response.status_code, 204)
+
+        login_after_delete = self.client.post("/auth/login", json={"email": email, "password": password})
+        self.assertEqual(login_after_delete.status_code, 401)
 
 
 if __name__ == "__main__":

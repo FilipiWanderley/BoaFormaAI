@@ -908,10 +908,10 @@ Transformar o sistema em app instalável sem loja.
 
 ### Checklist de implementação
 
-- [ ] Implementar fluxo de consentimento
-- [ ] Publicar política de privacidade
-- [ ] Implementar exclusão de conta/dados
-- [ ] Definir política de retenção e minimização de dados
+- [x] Implementar fluxo de consentimento
+- [x] Publicar política de privacidade
+- [x] Implementar exclusão de conta/dados
+- [x] Definir política de retenção e minimização de dados
 
 ---
 

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy import CheckConstraint, String, Text
@@ -15,6 +16,8 @@ class User(Base):
     hashed_password: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     provider: Mapped[str] = mapped_column(String(20), default="email", server_default="email")
     provider_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, unique=True, index=True)
+    consent_given_at: Mapped[Optional[datetime]] = mapped_column(nullable=True)
+    privacy_policy_version: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     age: Mapped[int] = mapped_column()
     weight_kg: Mapped[float] = mapped_column()
     height_cm: Mapped[float] = mapped_column()

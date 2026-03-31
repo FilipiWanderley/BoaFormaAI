@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal, Optional
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
@@ -13,6 +14,8 @@ class UserCreate(BaseModel):
     goal: str = Field(min_length=3, max_length=50)
     level: Literal["iniciante", "intermediario", "avancado"]
     restrictions: Optional[str] = Field(default=None, max_length=500)
+    accept_terms: Literal[True]
+    privacy_policy_version: str = Field(default="2026-01", min_length=3, max_length=20)
 
     @field_validator("name")
     @classmethod
@@ -34,6 +37,8 @@ class UserResponse(BaseModel):
     restrictions: Optional[str]
     provider: str
     provider_id: Optional[str]
+    consent_given_at: Optional[datetime]
+    privacy_policy_version: Optional[str]
 
     model_config = {"from_attributes": True}
 

@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
@@ -99,6 +101,11 @@ def google_login(
     body: GoogleAuthRequest,
     db: Session = Depends(get_db),
 ) -> GoogleAuthResponse:
+    if not body.accept_terms:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Aceite dos termos é obrigatório.",
+        )
     claims = verify_google_credential(body.token)
     email = str(claims.get("email", "")).strip().lower()
     name = str(claims.get("name", "")).strip() or email.split("@")[0]
@@ -112,6 +119,8 @@ def google_login(
             hashed_password=None,
             provider="google",
             provider_id=provider_id,
+            consent_given_at=datetime.now(timezone.utc),
+            privacy_policy_version=body.privacy_policy_version,
             age=settings.social_default_age,
             weight_kg=settings.social_default_weight_kg,
             height_cm=settings.social_default_height_cm,
@@ -131,6 +140,9 @@ def google_login(
             )
         user.provider = "google" if user.provider == "email" else user.provider
         user.provider_id = provider_id
+        if user.consent_given_at is None:
+            user.consent_given_at = datetime.now(timezone.utc)
+        user.privacy_policy_version = body.privacy_policy_version
         db.commit()
         db.refresh(user)
         log_event("auth_google_user_linked", user_id=user.id, email=email)

@@ -18,6 +18,8 @@ const schema = z.object({
   goal:         z.string().min(3, 'Descreva seu objetivo'),
   level:        z.enum(['iniciante', 'intermediario', 'avancado']),
   restrictions: z.string().optional(),
+  accept_terms: z.literal(true, { errorMap: () => ({ message: 'Você precisa aceitar os termos.' }) }),
+  privacy_policy_version: z.string().default('2026-01'),
 })
 type FormData = z.infer<typeof schema>
 
@@ -53,7 +55,7 @@ export function RegisterPage() {
 
   const { register, handleSubmit, formState: { errors }, trigger } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { level: 'iniciante' },
+    defaultValues: { level: 'iniciante', privacy_policy_version: '2026-01' },
   })
 
   const mutation = useMutation({
@@ -206,6 +208,24 @@ export function RegisterPage() {
                 <Field label="Restrições físicas (opcional)">
                   <input {...register('restrictions')} placeholder="Ex: dor no joelho, lombar" className={inputCls} />
                 </Field>
+
+                <div className="rounded-[10px] border border-[#333] bg-[#252525] px-3 py-2.5">
+                  <label className="flex items-start gap-2 text-[12px] text-[#c7c7c7]">
+                    <input type="checkbox" {...register('accept_terms')} className="mt-0.5" />
+                    <span>
+                      Li e aceito a política de privacidade.
+                      <a
+                        href="/privacy-policy.html"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="ml-1 text-[#4d6fe0] hover:text-[#6b89ef]"
+                      >
+                        Ver política
+                      </a>
+                    </span>
+                  </label>
+                  {errors.accept_terms && <p className="mt-1 text-[11px] text-red-400">{errors.accept_terms.message}</p>}
+                </div>
 
                 {mutation.isError && (
                   <p className="text-[13px] text-red-400 text-center">Erro ao criar conta. Verifique os dados.</p>
