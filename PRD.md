@@ -534,8 +534,8 @@ A interface frontend deve ser construída com princípios de responsividade desd
 - [x] Ajustar formulários para toque
 - [x] Garantir legibilidade tipográfica em telas pequenas
 - [x] Corrigir overflow horizontal
-- [ ] Testar responsividade em diferentes resoluções
-- [ ] Validar experiência mobile web completa
+- [x] Testar responsividade em diferentes resoluções
+- [x] Validar experiência mobile web completa
 
 ### Evolução futura
 
