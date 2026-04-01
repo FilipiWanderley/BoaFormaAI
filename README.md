@@ -1,9 +1,9 @@
 # Academia Boa Forma AI
 
-[![Português](https://img.shields.io/badge/🇧🇷-Português-16a34a)](#-versão-em-português)
-[![English](https://img.shields.io/badge/🇺🇸-English-2563eb)](#-english-version)
+[![Português](https://img.shields.io/badge/🇧🇷-Português-16a34a)](./README.md)
+[![English](https://img.shields.io/badge/🇺🇸-English-2563eb)](./README.en.md)
 
-> Dica: use os botões acima para navegar entre as versões.
+> Dica: use os botões acima para alternar entre os arquivos PT-BR e EN.
 
 ![Status](https://img.shields.io/badge/status-MVP%20Avan%C3%A7ado-22c55e)
 ![Backend](https://img.shields.io/badge/backend-FastAPI-0ea5e9)
@@ -16,16 +16,9 @@ Plataforma full stack para **geração de treinos personalizados com IA**, com f
 
 Este repositório foi estruturado como projeto real de produto: autenticação robusta, domínio de treino, chat com IA, governança operacional e documentação de go-live.
 
-## English Summary
+## Versão em inglês
 
-Boa Forma AI is a production-oriented full stack fitness platform that delivers AI-assisted workout generation, progress tracking, chat assistance, and admin exercise curation.
-
-It demonstrates end-to-end engineering maturity:
-- secure auth (email + Google OAuth + JWT/refresh rotation)
-- resilient AI integration (timeout/retry/fallback)
-- production operations (runbooks, go-live checklists, backup/restore strategy)
-- observable architecture (health/readiness/metrics + automated checks)
-- continuous quality (automated tests + CI workflow)
+- README em inglês completo: [README.en.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/README.en.md)
 
 ## Recruiter Highlights
 
