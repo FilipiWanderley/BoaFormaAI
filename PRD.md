@@ -1395,6 +1395,8 @@ Status atual: execução iniciada com validações técnicas e evidências em am
 
 ### ⚙️ 8. Performance e Carga
 
+Evidência técnica: script dedicado `backend/scripts/load_test_critical_flows.py` implementado para carga concorrente de login, chat e geração de treino com métricas de latência/erro.
+
 - [ ] Teste com múltiplos logins simultâneos
 - [ ] Teste de geração de treino em carga
 - [ ] Teste do chat com múltiplos usuários

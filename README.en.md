@@ -198,6 +198,16 @@ CI workflow:
 - [BACKUP_POLICY.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/BACKUP_POLICY.md)
 - [GO_LIVE_RUNBOOK.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/GO_LIVE_RUNBOOK.md)
 
+## Go-live Validation Commands
+
+```bash
+cd backend
+./.venv/bin/python -m scripts.smoke_production --base-url http://localhost:8000
+./.venv/bin/python -m scripts.security_check_basic --base-url http://localhost:8000
+./.venv/bin/python -m scripts.load_test_api --base-url http://localhost:8000 --requests 100 --concurrency 10
+./.venv/bin/python -m scripts.load_test_critical_flows --base-url http://localhost:8000 --users 20 --concurrency 5 --max-p95-ms 3000
+```
+
 ---
 
 ## Author

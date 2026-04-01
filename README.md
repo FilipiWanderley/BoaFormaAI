@@ -421,6 +421,14 @@ CI workflow:
 - Backup and recovery: [BACKUP_POLICY.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/BACKUP_POLICY.md)
 - Go-live process: [GO_LIVE_RUNBOOK.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/GO_LIVE_RUNBOOK.md)
 
----
+### Go-live Validation Commands
 
-If you want, I can also create a dedicated `README.en.md` and keep this main README shorter, with language buttons linking to each file.
+```bash
+cd backend
+./.venv/bin/python -m scripts.smoke_production --base-url http://localhost:8000
+./.venv/bin/python -m scripts.security_check_basic --base-url http://localhost:8000
+./.venv/bin/python -m scripts.load_test_api --base-url http://localhost:8000 --requests 100 --concurrency 10
+./.venv/bin/python -m scripts.load_test_critical_flows --base-url http://localhost:8000 --users 20 --concurrency 5 --max-p95-ms 3000
+```
+
+---

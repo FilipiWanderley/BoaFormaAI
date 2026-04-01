@@ -1,5 +1,5 @@
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timezone, timedelta
 from typing import List, Optional
 
 from sqlalchemy import func
@@ -94,7 +94,8 @@ def get_dashboard(db: Session, user: User) -> DashboardResponse:
     last_workout = _to_workout_summary(last_workout_row) if last_workout_row else None
 
     today_workout: Optional[WorkoutSummary] = None
-    if last_workout_row and last_workout_row.created_at.date() == date.today():
+    utc_today = datetime.now(timezone.utc).date()
+    if last_workout_row and last_workout_row.created_at.date() == utc_today:
         today_workout = _to_workout_summary(last_workout_row)
 
     # ── History stats ────────────────────────────────────────────────────
