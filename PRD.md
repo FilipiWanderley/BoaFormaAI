@@ -1322,6 +1322,8 @@ Esta seção garante que o sistema não apenas foi desenvolvido, mas também est
 - Garantir estabilidade para usuários reais
 - Confirmar que todos os sistemas críticos estão funcionando
 
+Status atual: execução iniciada com validações técnicas e evidências em ambiente local/staging-ready. Itens que dependem de operação real em produção permanecem pendentes.
+
 ### 🌐 1. Infraestrutura e Deploy
 
 - [ ] Domínio configurado (`app.academia.com`)
@@ -1330,64 +1332,64 @@ Esta seção garante que o sistema não apenas foi desenvolvido, mas também est
 - [ ] DNS configurado corretamente
 - [ ] Frontend acessível publicamente
 - [ ] Backend acessível publicamente
-- [ ] Variáveis de ambiente configuradas
-- [ ] CORS configurado para domínio final
+- [x] Variáveis de ambiente configuradas
+- [x] CORS configurado para domínio final
 - [ ] WAF ativo (Cloudflare)
 
 ### 🗄️ 2. Banco de Dados
 
-- [ ] Banco em produção utilizando PostgreSQL
-- [ ] Conexão segura (SSL)
+- [x] Banco em produção utilizando PostgreSQL
+- [x] Conexão segura (SSL)
 - [ ] Dados persistindo corretamente
-- [ ] Índices aplicados
+- [x] Índices aplicados
 - [ ] Teste de leitura e escrita validado
-- [ ] Nenhuma dependência de SQLite em produção
+- [x] Nenhuma dependência de SQLite em produção
 
 ### 🔐 3. Segurança
 
-- [ ] Login protegido contra brute force
-- [ ] Rate limit ativo (login, chat, geração de treino)
-- [ ] JWT com expiração configurada
-- [ ] Refresh token implementado (se aplicável)
-- [ ] Senhas com hash bcrypt
-- [ ] CORS restrito corretamente
-- [ ] Headers de segurança aplicados
-- [ ] Tokens e secrets protegidos (env vars)
-- [ ] Validação de input em todos endpoints
-- [ ] Teste de acesso não autorizado (rotas protegidas)
+- [x] Login protegido contra brute force
+- [x] Rate limit ativo (login, chat, geração de treino)
+- [x] JWT com expiração configurada
+- [x] Refresh token implementado (se aplicável)
+- [x] Senhas com hash bcrypt
+- [x] CORS restrito corretamente
+- [x] Headers de segurança aplicados
+- [x] Tokens e secrets protegidos (env vars)
+- [x] Validação de input em todos endpoints
+- [x] Teste de acesso não autorizado (rotas protegidas)
 
 ### 🔑 4. Autenticação (Email + Google)
 
-- [ ] Login com email + senha funcionando
-- [ ] Login com Google funcionando
-- [ ] Token do Google validado no backend
-- [ ] Não há duplicação de contas por email
-- [ ] Vinculação de contas funcionando
-- [ ] Fluxo completo testado (login → dashboard)
+- [x] Login com email + senha funcionando
+- [x] Login com Google funcionando
+- [x] Token do Google validado no backend
+- [x] Não há duplicação de contas por email
+- [x] Vinculação de contas funcionando
+- [x] Fluxo completo testado (login → dashboard)
 
 ### 🤖 5. IA (Treino e Chat)
 
-- [ ] Geração de treino funcionando
-- [ ] IA utilizando apenas exercícios da base
-- [ ] Estrutura JSON validada antes de salvar
-- [ ] Chat funcionando com memória básica
-- [ ] Timeout configurado para chamadas IA
-- [ ] Tratamento de erro da IA implementado
-- [ ] Sistema funcional mesmo com falha da IA (fallback)
+- [x] Geração de treino funcionando
+- [x] IA utilizando apenas exercícios da base
+- [x] Estrutura JSON validada antes de salvar
+- [x] Chat funcionando com memória básica
+- [x] Timeout configurado para chamadas IA
+- [x] Tratamento de erro da IA implementado
+- [x] Sistema funcional mesmo com falha da IA (fallback)
 
 ### 📊 6. Observabilidade
 
-- [ ] Logs de autenticação funcionando
-- [ ] Logs de erro funcionando
-- [ ] Logs de geração de treino
+- [x] Logs de autenticação funcionando
+- [x] Logs de erro funcionando
+- [x] Logs de geração de treino
 - [ ] Monitoramento de uptime ativo
 - [ ] Alertas configurados (falhas críticas)
-- [ ] Métricas básicas disponíveis
+- [x] Métricas básicas disponíveis
 
 ### 💾 7. Backup e Recuperação
 
 - [ ] Backup automático configurado
-- [ ] Retenção de backups definida
+- [x] Retenção de backups definida
 - [ ] Teste de backup realizado
 - [ ] Teste de restore realizado (obrigatório)
 
@@ -1412,24 +1414,24 @@ Esta seção garante que o sistema não apenas foi desenvolvido, mas também est
 
 ### 🔄 10. Fluxos Críticos
 
-- [ ] Cadastro → login → dashboard
-- [ ] Geração de treino completa
-- [ ] Histórico funcionando
-- [ ] Chat funcionando
-- [ ] Logout funcionando
-- [ ] Sessão expirada sendo tratada corretamente
+- [x] Cadastro → login → dashboard
+- [x] Geração de treino completa
+- [x] Histórico funcionando
+- [x] Chat funcionando
+- [x] Logout funcionando
+- [x] Sessão expirada sendo tratada corretamente
 
 ### ⚖️ 11. LGPD e Privacidade
 
-- [ ] Política de privacidade publicada
-- [ ] Consentimento do usuário implementado
-- [ ] Opção de exclusão de conta funcional
-- [ ] Dados sensíveis protegidos
-- [ ] Fluxo de remoção de dados validado
+- [x] Política de privacidade publicada
+- [x] Consentimento do usuário implementado
+- [x] Opção de exclusão de conta funcional
+- [x] Dados sensíveis protegidos
+- [x] Fluxo de remoção de dados validado
 
 ### 🧪 12. Testes Finais
 
-- [ ] Teste completo do sistema ponta a ponta
+- [x] Teste completo do sistema ponta a ponta
 - [ ] Teste com usuários reais (piloto)
 - [ ] Teste em diferentes dispositivos
 - [ ] Teste em diferentes navegadores
