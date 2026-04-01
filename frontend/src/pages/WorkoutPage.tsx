@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import {
   Clock, Play, Flame, MapPin, Zap,
-  CheckCircle, Dumbbell, ArrowLeft, ArrowRight, ChevronDown, ImageOff,
+  CheckCircle, Dumbbell, ArrowLeft, ArrowRight, ChevronDown,
 } from 'lucide-react'
 import { workoutService } from '../services/workout.service'
 import { historyService } from '../services/history.service'
@@ -11,6 +12,7 @@ import { RingProgress } from '../components/ui/RingProgress'
 import { Spinner } from '../components/ui/Spinner'
 import { formatDate } from '../lib/utils'
 import type { ExerciseResponse, FeedbackValue, WorkoutGenerateRequest, WorkoutResponse, WorkoutSummary } from '../types'
+import { getExerciseImageUrl } from '../utils/exerciseImage'
 
 const MUSCLE_GROUPS = [
   'peito', 'costas', 'quadriceps', 'posterior', 'gluteos', 'ombros',
@@ -198,6 +200,7 @@ export function WorkoutPage() {
   const [equipment, setEquipment] = useState<string[]>([])
   const [duration, setDuration] = useState(60)
   const [lastFeedback, setLastFeedback] = useState<FeedbackValue | null>(null)
+  const [generateError, setGenerateError] = useState<string | null>(null)
 
   const { data: workouts = [] } = useQuery<WorkoutSummary[]>({
     queryKey: ['workouts'],
@@ -226,9 +229,20 @@ export function WorkoutPage() {
   const generateMutation = useMutation({
     mutationFn: (req: WorkoutGenerateRequest) => workoutService.generate(req),
     onSuccess: (data) => {
+      setGenerateError(null)
       qc.invalidateQueries({ queryKey: ['workouts'] })
       qc.invalidateQueries({ queryKey: ['dashboard'] })
       setActiveId(data.id)
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        const detail = error.response?.data?.detail
+        if (typeof detail === 'string' && detail.trim()) {
+          setGenerateError(detail)
+          return
+        }
+      }
+      setGenerateError('Erro ao gerar treino. Tente novamente.')
     },
   })
 
@@ -324,7 +338,7 @@ export function WorkoutPage() {
 
           {generateMutation.isError && (
             <p className="text-[13px] text-red-400/70 bg-red-400/[0.08] border border-red-400/20 rounded-xl px-4 py-3">
-              Erro ao gerar treino. Tente novamente.
+              {generateError || 'Erro ao gerar treino. Tente novamente.'}
             </p>
           )}
 
@@ -399,18 +413,12 @@ export function WorkoutPage() {
                   >
                     <div className="flex gap-3">
                       <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-surface-3 border border-white/[0.08]">
-                        {exercise.image_url ? (
-                          <img
-                            src={exercise.image_url}
-                            alt={exercise.name}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <ImageOff className="w-4 h-4 text-white/25" />
-                          </div>
-                        )}
+                        <img
+                          src={getExerciseImageUrl(exercise)}
+                          alt={exercise.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       </div>
                       <div className="min-w-0">
                         <p className="text-[13px] font-medium text-white truncate">{exercise.name}</p>

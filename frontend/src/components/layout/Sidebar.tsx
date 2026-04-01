@@ -33,17 +33,19 @@ export function Sidebar({ mobileOpen, onCloseMobile }: SidebarProps) {
         />
       )}
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-screen w-[260px] shrink-0 flex-col bg-surface-1 border-r border-white/[0.06] transition-transform md:static md:z-auto md:w-[200px] ${
+        className={`fixed left-0 top-0 z-40 flex h-screen w-[260px] shrink-0 flex-col bg-surface-1 border-r border-white/[0.06] transition-transform md:static md:z-auto md:w-[200px] md:h-auto md:min-h-screen md:self-stretch ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
 
         {/* Logo */}
-        <div className="px-5 pt-5 pb-4 flex items-center justify-between">
-          <div className="flex items-baseline gap-1">
-            <span className="text-[15px] font-semibold text-white tracking-tight">BoaForma</span>
-            <span className="text-[10px] font-medium text-accent px-1 py-0.5 rounded bg-accent-muted">AI</span>
-          </div>
+        <div className="px-4 pt-5 pb-4 flex items-center justify-between">
+          <img
+            src="/Logo_Branca.svg"
+            alt="BoaForma AI"
+            className="h-10 w-auto max-w-[150px] object-contain"
+            loading="eager"
+          />
           <button
             type="button"
             onClick={onCloseMobile}

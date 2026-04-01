@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, ArrowRight } from 'lucide-react'
 import { authService } from '../services/auth.service'
@@ -67,18 +68,29 @@ export function LoginPage() {
       login(token.access_token, token.refresh_token, user)
       navigate('/dashboard')
     },
-    onError: () => {
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        const detail = error.response?.data?.detail
+        if (typeof detail === 'string' && detail.trim()) {
+          setAuthError(detail)
+          return
+        }
+      }
       setAuthError('Email ou senha inválidos.')
     },
   })
 
   const handleGoogleLogin = () => {
+    if (!googleClientId) {
+      setAuthError('Configuração do Google ausente. Defina VITE_GOOGLE_CLIENT_ID no frontend.')
+      return
+    }
     if (!termsAccepted) {
       setAuthError('Aceite a política de privacidade para continuar com Google.')
       return
     }
-    if (!googleClientId || !googleReady || !(window as any).google?.accounts?.id) {
-      setAuthError('Login Google indisponível no momento.')
+    if (!googleReady || !(window as any).google?.accounts?.id) {
+      setAuthError('Login Google indisponível no momento. Recarregue a página e tente novamente.')
       return
     }
     setAuthenticating()
@@ -200,6 +212,20 @@ export function LoginPage() {
             </div>
           ) : (
             <div className="flex flex-col gap-3 mb-5">
+              <button
+                onClick={handleGoogleLogin}
+                disabled={status === 'autenticando'}
+                className="w-full h-[44px] bg-white text-black rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium transition-colors disabled:opacity-50"
+              >
+                Continuar com Google
+              </button>
+              <button
+                onClick={() => setShowForm(true)}
+                className="w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium text-white transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                Entrar com Email
+              </button>
               <label className="flex items-start gap-2 rounded-xl border border-white/[0.08] bg-surface-3 px-3 py-2 text-[12px] text-white/70">
                 <input
                   type="checkbox"
@@ -214,29 +240,13 @@ export function LoginPage() {
                   </a>
                 </span>
               </label>
-              <button
-                onClick={handleGoogleLogin}
-                disabled={!googleClientId || status === 'autenticando' || !termsAccepted}
-                className="w-full h-[44px] bg-white text-black rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium transition-colors disabled:opacity-50"
-              >
-                Continuar com Google
-              </button>
-              <button
-                onClick={() => setShowForm(true)}
-                className="w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium text-white transition-colors"
-              >
-                <Mail className="w-4 h-4" />
-                Entrar com Email
-              </button>
+              {!googleClientId && (
+                <p className="text-[11px] text-amber-300/90">
+                  Login Google desativado: configure <span className="font-semibold">VITE_GOOGLE_CLIENT_ID</span>.
+                </p>
+              )}
             </div>
           )}
-
-          <Link
-            to="/register"
-            className="flex w-full h-[44px] items-center justify-center bg-surface-3 border border-white/[0.08] hover:border-white/[0.14] rounded-xl text-[14px] font-medium text-white/70 hover:text-white transition-colors"
-          >
-            Criar nova conta
-          </Link>
 
           <p className="text-center text-[13px] text-white/30 mt-7">
             Novo por aqui?{' '}

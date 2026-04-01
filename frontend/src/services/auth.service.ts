@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { TokenResponse, UserCreate, UserResponse } from '../types'
+import type { TokenResponse, UserCreate, UserResponse, UserUpdate } from '../types'
 
 export const authService = {
   login: async (email: string, password: string): Promise<TokenResponse> => {
@@ -31,7 +31,7 @@ export const authService = {
     return data
   },
 
-  updateMe: async (payload: Partial<UserCreate>): Promise<UserResponse> => {
+  updateMe: async (payload: UserUpdate): Promise<UserResponse> => {
     const { data } = await api.patch<UserResponse>('/users/me', payload)
     return data
   },

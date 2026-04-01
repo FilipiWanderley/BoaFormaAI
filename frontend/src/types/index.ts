@@ -32,6 +32,7 @@ export interface UserResponse {
   is_admin: boolean
   consent_given_at: string | null
   privacy_policy_version: string | null
+  avatar_url: string | null
 }
 
 export interface UserCreate {
@@ -53,6 +54,7 @@ export interface UserUpdate {
   height_cm?: number
   goal?: string
   restrictions?: string
+  avatar_url?: string
 }
 
 // ── Exercise ────────────────────────────────────────────────────────────────

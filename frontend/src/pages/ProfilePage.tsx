@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CheckCircle } from 'lucide-react'
+import { isAxiosError } from 'axios'
+import { Camera, CheckCircle } from 'lucide-react'
 import { authService } from '../services/auth.service'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useAuthStore } from '../store/authStore'
@@ -28,6 +30,10 @@ const LEVEL_BADGE: Record<string, string> = {
 export function ProfilePage() {
   const { user, setUser, logout } = useAuthStore()
   const qc = useQueryClient()
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatar_url ?? null)
+  const [avatarDirty, setAvatarDirty] = useState(false)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const { register, handleSubmit, formState: { errors, isDirty } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -40,10 +46,24 @@ export function ProfilePage() {
   })
 
   const mutation = useMutation({
-    mutationFn: (data: FormData) => authService.updateMe(data),
+    mutationFn: (data: FormData) => authService.updateMe({ ...data, avatar_url: avatarPreview ?? '' }),
     onSuccess: (updated) => {
       setUser(updated)
+      setAvatarPreview(updated.avatar_url)
+      setAvatarDirty(false)
+      setAvatarError(null)
+      setSubmitError(null)
       qc.invalidateQueries({ queryKey: ['dashboard'] })
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        const detail = error.response?.data?.detail
+        if (typeof detail === 'string' && detail.trim()) {
+          setSubmitError(detail)
+          return
+        }
+      }
+      setSubmitError('Erro ao salvar. Tente novamente.')
     },
   })
 
@@ -71,7 +91,42 @@ export function ProfilePage() {
         <div className="flex flex-col gap-4">
           <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-6 flex flex-col items-center text-center gap-4">
             <div className="w-16 h-16 rounded-full bg-surface-3 border border-white/[0.08] flex items-center justify-center text-[24px] font-semibold text-white/60">
-              {firstName.charAt(0).toUpperCase()}
+              {avatarPreview ? (
+                <img src={avatarPreview} alt={user.name} className="w-full h-full rounded-full object-cover" />
+              ) : (
+                firstName.charAt(0).toUpperCase()
+              )}
+            </div>
+            <div className="w-full">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/[0.08] bg-surface-3 px-3 py-2 text-[12px] text-white/60 hover:text-white/80">
+                <Camera className="w-3.5 h-3.5" />
+                Enviar foto
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0]
+                    if (!file) return
+                    if (file.size > 2 * 1024 * 1024) {
+                      setAvatarError('Arquivo muito grande. Use até 2MB.')
+                      return
+                    }
+                    setAvatarError(null)
+                    const reader = new FileReader()
+                    reader.onload = () => {
+                      const result = reader.result
+                      if (typeof result === 'string') {
+                        setAvatarPreview(result)
+                        setAvatarDirty(true)
+                      }
+                    }
+                    reader.readAsDataURL(file)
+                  }}
+                />
+              </label>
+              <p className="mt-1 text-[10px] text-white/30">PNG/JPG até 2MB</p>
+              {avatarError && <p className="mt-1 text-[11px] text-red-400/80">{avatarError}</p>}
             </div>
             <div>
               <p className="text-[15px] font-semibold text-white">{user.name}</p>
@@ -150,13 +205,13 @@ export function ProfilePage() {
             )}
             {mutation.isError && (
               <p className="text-[13px] text-red-400/70 bg-red-400/[0.07] border border-red-400/20 rounded-xl px-4 py-3">
-                Erro ao salvar. Tente novamente.
+                {submitError || 'Erro ao salvar. Tente novamente.'}
               </p>
             )}
 
             <button
               type="submit"
-              disabled={mutation.isPending || !isDirty}
+              disabled={mutation.isPending || (!isDirty && !avatarDirty)}
               className="w-full h-[44px] bg-accent hover:bg-accent-hover rounded-xl flex items-center justify-center text-[14px] font-medium text-white disabled:opacity-40 transition-colors"
             >
               {mutation.isPending ? <Spinner /> : 'Salvar alterações'}

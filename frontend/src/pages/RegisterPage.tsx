@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -46,6 +47,7 @@ export function RegisterPage() {
   const login     = useAuthStore((s) => s.login)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [step, setStep] = useState<1 | 2>(1)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -62,12 +64,23 @@ export function RegisterPage() {
     mutationFn: async (data: FormData) => {
       await authService.register(data)
       const token = await authService.login(data.email, data.password)
-      const user  = await authService.me()
+      const user  = await authService.me(token.access_token)
       return { token, user }
     },
     onSuccess: ({ token, user }) => {
+      setSubmitError(null)
       login(token.access_token, token.refresh_token, user)
       navigate('/dashboard')
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        const detail = error.response?.data?.detail
+        if (typeof detail === 'string' && detail.trim()) {
+          setSubmitError(detail)
+          return
+        }
+      }
+      setSubmitError('Erro ao criar conta. Verifique os dados.')
     },
   })
 
@@ -228,7 +241,7 @@ export function RegisterPage() {
                 </div>
 
                 {mutation.isError && (
-                  <p className="text-[13px] text-red-400 text-center">Erro ao criar conta. Verifique os dados.</p>
+                  <p className="text-[13px] text-red-400 text-center">{submitError || 'Erro ao criar conta. Verifique os dados.'}</p>
                 )}
 
                 <button

@@ -40,6 +40,7 @@ class UserResponse(BaseModel):
     is_admin: bool
     consent_given_at: Optional[datetime]
     privacy_policy_version: Optional[str]
+    avatar_url: Optional[str]
 
     model_config = {"from_attributes": True}
 
@@ -49,3 +50,4 @@ class UserUpdate(BaseModel):
     height_cm: Optional[float] = Field(default=None, gt=0)
     goal: Optional[str] = Field(default=None, min_length=3, max_length=50)
     restrictions: Optional[str] = None
+    avatar_url: Optional[str] = Field(default=None, max_length=4_500_000)

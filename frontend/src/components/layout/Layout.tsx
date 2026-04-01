@@ -7,9 +7,9 @@ export function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-surface-0">
+    <div className="flex min-h-screen items-stretch bg-surface-0">
       <Sidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
-      <main className="flex-1 min-w-0 overflow-y-auto">
+      <main className="flex-1 min-w-0 min-h-screen">
         <header className="sticky top-0 z-20 border-b border-white/[0.05] bg-surface-0/90 backdrop-blur md:hidden">
           <div className="flex h-14 items-center justify-between px-4">
             <button
@@ -19,10 +19,12 @@ export function Layout() {
             >
               <Menu className="w-4 h-4" />
             </button>
-            <div className="flex items-baseline gap-1">
-              <span className="text-[14px] font-semibold text-white tracking-tight">BoaForma</span>
-              <span className="text-[10px] font-medium text-accent px-1 py-0.5 rounded bg-accent-muted">AI</span>
-            </div>
+            <img
+              src="/Logo_Branca.svg"
+              alt="BoaForma AI"
+              className="h-7 w-auto object-contain"
+              loading="eager"
+            />
             <div className="w-10" />
           </div>
         </header>

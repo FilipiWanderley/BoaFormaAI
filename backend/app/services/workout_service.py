@@ -37,7 +37,7 @@ def _select_exercises(
     Build the exercise pool that will be sent to the LLM.
     Respects user level, restrictions, and optional request filters.
     """
-    compatible = get_compatible_exercises(db, user)
+    compatible = get_compatible_exercises(db, user, limit=5000)
 
     if not request.muscle_groups and not request.equipment_available:
         return compatible
@@ -48,8 +48,10 @@ def _select_exercises(
         db,
         muscle_groups=request.muscle_groups,
         equipment=request.equipment_available,
+        limit=5000,
     )
-    return [ex for ex in further_filtered if ex.id in compatible_ids]
+    filtered_compatible = [ex for ex in further_filtered if ex.id in compatible_ids]
+    return filtered_compatible if filtered_compatible else compatible
 
 
 def _build_workout_exercise_detail(
