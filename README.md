@@ -1,5 +1,10 @@
 # Academia Boa Forma AI
 
+[![Português](https://img.shields.io/badge/🇧🇷-Português-16a34a)](#-versão-em-português)
+[![English](https://img.shields.io/badge/🇺🇸-English-2563eb)](#-english-version)
+
+> Dica: use os botões acima para navegar entre as versões.
+
 ![Status](https://img.shields.io/badge/status-MVP%20Avan%C3%A7ado-22c55e)
 ![Backend](https://img.shields.io/badge/backend-FastAPI-0ea5e9)
 ![Frontend](https://img.shields.io/badge/frontend-React%20%2B%20TypeScript-2563eb)
@@ -325,3 +330,104 @@ Resumo das decisões arquiteturais no formato ADR:
 ## Autor
 
 Projeto desenvolvido por Filipi Moraes como plataforma full stack de treino com IA, com foco em qualidade de engenharia e prontidão de produção.
+
+---
+
+## 🇧🇷 Versão em Português
+
+Este README principal está em português e cobre:
+- visão de produto e engenharia
+- stack técnica
+- arquitetura
+- funcionalidades implementadas
+- execução local
+- qualidade e validação
+- operação de produção e go-live
+- roadmap
+
+Use o botão no topo para pular para a versão em inglês.
+
+---
+
+## 🇺🇸 English Version
+
+### Overview
+
+Boa Forma AI is a production-oriented full stack fitness platform focused on AI-assisted workout generation, secure authentication, operational readiness, and mobile-first UX.
+
+### Recruiter Highlights
+
+- End-to-end product scope: auth, workouts, chat AI, dashboard, history, admin curation.
+- Production-ready architecture: layered backend, migrations, security controls, and runbooks.
+- Engineering quality: automated tests, CI pipeline, and validated build workflows.
+- Operations maturity: monitoring, backup/restore policy, go-live checklist, rollback strategy.
+
+### Tech Stack
+
+**Backend**
+- Python 3.9, FastAPI, SQLAlchemy 2.x, Alembic
+- Pydantic 2, python-jose (JWT), passlib/bcrypt
+- Groq SDK (LLM)
+
+**Frontend**
+- React 19, TypeScript, Vite 8
+- React Router, TanStack Query, Zustand
+- React Hook Form + Zod, Tailwind CSS
+
+### Main Features
+
+- AI workout generation with validation and fallback.
+- AI chat with persisted history.
+- Dashboard with stats and streak.
+- Workout history and feedback loop.
+- Exercise library (1000 items, 16 muscle groups).
+- Admin exercise curation endpoints.
+- PWA install prompt + offline cache + engagement metrics.
+
+### Core Endpoints
+
+- Auth: `/users`, `/auth/login`, `/auth/google`, `/auth/refresh`, `/auth/logout`
+- User: `/users/me` (`GET`, `PATCH`, `DELETE`)
+- Workouts: `/workout/generate`, `/workout/me`, `/workout/{id}`, `/workout/{id}/feedback`
+- History: `/history`, `/history/me`, `/history/{user_id}`
+- Chat: `/chat`, `/chat/history`
+- Exercises: `/exercises`, `/exercises/compatible`, `/admin/exercises`
+- Ops: `/health`, `/ready`, `/ops/metrics`, `/ops/pwa-events`
+
+### Local Run
+
+```bash
+cd backend
+./.venv/bin/pip install -r requirements.txt
+./.venv/bin/alembic upgrade head
+./.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+cd ../frontend
+npm ci
+npm run dev -- --host 0.0.0.0 --port 3000
+```
+
+### Quality Checks
+
+```bash
+cd backend
+./.venv/bin/python -m unittest discover -s tests -v
+./.venv/bin/python -m compileall app scripts
+
+cd ../frontend
+npm run build
+```
+
+CI workflow:
+- [ci.yml](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/.github/workflows/ci.yml)
+
+### Production Operations
+
+- Deployment and rollback: [DEPLOYMENT_RUNBOOK.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/DEPLOYMENT_RUNBOOK.md)
+- Monitoring and alerts: [OBSERVABILITY_ALERTING.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/OBSERVABILITY_ALERTING.md)
+- Backup and recovery: [BACKUP_POLICY.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/BACKUP_POLICY.md)
+- Go-live process: [GO_LIVE_RUNBOOK.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/GO_LIVE_RUNBOOK.md)
+
+---
+
+If you want, I can also create a dedicated `README.en.md` and keep this main README shorter, with language buttons linking to each file.
