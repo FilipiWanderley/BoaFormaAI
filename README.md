@@ -176,23 +176,6 @@ flowchart TD
 
 ---
 
-## Demonstração visual
-
-> Substitua os placeholders abaixo por capturas reais para aumentar ainda mais impacto em recrutadores.
-
-![Login](./docs/assets/login-placeholder.svg)
-![Dashboard](screencapture-localhost-3000-dashboard-2026-03-31-22_50_53.png)
-![Workout](./docs/assets/workout-placeholder.svg)
-![Admin](./docs/assets/admin-placeholder.svg)
-
-Exemplos de GIFs recomendados:
-- Fluxo cadastro → login → dashboard
-- Geração de treino com feedback
-- Curadoria admin de exercícios
-- Instalação PWA (prompt + app installed)
-
----
-
 ## Endpoints principais
 
 ### Auth e usuário
