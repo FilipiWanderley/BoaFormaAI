@@ -181,7 +181,7 @@ flowchart TD
 > Substitua os placeholders abaixo por capturas reais para aumentar ainda mais impacto em recrutadores.
 
 ![Login](./docs/assets/login-placeholder.svg)
-![Dashboard](./docs/assets/dashboard-placeholder.svg)
+![Dashboard](screencapture-localhost-3000-dashboard-2026-03-31-22_50_53.png)
 ![Workout](./docs/assets/workout-placeholder.svg)
 ![Admin](./docs/assets/admin-placeholder.svg)
 
