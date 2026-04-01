@@ -1,252 +1,244 @@
 # Academia Boa Forma AI
 
-Plataforma full stack para geração e acompanhamento de treinos personalizados com IA, com autenticação de alunos, dashboard de progresso, histórico de treinos e chat com assistente virtual.
+![Status](https://img.shields.io/badge/status-MVP%20Avan%C3%A7ado-22c55e)
+![Backend](https://img.shields.io/badge/backend-FastAPI-0ea5e9)
+![Frontend](https://img.shields.io/badge/frontend-React%20%2B%20TypeScript-2563eb)
+![Database](https://img.shields.io/badge/database-PostgreSQL%20%7C%20SQLite-334155)
+![Auth](https://img.shields.io/badge/auth-JWT%20%2B%20Google%20OAuth-f59e0b)
+![CI](https://img.shields.io/badge/CI-GitHub%20Actions-111827)
 
-## Visão Geral do Projeto
+Plataforma full stack para **geração de treinos personalizados com IA**, com foco em segurança, observabilidade, operação de produção e experiência mobile.
 
-Este projeto foi estruturado em duas aplicações:
+Este repositório foi estruturado como projeto real de produto: autenticação robusta, domínio de treino, chat com IA, governança operacional e documentação de go-live.
 
-- **Backend** em FastAPI (Python), responsável por autenticação, regras de negócio, integração com IA e persistência.
-- **Frontend** em React + TypeScript + Vite, responsável pela experiência do aluno nas telas de login, dashboard, treino, chat, histórico e perfil.
+## English Summary
 
-O escopo funcional está alinhado ao PRD em `PRD.md`, com boa parte das funcionalidades centrais já implementadas em versão funcional de MVP avançado.
+Boa Forma AI is a production-oriented full stack fitness platform that delivers AI-assisted workout generation, progress tracking, chat assistance, and admin exercise curation.
 
-## O que já foi implementado até agora
+It demonstrates end-to-end engineering maturity:
+- secure auth (email + Google OAuth + JWT/refresh rotation)
+- resilient AI integration (timeout/retry/fallback)
+- production operations (runbooks, go-live checklists, backup/restore strategy)
+- observable architecture (health/readiness/metrics + automated checks)
+- continuous quality (automated tests + CI workflow)
 
-### Backend (API + domínio)
+## Recruiter Highlights
 
-- Estrutura modular por camadas (`routers`, `services`, `schemas`, `models`).
-- Banco versionado com Alembic (migration inicial + upgrade automático no startup da API).
-- Índices compostos de produção em `workouts(user_id, created_at)` e `history(user_id, completed_at)`.
-- Banco SQLite com entidades principais:
-  - `users`
-  - `workouts`
-  - `history`
-  - `exercises`
-  - `workout_exercises`
-  - `chat_messages`
-- Autenticação completa:
-  - Cadastro de usuário
-  - Login com JWT
-  - Login social com Google (`/auth/google`)
-  - Refresh token com rotação e revogação
-  - Bloqueio temporário após tentativas inválidas consecutivas
-  - Hash de senha com bcrypt
-  - Middleware de proteção de rotas com bearer token
-  - Logout com invalidação de sessão de refresh token
-- Geração de treino com IA:
-  - Integração com Groq
-  - Prompt estruturado com regras de segurança
-  - Timeout e retry com backoff para resiliência
-  - Fallback automático de treino quando o LLM está indisponível
-  - Uso obrigatório de exercícios da base (sem invenção)
-  - Validação de IDs retornados pela IA
-  - Persistência do treino e seus exercícios selecionados
-- Feedback de treino:
-  - Endpoint para marcar treino como `facil`, `ok` ou `dificil`
-  - Feedback usado como pista de intensidade em gerações futuras
-- Dashboard:
-  - Retorno de dados do usuário
-  - Treino do dia (`today_workout`)
-  - Último treino gerado
-  - Estatísticas de treinos gerados/concluídos
-  - Cálculo de streak
-- Histórico:
-  - Marcação de treino concluído
-  - Listagem paginada de histórico do usuário autenticado
-- Chat com IA:
-  - Histórico por usuário
-  - Memória conversacional (janela de mensagens)
-  - Persistência dos turnos usuário/assistente
-  - Endpoint para limpar histórico
-  - Métrica de uso de IA em endpoint operacional
-- Exercícios:
-  - Base expandida para 1000 exercícios
-  - 16 grupos musculares suportados
-  - Listagem geral com filtros
-  - Listagem de exercícios compatíveis com nível/restrições
-  - Busca por ID
-- Histórico por usuário:
-  - Endpoint `GET /history/{user_id}` com controle de acesso (somente o próprio usuário)
-- Health check (`/health`) para monitoramento básico.
-- Rate limit em endpoints críticos (`/auth/login`, `/chat`, `/workout/generate`).
-- Headers de segurança HTTP habilitados (CSP, X-Frame-Options, HSTS, etc.).
-- Logs estruturados de auditoria para eventos críticos (auth/chat/workout).
+- **Escopo completo de produto**: auth, domínio de treino, IA, observabilidade e go-live.
+- **Arquitetura production-ready**: separação por camadas, migrations, segurança de API e runbooks operacionais.
+- **Qualidade comprovada**: suíte automatizada, CI e validação contínua de build.
+- **Maturidade operacional**: backup/restore, monitoramento, checklist de liberação e estratégia de rollback.
 
-### Frontend (Web App)
+| Indicador | Status |
+|---|---|
+| Backend API | ✅ FastAPI modular |
+| Frontend App | ✅ React + TypeScript |
+| Autenticação | ✅ Email + Google + JWT/Refresh |
+| Segurança | ✅ Rate limit + lockout + headers |
+| IA | ✅ Timeout + retry + fallback |
+| Operação | ✅ Runbooks + scripts de validação |
+| CI | ✅ GitHub Actions |
 
-- Aplicação React com roteamento protegido.
-- Gerenciamento de autenticação com Zustand.
-- Camada de API centralizada com Axios e interceptors:
-  - Injeção automática do token
-  - Tratamento de 401 com logout e redirecionamento
-- Estado assíncrono com TanStack Query (queries/mutations/cache invalidation).
-- Telas implementadas:
-  - Login
-  - Cadastro
-  - Dashboard
-  - Treino (gerar, listar, visualizar e feedback)
-  - Chat
-  - Histórico
-  - Perfil
-- Layout base com sidebar e componentes reutilizáveis de UI.
-- Biblioteca compatível de exercícios integrada na tela de treino (com imagem/fallback e filtros ativos).
-- Base URL da API configurável por ambiente (`VITE_API_BASE_URL`).
-- PWA com cache offline robusto (app shell + runtime cache) e prompt de instalação guiado.
-- Responsividade mobile-first aplicada (menu mobile, grids adaptáveis e ajuste de touch targets).
-- Estilização com Tailwind CSS + design escuro moderno.
-- Build de produção funcional com Vite.
+## Impact Metrics
 
-## Ferramentas, frameworks e bibliotecas em uso
+| Métrica | Valor atual |
+|---|---:|
+| Exercícios na biblioteca | 1000 |
+| Grupos musculares suportados | 16 |
+| Testes automatizados backend | 28 |
+| Estratégias de resiliência de IA | timeout + retry + fallback |
+| Endpoints operacionais | `/health`, `/ready`, `/ops/metrics`, `/ops/pwa-events` |
+| Ambientes documentados | dev, staging, produção |
+
+## Plano de evolução (90 dias)
+
+### 0–30 dias
+- Evoluir painel admin com busca avançada e filtros compostos.
+- Adicionar edição em lote para curadoria de exercícios.
+- Implementar trilha de auditoria de alterações no catálogo.
+
+### 31–60 dias
+- Expandir analytics de engajamento (funil onboarding, retenção, adoção PWA).
+- Criar dashboards executivos para produto e operação.
+- Definir SLOs formais de latência e disponibilidade.
+
+### 61–90 dias
+- Aprimorar recomendação inteligente com histórico longitudinal.
+- Introduzir experimentação controlada (feature flags + A/B básico).
+- Fechar loop de feedback com dados de uso real e outcomes de treino.
+
+## Interview Talking Points
+
+- **Arquitetura:** por que separar `routers/services/schemas/models` e como isso reduz acoplamento.
+- **Segurança:** como lockout, rate limit e headers mitigam risco em API pública.
+- **Resiliência de IA:** decisões de timeout/retry/fallback para manter produto funcional.
+- **Operação:** como runbooks e checklists reduzem risco em deploy e go-live.
+- **Escalabilidade:** próximos passos para admin em escala, analytics e recomendação.
+
+## Navegação rápida
+
+- [Stack técnico](#stack-técnico)
+- [Arquitetura](#arquitetura)
+- [Demonstração visual](#demonstração-visual)
+- [Endpoints principais](#endpoints-principais)
+- [Rodando localmente](#rodando-localmente)
+- [Qualidade e validação](#qualidade-e-validação)
+- [Produção, operação e go-live](#produção-operação-e-go-live)
+- [Architecture Decisions](#architecture-decisions)
+
+---
+
+## Por que este projeto chama atenção em recrutamento
+
+- Arquitetura moderna de ponta a ponta (FastAPI + React + TypeScript + SQLAlchemy + Alembic).
+- Fluxos críticos completos: cadastro, login (email + Google), dashboard, treino, histórico, chat e perfil.
+- Segurança aplicada de forma prática: JWT, refresh token com rotação, lockout brute force, rate limit, headers de segurança, trusted hosts.
+- Operação real de produção: readiness, métricas, smoke tests, validação de CORS/domínio, runbooks, backup/restore e checklist de go-live.
+- Qualidade contínua: suíte automatizada de testes + pipeline CI.
+
+---
+
+## Stack técnico
 
 ### Backend
-
-- **Linguagem:** Python 3.9
-- **Framework API:** FastAPI
-- **Servidor ASGI:** Uvicorn
-- **ORM:** SQLAlchemy 2.x
-- **Validação/config:** Pydantic 2 + pydantic-settings
-- **Auth/JWT:** python-jose
-- **Hash de senha:** passlib + bcrypt
-- **Upload/form-data:** python-multipart
-- **Integração LLM:** Groq SDK
-- **Variáveis de ambiente:** python-dotenv
-- **Banco de dados:** SQLite
-- **Migrations:** Alembic
-
-Dependências principais (arquivo `backend/requirements.txt`):
-
-- fastapi==0.115.6
-- uvicorn[standard]==0.32.1
-- sqlalchemy==2.0.36
-- pydantic[email]==2.10.3
-- pydantic-settings==2.7.0
-- python-jose[cryptography]==3.3.0
-- passlib[bcrypt]==1.7.4
-- python-multipart==0.0.20
-- groq==0.13.1
-- python-dotenv==1.0.1
-- alembic==1.14.1
+- Python 3.9
+- FastAPI
+- SQLAlchemy 2.x
+- Alembic
+- Pydantic 2 / pydantic-settings
+- python-jose (JWT)
+- passlib + bcrypt
+- Groq SDK (LLM)
 
 ### Frontend
+- React 19
+- TypeScript
+- Vite 8
+- React Router DOM
+- TanStack Query
+- Zustand
+- React Hook Form + Zod
+- Tailwind CSS
 
-- **Framework UI:** React 19
-- **Linguagem:** TypeScript
-- **Build tool/dev server:** Vite 8
-- **Roteamento:** React Router DOM
-- **HTTP client:** Axios
-- **Data fetching/cache:** TanStack React Query
-- **Forms:** React Hook Form
-- **Validação:** Zod + @hookform/resolvers
-- **Estado global:** Zustand
-- **Ícones:** lucide-react
-- **Estilo:** Tailwind CSS + PostCSS + Autoprefixer
+---
 
-Dependências principais (arquivo `frontend/package.json`):
+## Funcionalidades implementadas
 
-- react / react-dom
-- typescript
-- vite
-- react-router-dom
-- axios
-- @tanstack/react-query
-- react-hook-form
-- zod
-- zustand
-- tailwindcss
+### Produto
+- Geração de treino com IA com regras de validação e fallback.
+- Chat com IA com histórico e memória básica.
+- Dashboard com treino do dia, último treino e estatísticas.
+- Histórico de treinos concluídos.
+- Biblioteca de exercícios (1000 exercícios, 16 grupos musculares).
+- PWA com prompt de instalação e cache offline.
 
-## Estrutura de Pastas
+### Autenticação e sessão
+- Cadastro e login por email/senha.
+- Login social com Google.
+- Refresh token com rotação e revogação.
+- Controle de sessão expirada no frontend.
+- Vinculação de conta social por email sem duplicidade.
 
-```text
-.
-├── PRD.md
-├── README.md
-├── docker-compose.yml
-├── render.yaml
-├── backend/
-│   ├── app/
-│   │   ├── models/
-│   │   ├── routers/
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   ├── dependencies.py
-│   │   └── main.py
-│   ├── scripts/
-│   ├── requirements.txt
-│   ├── alembic.ini
-│   ├── migrations/
-│   ├── Dockerfile
-│   └── .dockerignore
-│   └── .env.example
-└── frontend/
-    ├── DESIGN_SYSTEM.md
-    ├── FIGMA_REFERENCE.md
-    ├── public/
-    ├── src/
-    │   ├── components/
-    │   ├── pages/
-    │   ├── services/
-    │   ├── store/
-    │   ├── types/
-    │   └── main.tsx
-    ├── package.json
-    └── vite.config.ts
+### Segurança
+- Hash de senha com bcrypt.
+- Proteção contra brute force no login.
+- Rate limit para login/chat/geração de treino.
+- CORS por ambiente + Trusted Hosts.
+- Headers de segurança HTTP (CSP, HSTS, X-Frame-Options, etc.).
+
+### Operação e observabilidade
+- Endpoints `/health`, `/ready`, `/ops/metrics`.
+- Métricas operacionais por endpoint + uso de IA + eventos PWA.
+- Scripts de smoke, segurança básica, carga, CORS e validação E2E de arquitetura.
+- Runbooks de deploy, rollback, backup, custos e go-live.
+
+### Curadoria admin
+- Base inicial de painel admin para exercícios.
+- API de curadoria:
+  - `GET /admin/exercises`
+  - `POST /admin/exercises`
+  - `PATCH /admin/exercises/{exercise_id}`
+  - `DELETE /admin/exercises/{exercise_id}`
+
+---
+
+## Arquitetura
+
+```mermaid
+flowchart TD
+    A[Frontend React + TypeScript + Vite + PWA] -->|HTTPS + JWT| B[Backend FastAPI]
+    B --> C[Auth Email + Google OAuth]
+    B --> D[Treino IA + Chat IA]
+    B --> E[Dashboard + Histórico + Exercícios]
+    B --> F[Admin Curadoria de Exercícios]
+    B --> G[(PostgreSQL Produção / SQLite Local)]
+    B --> H[Observabilidade /ops/metrics]
+    D --> I[Groq LLM]
 ```
 
-## Endpoints principais já disponíveis
+---
 
-### Auth e Usuário
+## Demonstração visual
 
-- `POST /users` — cadastro
-- `POST /auth/login` — login
-- `POST /auth/google` — login social com Google
-- `POST /auth/refresh` — renovar sessão com refresh token
-- `POST /auth/logout` — invalidar refresh token
-- `GET /users/me` — dados do usuário autenticado
-- `PATCH /users/me` — atualização de perfil
-- `DELETE /users/me` — exclusão de conta e dados
+> Substitua os placeholders abaixo por capturas reais para aumentar ainda mais impacto em recrutadores.
 
-### Treinos
+![Login](./docs/assets/login-placeholder.svg)
+![Dashboard](./docs/assets/dashboard-placeholder.svg)
+![Workout](./docs/assets/workout-placeholder.svg)
+![Admin](./docs/assets/admin-placeholder.svg)
 
-- `POST /workout/generate` — geração de treino com IA
-- `GET /workout/me` — lista de treinos do usuário
-- `GET /workout/{workout_id}` — detalhe de treino
-- `PATCH /workout/{workout_id}/feedback` — feedback do treino
+Exemplos de GIFs recomendados:
+- Fluxo cadastro → login → dashboard
+- Geração de treino com feedback
+- Curadoria admin de exercícios
+- Instalação PWA (prompt + app installed)
+
+---
+
+## Endpoints principais
+
+### Auth e usuário
+- `POST /users`
+- `POST /auth/login`
+- `POST /auth/google`
+- `POST /auth/refresh`
+- `POST /auth/logout`
+- `GET /users/me`
+- `PATCH /users/me`
+- `DELETE /users/me`
+
+### Treino e histórico
+- `POST /workout/generate`
+- `GET /workout/me`
+- `GET /workout/{workout_id}`
+- `PATCH /workout/{workout_id}/feedback`
+- `POST /history`
+- `GET /history/me`
+- `GET /history/{user_id}`
+
+### Chat
+- `POST /chat`
+- `GET /chat/history`
+- `DELETE /chat/history`
 
 ### Exercícios
+- `GET /exercises`
+- `GET /exercises/compatible`
+- `GET /exercises/{exercise_id}`
+- `GET /admin/exercises`
+- `POST /admin/exercises`
+- `PATCH /admin/exercises/{exercise_id}`
+- `DELETE /admin/exercises/{exercise_id}`
 
-- `GET /exercises` — lista com filtros e paginação (`limit`, `offset`)
-- `GET /exercises/compatible` — exercícios compatíveis com paginação (`limit`, `offset`)
-- `GET /exercises/{exercise_id}` — detalhe do exercício
-- `GET /admin/exercises` — curadoria (admin)
-- `POST /admin/exercises` — criar exercício (admin)
-- `PATCH /admin/exercises/{exercise_id}` — editar exercício (admin)
-- `DELETE /admin/exercises/{exercise_id}` — remover exercício (admin)
-
-Observação de domínio: a biblioteca atual contém **1000 exercícios** com **16 grupos musculares**.
-
-### Histórico e Dashboard
-
-- `POST /history` — marcar treino como concluído
-- `GET /history/me` — histórico do usuário
-- `GET /history/{user_id}` — histórico por usuário autenticado (com autorização)
-- `GET /dashboard` — visão consolidada
-
-### Chat IA
-
-- `POST /chat` — enviar mensagem
-- `GET /chat/history` — histórico do chat
-- `DELETE /chat/history` — limpar histórico
-
-### Saúde da API
-
+### Operação
 - `GET /health`
 - `GET /ready`
-- `GET /ops/metrics` — métricas operacionais (uptime, contagem de requests, erros e uso de IA)
+- `GET /ops/metrics`
+- `POST /ops/pwa-events`
 
-## Como rodar localmente
+---
+
+## Rodando localmente
 
 ### 1) Backend
 
@@ -257,51 +249,6 @@ cd backend
 ./.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Criar `.env` baseado no `.env.example` com:
-
-- `SECRET_KEY`
-- `ALGORITHM`
-- `ACCESS_TOKEN_EXPIRE_MINUTES`
-- `REFRESH_TOKEN_EXPIRE_MINUTES`
-- `DATABASE_URL`
-- `DB_POOL_SIZE`
-- `DB_MAX_OVERFLOW`
-- `DB_SSL_MODE` (ex.: `require` em Postgres gerenciado)
-- `CORS_ALLOWED_ORIGINS`
-- `CORS_ALLOWED_ORIGIN_REGEX`
-- `LOGIN_RATE_LIMIT`
-- `LOGIN_RATE_WINDOW_SECONDS`
-- `CHAT_RATE_LIMIT`
-- `CHAT_RATE_WINDOW_SECONDS`
-- `WORKOUT_RATE_LIMIT`
-- `WORKOUT_RATE_WINDOW_SECONDS`
-- `LLM_TIMEOUT_SECONDS`
-- `LLM_MAX_RETRIES`
-- `LLM_RETRY_BACKOFF_SECONDS`
-- `LLM_ENABLE_FALLBACK`
-- `GOOGLE_OAUTH_CLIENT_ID`
-- `SOCIAL_DEFAULT_AGE`
-- `SOCIAL_DEFAULT_WEIGHT_KG`
-- `SOCIAL_DEFAULT_HEIGHT_CM`
-- `SOCIAL_DEFAULT_GOAL`
-- `SOCIAL_DEFAULT_LEVEL`
-- `GROQ_API_KEY`
-- `GROQ_MODEL`
-
-Frontend (`frontend/.env`), com base em `frontend/.env.example`:
-
-- `VITE_API_BASE_URL`
-- `VITE_GOOGLE_CLIENT_ID`
-
-Guia de configuração Google OAuth:
-
-- `GOOGLE_OAUTH_SETUP.md`
-
-Templates adicionais por ambiente:
-
-- `backend/.env.staging.example`
-- `backend/.env.production.example`
-
 ### 2) Frontend
 
 ```bash
@@ -310,150 +257,71 @@ npm ci
 npm run dev -- --host 0.0.0.0 --port 3000
 ```
 
-App web: `http://localhost:3000`  
-API: `http://localhost:8000`  
-Docs Swagger: `http://localhost:8000/docs`
+### URLs locais
+- App: `http://localhost:3000`
+- API: `http://localhost:8000`
+- Swagger: `http://localhost:8000/docs`
 
-## Deploy e execução com containers
+---
 
-### Backend com Docker
+## Qualidade e validação
 
-```bash
-docker build -t boaforma-backend:local ./backend
-docker run --rm -p 8000:8000 --env-file backend/.env boaforma-backend:local
-```
-
-### Execução com Docker Compose
-
-```bash
-docker compose up --build
-```
-
-Arquivo de configuração:
-
-- `docker-compose.yml` (execução local)
-- `render.yaml` (deploy simples em Render: backend + frontend)
-- `deploy/render.staging.yaml` (template staging em Render)
-- `deploy/render.production.yaml` (template produção em Render)
-- `DEPLOYMENT_RUNBOOK.md` (sequência de release, smoke e rollback)
-- `OBSERVABILITY_ALERTING.md` (monitoramento de uptime e alertas de latência/erro)
-- `BACKUP_POLICY.md` (política de backup/restore e retenção)
-- `PRIVACY_POLICY.md` (política de privacidade e minimização de dados)
-- `ACCEPTANCE_CRITERIA.md` (critérios de aceitação por ambiente)
-- `COST_PLAN.md` (estimativa mensal, orçamento e limites por ambiente)
-- `DOMAIN_SSL_SETUP.md` (procedimento de subdomínio, SSL e CORS final)
-- `INFRA_DECISIONS.md` (provedor final e recursos de produção)
-- `CLOUDFLARE_PROVISIONING.md` (checklist DNS/WAF/SSL em Cloudflare)
-- `GOOGLE_CLOUD_OAUTH_SETUP.md` (checklist OAuth oficial Google Cloud)
-- `GO_LIVE_CHECKLIST.md` (sequência final de publicação em produção)
-- `GO_LIVE_RUNBOOK.md` (runbook por fase com critérios de saída)
-- `GO_LIVE_EXECUTION_LOG.md` (template de registro da execução real)
-- `GO_LIVE_EXECUTION_LOG_EXAMPLE.md` (exemplo preenchido para usar no dia do go-live)
-- `GO_LIVE_EXECUTION_LOG_TEMPLATE.md` (template com placeholders para preenchimento rápido)
-- `.github/workflows/ci.yml` (pipeline CI para backend e frontend)
-
-## Operação de banco (SQLite local)
-
-Script utilitário para backup/restore local:
+Comandos usados no projeto:
 
 ```bash
 cd backend
-./.venv/bin/python -m scripts.db_maintenance backup --output ./backups/boaforma.sqlite3.bak
-./.venv/bin/python -m scripts.db_maintenance restore --input ./backups/boaforma.sqlite3.bak
+./.venv/bin/python -m unittest discover -s tests -v
+./.venv/bin/python -m compileall app scripts
+
+cd ../frontend
+npm run build
 ```
 
-## Alertas de métricas
+Pipeline CI:
+- [ci.yml](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/.github/workflows/ci.yml)
 
-Avaliação automática de métricas via `/ops/metrics`:
+---
 
-```bash
-cd backend
-./.venv/bin/python -m scripts.evaluate_metrics_alerts --base-url https://api.academia.com
-```
+## Produção, operação e go-live
 
-## Testes de produção (automação base)
+Documentos operacionais:
+- [DEPLOYMENT_RUNBOOK.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/DEPLOYMENT_RUNBOOK.md)
+- [OBSERVABILITY_ALERTING.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/OBSERVABILITY_ALERTING.md)
+- [BACKUP_POLICY.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/BACKUP_POLICY.md)
+- [DOMAIN_SSL_SETUP.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/DOMAIN_SSL_SETUP.md)
+- [CLOUDFLARE_PROVISIONING.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/CLOUDFLARE_PROVISIONING.md)
+- [GOOGLE_CLOUD_OAUTH_SETUP.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/GOOGLE_CLOUD_OAUTH_SETUP.md)
+- [GO_LIVE_CHECKLIST.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/GO_LIVE_CHECKLIST.md)
+- [GO_LIVE_RUNBOOK.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/GO_LIVE_RUNBOOK.md)
 
-Carga:
+---
 
-```bash
-cd backend
-./.venv/bin/python -m scripts.load_test_api --base-url https://api.academia.com --requests 100 --concurrency 10
-```
+## Diferenciais técnicos
 
-Segurança OWASP básico:
+- Projeto orientado a produto real, não apenas CRUD.
+- Estratégia de resiliência para IA (timeout, retry, fallback).
+- Segurança e operação tratados como primeira classe.
+- Documentação de engenharia com padrão profissional.
+- Base admin para curadoria da biblioteca de exercícios com controle de acesso.
+- Métricas de engajamento PWA rastreadas e consolidadas no backend.
 
-```bash
-cd backend
-./.venv/bin/python -m scripts.security_check_basic --base-url https://api.academia.com
-```
+---
 
-Validação de CORS por domínio final:
+## Architecture Decisions
 
-```bash
-cd backend
-./.venv/bin/python -m scripts.validate_cors_domain --api-base-url https://api.academia.com --frontend-origin https://app.academia.com
-```
+Resumo das decisões arquiteturais no formato ADR:
+- [ARCHITECTURE_DECISIONS.md](file:///Users/curtoeventos/Desktop/App_Treino_Boa%20Forma/docs/ARCHITECTURE_DECISIONS.md)
 
-Validação ponta a ponta de arquitetura:
+---
 
-```bash
-cd backend
-./.venv/bin/python -m scripts.validate_production_architecture --frontend-url https://app.academia.com --backend-url https://api.academia.com
-```
+## Roadmap
 
-## LGPD (base implementada)
+- Evoluir painel admin com busca avançada, edição em lote e auditoria.
+- Expandir analytics de engajamento para decisões de produto.
+- Aprimorar recomendações inteligentes com histórico longitudinal.
 
-- Consentimento explícito no cadastro
-- Política publicada em `PRIVACY_POLICY.md` e `/privacy-policy.html`
-- Exclusão de conta disponível no perfil
-- Retenção/minimização documentadas em `PRIVACY_POLICY.md`
+---
 
-## PWA (métricas de engajamento)
+## Autor
 
-- Eventos rastreados em `/ops/pwa-events`:
-  - `install_prompt_shown`
-  - `install_accepted`
-  - `install_dismissed`
-  - `app_installed`
-- Métricas consolidadas em `/ops/metrics` no campo `pwa_events`
-
-## Custos (guardrails)
-
-Validação de orçamento mensal:
-
-```bash
-cd backend
-./.venv/bin/python -m scripts.check_cost_guardrail --current-cost 180 --budget-limit 650
-```
-
-## Qualidade e validações já executadas
-
-- Instalação de dependências frontend concluída com sucesso.
-- Instalação de dependências backend concluída com sucesso.
-- Build do frontend validado (`npm run build`).
-- Validação de sintaxe Python backend (`python -m compileall app`).
-- Suíte de testes backend validada (`python -m unittest discover -s tests -v`) com cenários de auth, treino, histórico, chat, erros de API e camada LLM.
-- Health check da API validado com retorno `{"status":"ok"}`.
-- Build e execução do backend em container Docker validados.
-
-## Commits já realizados no repositório
-
-- `753fc59` — docs: adiciona PRD do projeto
-- `96a1aea` — feat(backend): implementa API FastAPI com auth, treino IA, chat e dashboard
-- `9d3e7f2` — feat(frontend): adiciona app React com telas e integração da API
-- `e551445` — chore(db): adiciona alembic e migration inicial
-- `24ee327` — feat(history): adiciona endpoint /history/{user_id} com controle de acesso
-- `99cb5d7` — feat(deploy): prepara render e baseURL configurável no frontend
-- `f74a6be` — refactor(db): executa migrations no startup da API
-- `92c9d74` — feat(frontend): exibe biblioteca de exercícios compatíveis na tela de treino
-- `a7eadc6` — refactor(frontend): padroniza header e estado vazio em páginas
-- `8e69c44` — docs(prd): marca validação de telas e fluxo frontend
-- `6e719f5` — feat(mobile): implementa base responsiva e navegação mobile
-- `64629b8` — feat(pwa): adiciona base mobile web instalável
-- `1cdd192` — feat(exercises): expande para 1000 itens e 16 grupos musculares
-- `9a234cc` — feat(frontend): aplica logo branca no login e favicon azul
-- `79723b5` — style(login): amplia escala da logo para melhor presença visual
-
-## Pendências principais (próximos passos)
-
-- Evoluir painel/admin com busca avançada, edição em lote e trilha de auditoria.
+Projeto desenvolvido por Filipi Moraes como plataforma full stack de treino com IA, com foco em qualidade de engenharia e prontidão de produção.

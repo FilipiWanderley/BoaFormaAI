@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="60" y="60" width="1080" height="510" rx="20" fill="#111827" stroke="#334155"/>
+  <text x="600" y="290" text-anchor="middle" fill="#e5e7eb" font-size="46" font-family="Arial">Admin Panel Placeholder</text>
+  <text x="600" y="340" text-anchor="middle" fill="#94a3b8" font-size="24" font-family="Arial">Curadoria de exercícios</text>
+</svg>
