@@ -1474,3 +1474,381 @@ Desenvolvimento concluído não garante produção segura.
 ### 🧠 Definição de pronto para produção
 
 “O sistema está pronto para produção quando pode falhar sem causar perda de dados, pode ser monitorado em tempo real e pode ser recuperado rapidamente.”
+
+---
+
+## 33. AI Orchestration Layer (Camada de Orquestração de IA)
+
+### Descrição
+
+Camada responsável por centralizar, controlar e padronizar todas as interações com o modelo de linguagem (LLM), garantindo consistência, segurança, rastreabilidade e controle de comportamento da IA.
+
+Esta camada separa a lógica de negócio da lógica de IA, permitindo maior controle sobre prompts, contexto, parâmetros e respostas.
+
+### Objetivos
+
+- Centralizar chamadas para o LLM
+- Controlar contexto enviado ao modelo
+- Padronizar prompts
+- Permitir ajustes sem impacto no restante do sistema
+- Preparar o sistema para múltiplos modelos (futuro)
+- Garantir previsibilidade das respostas
+
+### Arquitetura
+
+Controller / Endpoint  
+        ↓  
+AI Orchestration Layer  
+        ↓  
+Prompt Builder  
+        ↓  
+LLM Service (Groq)  
+        ↓  
+Response Handler  
+        ↓  
+Validation Layer  
+        ↓  
+Resposta final
+
+### Componentes
+
+#### 1. Prompt Builder
+
+Responsável por:
+
+- montar prompt base
+- inserir contexto do usuário
+- adicionar restrições
+- incluir lista de exercícios filtrados
+
+#### 2. Context Manager
+
+Gerencia:
+
+- dados do usuário
+- histórico relevante
+- restrições físicas
+- objetivo do treino
+
+#### 3. LLM Service
+
+- integração com Groq
+- envio de prompt
+- recebimento de resposta
+
+#### 4. Response Handler
+
+Responsável por:
+
+- parse da resposta (JSON)
+- normalização de dados
+- tratamento de erros
+
+#### 5. Validation Layer
+
+- validar estrutura da resposta
+- garantir que exercícios existem na base
+- bloquear dados inválidos
+- evitar alucinação
+
+### Regras obrigatórias
+
+- ❌ Nenhum endpoint chama o LLM diretamente
+- ✅ Toda chamada deve passar pela orchestration layer
+- ✅ Respostas devem ser validadas antes de persistir
+- ❌ Não confiar no output do modelo sem validação
+- ✅ Contexto deve ser controlado e limitado
+
+### Parâmetros controlados
+
+A camada deve permitir controle de:
+
+- temperatura
+- max tokens
+- modelo utilizado
+- timeout
+- retries
+
+### Logs obrigatórios (IA)
+
+- prompt enviado
+- resposta recebida
+- tempo de execução
+- erro (se houver)
+
+### Checklist de implementação
+
+- [ ] Criar service `ai_orchestrator.py`
+- [ ] Refatorar chamadas diretas ao LLM
+- [ ] Implementar Prompt Builder
+- [ ] Implementar Context Manager
+- [ ] Implementar Response Handler
+- [ ] Integrar com Validation Layer existente
+- [ ] Adicionar logs de IA
+- [ ] Testar fluxo completo
+
+### Evolução futura
+
+- suporte a múltiplos modelos (fallback)
+- roteamento inteligente de chamadas
+- otimização de custo por tipo de requisição
+- cache de respostas
+- A/B testing de prompts
+
+---
+
+## 34. Response Evaluation & Validation Engine
+
+### Descrição
+
+Mecanismo responsável por avaliar, validar e garantir a qualidade das respostas geradas pelo LLM antes de serem persistidas ou exibidas ao usuário.
+
+Essa camada reduz riscos de alucinação, inconsistência e respostas inválidas.
+
+### Objetivos
+
+- Garantir integridade dos dados gerados pela IA
+- Evitar respostas inválidas ou incoerentes
+- Validar estrutura e conteúdo
+- Implementar fallback automático
+- Aumentar confiabilidade do sistema
+
+### Arquitetura
+
+LLM Response  
+     ↓  
+Parser (JSON)  
+     ↓  
+Schema Validation  
+     ↓  
+Business Validation  
+     ↓  
+Evaluation Score  
+     ↓  
+(Aprovado | Rejeitado | Retry)
+
+### Tipos de validação
+
+#### 1. Validação estrutural
+
+- resposta deve estar em JSON válido
+- campos obrigatórios presentes
+- tipos corretos
+
+#### 2. Validação de domínio
+
+- exercícios devem existir na base
+- respeitar restrições do usuário
+- respeitar nível do usuário
+
+#### 3. Validação semântica
+
+- coerência do treino
+- equilíbrio muscular
+- lógica de séries e reps
+
+### Estratégia de fallback
+
+- resposta inválida → retry automático (até N vezes)
+- fallback para prompt simplificado
+- fallback para resposta padrão
+
+### Score de qualidade (opcional avançado)
+
+Cada resposta pode receber score baseado em:
+
+- completude
+- consistência
+- aderência às regras
+
+### Regras obrigatórias
+
+- ❌ Nunca persistir resposta não validada
+- ✅ Toda resposta deve passar por validação
+- ✅ Sistema deve suportar retry automático
+- ✅ Logs de validação devem ser registrados
+
+### Checklist
+
+- [ ] Criar `response_evaluator.py`
+- [ ] Implementar validação estrutural
+- [ ] Implementar validação de domínio
+- [ ] Implementar retry automático
+- [ ] Integrar com orchestration layer
+- [ ] Criar logs de avaliação
+
+---
+
+## 35. Prompt Management & Versioning System
+
+### Descrição
+
+Sistema responsável por gerenciar, versionar e evoluir prompts utilizados pelo LLM, permitindo controle, rastreabilidade e melhoria contínua.
+
+### Objetivos
+
+- Controlar versões de prompts
+- Permitir rollback
+- Testar melhorias
+- Garantir consistência entre versões
+
+### Estrutura
+
+```json
+{
+  "id": "string",
+  "name": "generate_workout",
+  "version": "v1",
+  "content": "string",
+  "created_at": "timestamp"
+}
+```
+
+### Funcionalidades
+
+- versionamento de prompt
+- histórico de alterações
+- rollback para versões anteriores
+- associação de resposta com versão do prompt
+
+### Uso no sistema
+
+Cada chamada ao LLM deve registrar:
+
+- versão do prompt utilizada
+- contexto enviado
+- resposta gerada
+
+### Regras
+
+- ❌ Não alterar prompt diretamente em código
+- ✅ Prompts devem ser versionados
+- ✅ Mudanças devem ser rastreáveis
+
+### Checklist
+
+- [ ] Criar tabela `prompts`
+- [ ] Criar service `prompt_manager.py`
+- [ ] Implementar versionamento
+- [ ] Registrar versão em cada chamada
+- [ ] Permitir rollback
+
+---
+
+## 36. AI Observability & Monitoring
+
+### Descrição
+
+Camada de observabilidade focada especificamente em IA, permitindo monitorar comportamento, performance e qualidade das interações com o LLM.
+
+### Objetivos
+
+- Monitorar uso da IA
+- Detectar falhas e inconsistências
+- Medir performance
+- Acompanhar custo
+
+### Métricas obrigatórias
+
+- tempo de resposta da IA
+- número de chamadas
+- taxa de erro
+- taxa de retry
+- custo estimado
+
+### Logs obrigatórios
+
+- prompt enviado
+- resposta recebida
+- tempo de execução
+- erro (se houver)
+
+### Alertas
+
+- alta taxa de erro
+- aumento de latência
+- falha no LLM
+
+### Regras
+
+- ✅ Toda chamada de IA deve ser logada
+- ✅ Logs devem ser estruturados
+- ✅ Métricas devem ser monitoradas
+
+### Checklist
+
+- [ ] Integrar logs de IA
+- [ ] Criar métricas específicas
+- [ ] Configurar alertas
+- [ ] Monitorar latência
+
+---
+
+## 37. Adaptive Learning & Feedback Intelligence
+
+### Descrição
+
+Sistema responsável por aprender com o comportamento e feedback do usuário, ajustando respostas da IA ao longo do tempo.
+
+### Objetivos
+
+- Personalizar experiência
+- Adaptar treinos automaticamente
+- Evoluir comportamento da IA
+
+### Funcionalidades
+
+- armazenar feedback do usuário
+- ajustar contexto com base no histórico
+- criar perfil comportamental
+
+### Exemplo
+
+Usuário prefere treino leve  
+→ IA passa a priorizar isso automaticamente
+
+### Regras
+
+- ✅ Feedback deve influenciar geração futura
+- ✅ Histórico deve ser considerado no contexto
+- ❌ Não ignorar comportamento do usuário
+
+### Checklist
+
+- [ ] Criar tabela de feedback
+- [ ] Integrar feedback no contexto
+- [ ] Ajustar prompt dinamicamente
+- [ ] Testar adaptação
+
+---
+
+## 38. Multi-step AI Pipeline (Pipeline de IA em Etapas)
+
+### Descrição
+
+Implementação de pipeline onde múltiplas chamadas ao LLM são feitas em etapas, aumentando qualidade e controle das respostas.
+
+### Fluxo
+
+1. Seleção de exercícios
+2. Montagem do treino
+3. Validação do treino
+
+### Benefícios
+
+- maior controle
+- melhor qualidade
+- menos erro
+
+### Regras
+
+- ❌ Não depender de única chamada para tarefas complexas
+- ✅ Dividir problemas em etapas
+- ✅ Validar cada etapa
+
+### Checklist
+
+- [ ] Implementar pipeline multi-step
+- [ ] Separar responsabilidades por etapa
+- [ ] Integrar com validation engine
+- [ ] Testar fluxo completo
