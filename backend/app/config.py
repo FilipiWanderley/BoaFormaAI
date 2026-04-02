@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     llm_max_retries: int = 2
     llm_retry_backoff_seconds: float = 0.6
     llm_enable_fallback: bool = True
+    ai_alert_min_calls: int = 20
+    ai_alert_error_rate_pct: float = 8.0
+    ai_alert_avg_latency_ms: float = 2500.0
+    ai_alert_retry_rate_pct: float = 20.0
     google_oauth_client_id: str = ""
     social_default_age: int = 25
     social_default_weight_kg: float = 70

@@ -30,6 +30,7 @@ class ApiDocsTests(unittest.TestCase):
             "/chat",
             "/exercises/compatible",
             "/ops/metrics",
+            "/ops/alerts",
             "/ops/pwa-events",
         ]:
             self.assertIn(route, paths)
@@ -42,8 +43,17 @@ class ApiDocsTests(unittest.TestCase):
         self.assertIn("request_count", payload)
         self.assertIn("error_count", payload)
         self.assertIn("ai_usage_count", payload)
+        self.assertIn("ai_alerts", payload)
         self.assertIn("pwa_events", payload)
         self.assertIn("endpoints", payload)
+
+    def test_alerts_endpoint_returns_alert_payload(self) -> None:
+        response = self.client.get("/ops/alerts")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("generated_at", payload)
+        self.assertIn("alerts", payload)
+        self.assertIn("has_alerts", payload)
 
     def test_pwa_events_are_tracked(self) -> None:
         event_response = self.client.post("/ops/pwa-events", json={"event": "install_prompt_shown"})

@@ -1779,7 +1779,7 @@ Camada de observabilidade focada especificamente em IA, permitindo monitorar com
 
 - [x] Integrar logs de IA
 - [x] Criar métricas específicas
-- [ ] Configurar alertas
+- [x] Configurar alertas
 - [x] Monitorar latência
 
 ---
