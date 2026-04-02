@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from fastapi import HTTPException, status
 from sqlalchemy import func
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, object_session
 
 from app.models.exercise import Exercise, WorkoutExercise
 from app.models.user import User
@@ -21,7 +21,7 @@ from app.schemas.workout import (
     _LLMWorkout,
 )
 from app.services.exercise import filter_exercises, get_compatible_exercises
-from app.services.llm_service import call_groq_for_workout
+from app.services.ai_orchestrator import generate_workout_plan
 
 
 # ---------------------------------------------------------------------------
@@ -184,13 +184,29 @@ def generate_workout(
         )
 
     history_context = _build_history_context(db, user.id)
-    llm_workout = call_groq_for_workout(user, exercises, request, history_context=history_context)
+    llm_workout = call_groq_for_workout(user, exercises, request, history_context)
 
     exercise_map = {ex.id: ex for ex in exercises}
     prompt_context = request.model_dump_json()
 
     workout = _persist_workout(db, user, llm_workout, exercise_map, prompt_context)
     return _to_workout_response(workout, llm_workout, exercise_map)
+
+
+def call_groq_for_workout(
+    user: User,
+    exercises: List[Exercise],
+    request: WorkoutGenerateRequest,
+    history_context: Optional[str] = None,
+) -> _LLMWorkout:
+    db = object_session(user)
+    return generate_workout_plan(
+        db=db,
+        user=user,
+        exercises=exercises,
+        request=request,
+        history_context=history_context or "",
+    )
 
 
 def get_workout(db: Session, workout_id: int, user_id: int) -> WorkoutResponse:

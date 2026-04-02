@@ -8,20 +8,16 @@ Design:
 """
 
 import json
-import re
-from typing import List, Optional
+from typing import List
 
-from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.config import settings
 from app.models.chat import ChatMessage
 from app.models.user import User
-from app.models.workout import History, Workout
+from app.models.workout import Workout
 from app.schemas.chat import ChatMessageResponse, ChatResponse
+from app.services.ai_orchestrator import generate_chat_reply
 from app.services.llm_service import _get_client, _sanitize
-from app.services.llm_resilience import execute_with_retry
-from app.services.metrics import metrics_store
 
 MEMORY_WINDOW = 10  # number of past messages sent as context
 
@@ -79,22 +75,6 @@ def _load_recent_messages(db: Session, user_id: int) -> List[ChatMessage]:
     )
 
 
-def _to_groq_messages(
-    system_prompt: str,
-    history: List[ChatMessage],
-    user_message: str,
-) -> List[dict]:
-    messages = [{"role": "system", "content": system_prompt}]
-    for msg in history:
-        messages.append({"role": msg.role, "content": msg.content})
-    messages.append({"role": "user", "content": user_message})
-    return messages
-
-
-# ---------------------------------------------------------------------------
-# Persistence
-# ---------------------------------------------------------------------------
-
 def _save_turn(
     db: Session,
     user_id: int,
@@ -114,38 +94,17 @@ def _save_turn(
 # ---------------------------------------------------------------------------
 
 def chat(db: Session, user: User, message: str) -> ChatResponse:
-    client = _get_client()
     system_prompt = _build_system_prompt(user, db)
     history = _load_recent_messages(db, user.id)
-    messages = _to_groq_messages(system_prompt, history, message)
-
-    def _attempt() -> str:
-        metrics_store.track_ai_call()
-        completion = client.chat.completions.create(
-            model=settings.groq_model,
-            messages=messages,
-            temperature=0.7,
-            max_tokens=1024,
-        )
-        return completion.choices[0].message.content or ""
-
-    try:
-        reply_text = execute_with_retry(
-            _attempt,
-            timeout_seconds=float(settings.llm_timeout_seconds),
-            max_retries=settings.llm_max_retries,
-            backoff_seconds=float(settings.llm_retry_backoff_seconds),
-        )
-    except Exception as exc:
-        if not settings.llm_enable_fallback:
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Falha na comunicação com o serviço de IA: {exc}",
-            )
-        reply_text = (
-            "Estou com instabilidade temporária no serviço de IA. "
-            "Posso continuar com orientações básicas de treino e segurança enquanto normaliza."
-        )
+    messages = [{"role": msg.role, "content": msg.content} for msg in history]
+    messages.append({"role": "user", "content": message})
+    reply_text = generate_chat_reply(
+        db=db,
+        user=user,
+        system_last_workout_context=system_prompt,
+        messages=messages,
+        client=_get_client(),
+    )
     assistant_record = _save_turn(db, user.id, message, reply_text)
 
     # Reload the full window so the response includes the saved turn

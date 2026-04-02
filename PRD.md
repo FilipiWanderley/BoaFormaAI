@@ -1578,14 +1578,14 @@ A camada deve permitir controle de:
 
 ### Checklist de implementação
 
-- [ ] Criar service `ai_orchestrator.py`
-- [ ] Refatorar chamadas diretas ao LLM
-- [ ] Implementar Prompt Builder
-- [ ] Implementar Context Manager
-- [ ] Implementar Response Handler
-- [ ] Integrar com Validation Layer existente
-- [ ] Adicionar logs de IA
-- [ ] Testar fluxo completo
+- [x] Criar service `ai_orchestrator.py`
+- [x] Refatorar chamadas diretas ao LLM
+- [x] Implementar Prompt Builder
+- [x] Implementar Context Manager
+- [x] Implementar Response Handler
+- [x] Integrar com Validation Layer existente
+- [x] Adicionar logs de IA
+- [x] Testar fluxo completo
 
 ### Evolução futura
 
@@ -1670,12 +1670,12 @@ Cada resposta pode receber score baseado em:
 
 ### Checklist
 
-- [ ] Criar `response_evaluator.py`
-- [ ] Implementar validação estrutural
-- [ ] Implementar validação de domínio
-- [ ] Implementar retry automático
-- [ ] Integrar com orchestration layer
-- [ ] Criar logs de avaliação
+- [x] Criar `response_evaluator.py`
+- [x] Implementar validação estrutural
+- [x] Implementar validação de domínio
+- [x] Implementar retry automático
+- [x] Integrar com orchestration layer
+- [x] Criar logs de avaliação
 
 ---
 
@@ -1727,11 +1727,11 @@ Cada chamada ao LLM deve registrar:
 
 ### Checklist
 
-- [ ] Criar tabela `prompts`
-- [ ] Criar service `prompt_manager.py`
-- [ ] Implementar versionamento
-- [ ] Registrar versão em cada chamada
-- [ ] Permitir rollback
+- [x] Criar tabela `prompts`
+- [x] Criar service `prompt_manager.py`
+- [x] Implementar versionamento
+- [x] Registrar versão em cada chamada
+- [x] Permitir rollback
 
 ---
 
@@ -1777,10 +1777,10 @@ Camada de observabilidade focada especificamente em IA, permitindo monitorar com
 
 ### Checklist
 
-- [ ] Integrar logs de IA
-- [ ] Criar métricas específicas
+- [x] Integrar logs de IA
+- [x] Criar métricas específicas
 - [ ] Configurar alertas
-- [ ] Monitorar latência
+- [x] Monitorar latência
 
 ---
 
