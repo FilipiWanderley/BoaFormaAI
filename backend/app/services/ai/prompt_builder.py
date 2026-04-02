@@ -11,6 +11,13 @@ SYSTEM_WORKOUT_PROMPT = (
     "Todos os campos do JSON são obrigatórios, exceto \"notes\" em cada exercício."
 )
 
+SYSTEM_EXERCISE_SELECTOR_PROMPT = (
+    "Você é um sistema de seleção técnica de exercícios para treinos.\n"
+    "Retorne APENAS JSON válido.\n"
+    "Nunca invente IDs, use somente IDs da lista recebida.\n"
+    "Sua missão é selecionar uma base de 6-10 exercícios coerentes para o perfil."
+)
+
 SYSTEM_CHAT_PROMPT_BASE = (
     "Você é o assistente virtual da Academia Boa Forma — personal trainer e nutricionista experiente.\n"
     "Responda em português brasileiro, de forma amigável, direta e motivadora.\n"
@@ -108,6 +115,40 @@ def build_workout_user_prompt(*, context: dict, exercises: list[Exercise]) -> st
         "- Não use exercícios contraindicados para as restrições do aluno.\n"
         "- Responda APENAS com JSON."
     )
+
+
+def build_exercise_selection_prompt(*, context: dict, exercises: list[Exercise]) -> str:
+    goal = _sanitize(context["goal"], 100)
+    focus_hint = (
+        f"Priorize grupos: {', '.join(context['muscle_groups'])}."
+        if context.get("muscle_groups")
+        else "Monte uma base equilibrada conforme objetivo."
+    )
+    return (
+        "Selecione IDs de exercícios para montar um treino.\n\n"
+        "PERFIL\n"
+        f"Objetivo: {goal}\n"
+        f"Nível: {context['level']}\n"
+        f"Restrições: {_sanitize(context['restrictions'])}\n"
+        f"Duração alvo: {context['duration_minutes']} minutos\n"
+        f"{focus_hint}\n"
+        f"Contexto adaptativo/histórico: {_sanitize(context['history_context'], 600)}\n\n"
+        "CATÁLOGO DE EXERCÍCIOS\n"
+        f"{_build_catalog(exercises)}\n\n"
+        "RETORNE JSON NO FORMATO:\n"
+        "{\n"
+        "  \"exercise_ids\": [1, 2, 3, 4, 5, 6]\n"
+        "}\n"
+        "REGRAS:\n"
+        "- Retorne entre 6 e 10 IDs.\n"
+        "- Não repetir IDs.\n"
+        "- IDs devem existir no catálogo.\n"
+        "- Responda apenas com JSON."
+    )
+
+
+def build_workout_assembly_prompt(*, context: dict, selected_exercises: list[Exercise]) -> str:
+    return build_workout_user_prompt(context=context, exercises=selected_exercises)
 
 
 def build_chat_system_prompt(*, context: dict, last_workout_context: str) -> str:

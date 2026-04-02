@@ -7,6 +7,7 @@ from app.models.ai_prompt import AIPromptRun, PromptTemplate
 
 
 PROMPT_WORKOUT_GENERATE = "generate_workout"
+PROMPT_WORKOUT_SELECT = "select_workout_exercises"
 PROMPT_CHAT_ASSISTANT = "chat_assistant"
 
 

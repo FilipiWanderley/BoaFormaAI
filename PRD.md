@@ -1848,7 +1848,7 @@ Implementação de pipeline onde múltiplas chamadas ao LLM são feitas em etapa
 
 ### Checklist
 
-- [ ] Implementar pipeline multi-step
-- [ ] Separar responsabilidades por etapa
-- [ ] Integrar com validation engine
-- [ ] Testar fluxo completo
+- [x] Implementar pipeline multi-step
+- [x] Separar responsabilidades por etapa
+- [x] Integrar com validation engine
+- [x] Testar fluxo completo
