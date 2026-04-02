@@ -20,6 +20,7 @@ from app.schemas.workout import (
     _LLMExercise,
     _LLMWorkout,
 )
+from app.services.adaptive_learning import build_adaptive_context, record_feedback
 from app.services.exercise import filter_exercises, get_compatible_exercises
 from app.services.ai_orchestrator import generate_workout_plan
 
@@ -99,15 +100,18 @@ def _build_history_context(db: Session, user_id: int) -> str:
     )
 
     if not recent_workouts and completed_count == 0:
-        return "Sem histórico de treino anterior."
+        adaptive_context = build_adaptive_context(db, user_id=user_id)
+        return f"Sem histórico de treino anterior. {adaptive_context}"
 
     feedback_summary = ", ".join(recent_feedback[-3:]) if recent_feedback else "sem feedback recente"
-    return (
+    base_context = (
         f"Treinos gerados recentemente: {len(recent_workouts)}. "
         f"Treinos concluídos no total: {completed_count}. "
         f"Treinos concluídos hoje: {completed_today_count}. "
         f"Feedbacks recentes: {feedback_summary}."
     )
+    adaptive_context = build_adaptive_context(db, user_id=user_id)
+    return f"{base_context} {adaptive_context}"
 
 
 def _persist_workout(
@@ -278,6 +282,7 @@ def submit_feedback(
     workout.feedback = feedback
     db.commit()
     db.refresh(workout)
+    record_feedback(db, user_id=user_id, feedback=feedback)
     return WorkoutSummary(
         id=workout.id,
         workout_name=_parse_workout_name(workout.exercises_json),

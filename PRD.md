@@ -1815,10 +1815,10 @@ Usuário prefere treino leve
 
 ### Checklist
 
-- [ ] Criar tabela de feedback
-- [ ] Integrar feedback no contexto
-- [ ] Ajustar prompt dinamicamente
-- [ ] Testar adaptação
+- [x] Criar tabela de feedback
+- [x] Integrar feedback no contexto
+- [x] Ajustar prompt dinamicamente
+- [x] Testar adaptação
 
 ---
 
