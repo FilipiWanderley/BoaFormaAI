@@ -414,4 +414,13 @@ cd backend
 ./.venv/bin/python -m scripts.load_test_critical_flows --base-url http://localhost:8000 --users 20 --concurrency 5 --max-p95-ms 3000
 ```
 
+### Neon Connection (Projeto Aplicativo_Boa Forma)
+
+```bash
+cd backend
+export NEON_DATABASE_URL="postgresql://<user>:<password>@<endpoint>.neon.tech/<database>?sslmode=require"
+./.venv/bin/python -m scripts.configure_neon_connection
+./.venv/bin/alembic upgrade head
+```
+
 ---
